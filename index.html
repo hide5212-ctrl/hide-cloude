@@ -1,4 +1,15 @@
 <title>コの字席くじ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="コの字席くじ">
+<meta name="theme-color" content="#EDEFEA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#11161B" media="(prefers-color-scheme: dark)">
+<meta name="description" content="コの字型に並べた席を参加者にランダムで割り当てます。特定の人の席は固定できます。">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
@@ -70,6 +81,7 @@
 }
 
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{
   margin:0;
   background:var(--bg);
@@ -78,10 +90,15 @@ body{
   font-size:15px;
   line-height:1.7;
   -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
 }
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 
-.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 64px}
+.wrap{
+  max-width:1180px;margin:0 auto;
+  padding:calc(28px + env(safe-area-inset-top)) max(20px,env(safe-area-inset-right))
+          calc(64px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
+}
 
 /* ---------- header ---------- */
 .masthead{
@@ -191,11 +208,17 @@ body{
   background:var(--surface-2);border:1px solid var(--line-2);border-radius:9px;
   box-shadow:var(--shadow-1);
   padding:8px 6px;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;user-select:none;
   transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;
 }
 .seats-top .seat{width:118px;height:78px}
 .seats-left .seat,.seats-right .seat{width:132px;height:70px}
-.seat:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:var(--accent)}
+@media (hover:hover) and (pointer:fine){
+  .seat:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:var(--accent)}
+}
+.seat:active{transform:scale(.97)}
 .seat .no{
   font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted);
   font-variant-numeric:tabular-nums;
@@ -242,34 +265,41 @@ body{
 }
 .sub{font-size:11.5px;color:var(--muted);line-height:1.6;margin:0}
 textarea,input,select{
-  font:inherit;color:var(--ink);background:var(--surface-2);
-  border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;width:100%;
+  font-family:inherit;font-size:16px;color:var(--ink);background:var(--surface-2);
+  border:1px solid var(--line-2);border-radius:8px;padding:9px 10px;width:100%;
+  -webkit-appearance:none;appearance:none;
 }
-textarea{min-height:216px;resize:vertical;line-height:1.9;font-size:14px}
+select{
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:28px;
+}
+textarea{min-height:216px;resize:vertical;line-height:1.9}
 select{cursor:pointer}
 input[type=number]{text-align:center;font-family:var(--mono);font-variant-numeric:tabular-nums}
 .sides{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .sides label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--muted);text-align:center}
 
 .pin-row{display:grid;grid-template-columns:1fr 1fr auto;gap:7px;align-items:center}
-.pin-row select{padding:7px 8px;font-size:13.5px}
+.pin-row select{padding:8px 8px;min-width:0}
 .pin-list{display:flex;flex-direction:column;gap:8px}
 .pin-empty{font-size:12px;color:var(--muted);margin:0}
 
 button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid transparent}
 .btn{
-  padding:8px 14px;background:var(--surface-2);border-color:var(--line-2);color:var(--ink);
+  min-height:40px;padding:8px 14px;background:var(--surface-2);border-color:var(--line-2);color:var(--ink);
   font-size:13.5px;font-weight:500;transition:background .15s ease,border-color .15s ease;
 }
-.btn:hover{background:var(--accent-soft);border-color:var(--accent)}
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{background:var(--accent-soft);border-color:var(--accent)}
+    }
+.btn:active,.btn-primary:active{filter:brightness(.93)}
 .btn-icon{padding:6px 10px;font-size:12px;color:var(--muted)}
-.btn-icon:hover{color:var(--pin);border-color:var(--pin);background:var(--pin-soft)}
 .btn-primary{
   background:var(--accent);color:var(--surface);border-color:var(--accent);
   font-weight:700;font-size:15px;padding:11px 22px;letter-spacing:.14em;
   box-shadow:var(--shadow-2);
 }
-.btn-primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 .btn-row{display:flex;flex-wrap:wrap;gap:8px}
 
@@ -292,10 +322,102 @@ button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid transparen
 }
 .legend-list b{color:var(--ink-2);font-weight:700}
 
+/* ---------- 表示切替 ---------- */
+.segmented{display:inline-flex;background:var(--surface-2);border:1px solid var(--line-2);border-radius:9px;padding:2px;gap:2px}
+.seg{
+  min-height:34px;padding:5px 13px;border-radius:7px;border:none;background:transparent;
+  color:var(--muted);font-size:13px;font-weight:500;-webkit-tap-highlight-color:transparent;
+}
+.seg[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:var(--shadow-1)}
+
+@media (pointer:coarse){
+  .btn{min-height:44px}
+  .seg{min-height:42px}
+  .btn-icon{min-height:44px;padding:8px 12px}
+  .seat-row{min-height:58px}
+  .stat{padding:6px 14px}
+}
+
+/* ---------- 席順リスト ---------- */
+.roster{padding:6px 0 4px}
+.roster[hidden],.room-scroll[hidden]{display:none}
+.roster-group{
+  display:flex;align-items:center;gap:9px;
+  padding:14px 18px 6px;font-size:11px;font-family:var(--mono);
+  letter-spacing:.18em;color:var(--muted);
+}
+.roster-group::after{content:"";flex:1;height:1px;background:var(--line)}
+.seat-row{
+  display:grid;grid-template-columns:38px 58px 1fr auto;align-items:center;gap:10px;
+  width:100%;padding:11px 18px;min-height:52px;
+  background:transparent;border:none;border-top:1px solid var(--line);
+  text-align:left;color:var(--ink);
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;
+}
+.roster-group + .seat-row{border-top:none}
+.seat-row .no{
+  font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
+  color:var(--muted);letter-spacing:.04em;
+}
+.seat-row .side{font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.seat-row .who{font-size:16px;font-weight:700;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seat-row.is-empty .who{color:var(--muted);font-weight:400}
+.seat-row.is-pinned{background:var(--pin-soft)}
+.seat-row.is-pinned .no{color:var(--pin)}
+.seat-row .pin-mark{
+  position:static;font-size:10.5px;font-weight:700;letter-spacing:.08em;
+  background:var(--pin);color:var(--surface);border-radius:999px;padding:2px 9px;
+}
+.seat-row:active{background:var(--accent-soft)}
+.seat-row.is-rolling .who{opacity:.55}
+.seat-row.is-landed{animation:rowland .3s ease}
+@keyframes rowland{from{opacity:.35;transform:translateX(-4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.seat-row.is-landed{animation:none}}
+
+/* ---------- タブレット / スマートフォン ---------- */
+@media (max-width:999px){
+  .actionbar{
+    position:sticky;top:0;z-index:20;
+    background:var(--surface);border-radius:14px 14px 0 0;
+  }
+}
+@media (max-width:760px){
+  .wrap{padding-top:calc(18px + env(safe-area-inset-top))}
+  .masthead{gap:6px 18px;padding-bottom:13px;margin-bottom:16px}
+  .masthead .lede{font-size:13px}
+  .layout{gap:16px}
+  .room-scroll{padding:18px 12px 12px}
+  .room{min-width:0;grid-template-columns:auto auto minmax(52px,1fr) auto auto}
+  .seats-top{gap:6px;padding-bottom:9px}
+  .seats-left,.seats-right{gap:7px}
+  .seats-left{padding-right:8px}
+  .seats-right{padding-left:8px}
+  .seats-top .seat{width:82px;height:64px}
+  .seats-left .seat,.seats-right .seat{width:100px;height:56px}
+  .seat .who{font-size:14px}
+  .desk-top{height:24px}
+  .desk-left,.desk-right{width:24px}
+  .court{margin:8px 5px;padding:12px 6px}
+  .court .court-label{font-size:12px;letter-spacing:.2em}
+  .front{margin-top:12px}
+  .legend-list{gap:5px 14px;padding:0 16px 14px}
+  .field{padding:14px 16px}
+  .actionbar{padding:11px 14px;gap:8px}
+  .actionbar .btn-primary{flex:1 1 100%;order:-1;padding:13px 20px}
+  .actionbar .spacer{display:none}
+  .segmented{flex:1}
+  .seg{flex:1;min-height:42px}
+  .actionbar .btn{min-height:42px;padding:8px 12px;font-size:13px}
+  .stats{gap:6px;margin-bottom:14px}
+  .stat{padding:4px 12px}
+  .seat-row{padding:11px 16px}
+}
+
 footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:center}
 
 @media print{
-  .panel,.actionbar,.masthead .lede,footer.note{display:none}
+  .panel,.actionbar,.masthead .lede,footer.note,.roster{display:none !important}
+  .room-scroll{display:block !important}
   body{background:#fff}
   .card{box-shadow:none;border-color:#999}
   .room-scroll{overflow:visible}
@@ -319,15 +441,19 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   </ul>
 
   <div class="layout">
-    <section class="card plan">
+    <section class="card plan" id="plan">
       <div class="actionbar">
         <button id="drawBtn" class="btn-primary" type="button">抽選する</button>
         <div class="spacer"></div>
-        <button id="copyBtn" class="btn" type="button">結果をコピー</button>
+        <div class="segmented" role="group" aria-label="表示の切り替え">
+          <button id="viewMap" class="seg" type="button" aria-pressed="true">見取り図</button>
+          <button id="viewList" class="seg" type="button" aria-pressed="false">席順</button>
+        </div>
+        <button id="copyBtn" class="btn" type="button">コピー</button>
         <button id="printBtn" class="btn" type="button">印刷</button>
       </div>
 
-      <div class="room-scroll">
+      <div class="room-scroll" id="roomScroll">
         <div class="room" id="room">
           <div class="kamiza"><span class="badge-kamiza">上座</span></div>
           <div class="seats-top" id="seatsTop"></div>
@@ -344,9 +470,11 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
         </div>
       </div>
 
+      <div class="roster" id="roster" hidden></div>
+
       <ul class="legend-list">
         <li>席番号は<b>入口側の左から時計回り</b>（左辺 → 上辺 → 右辺）</li>
-        <li><b>席をクリック</b>すると、その人をその席に固定／解除できます</li>
+        <li><b>席を<span class="tapword">クリック</span></b>すると、その人をその席に固定／解除できます</li>
       </ul>
     </section>
 
@@ -388,6 +516,8 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   "use strict";
 
   var STORE = "konoji-seat-v1";
+  // ポインタが指なら「タップ」、マウスなら「クリック」と案内する
+  var TAP = (window.matchMedia && window.matchMedia("(pointer:coarse)").matches) ? "タップ" : "クリック";
   var DEFAULT_NAMES = ["佐藤","鈴木","高橋","田中","伊藤","渡辺","山本","中村","小林","加藤","吉田","山田","佐々木","松本"];
   var DEFAULT_CFG = {top:4,left:5,right:5};
 
@@ -396,7 +526,9 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     cfg: {top:4,left:5,right:5},
     pins: {},          // 名前 -> 席インデックス
     assign: [],        // 席インデックス -> 名前 or null
-    drawnAt: null
+    drawnAt: null,
+    // 画面が狭いときは既定を「席順リスト」にする（コの字は横に広く、iPhone の縦画面に収まらないため）
+    view: (window.innerWidth < 700 ? "list" : "map")
   };
 
   var el = {
@@ -412,6 +544,11 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     seatsLeft: document.getElementById("seatsLeft"),
     seatsRight: document.getElementById("seatsRight"),
     room: document.getElementById("room"),
+    roomScroll: document.getElementById("roomScroll"),
+    roster: document.getElementById("roster"),
+    plan: document.getElementById("plan"),
+    viewMap: document.getElementById("viewMap"),
+    viewList: document.getElementById("viewList"),
     drawBtn: document.getElementById("drawBtn"),
     copyBtn: document.getElementById("copyBtn"),
     printBtn: document.getElementById("printBtn"),
@@ -436,6 +573,11 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   function seatNo(i){ return String(i+1).padStart(2,"0"); }
   function seatLabel(i){ var s = seatSide(i); return "席" + seatNo(i) + "（" + s.side + s.pos + "）"; }
 
+  // Android などで振動に対応している場合の軽いフィードバック（iOS では無視される）
+  function tap(ms){
+    if (navigator.vibrate) { try{ navigator.vibrate(ms); }catch(e){} }
+  }
+
   function shuffle(a){
     for (var i=a.length-1;i>0;i--){
       var j = Math.floor(Math.random()*(i+1));
@@ -449,7 +591,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     try{
       localStorage.setItem(STORE, JSON.stringify({
         names:state.names, cfg:state.cfg, pins:state.pins,
-        assign:state.assign, drawnAt:state.drawnAt
+        assign:state.assign, drawnAt:state.drawnAt, view:state.view
       }));
     }catch(e){}
   }
@@ -463,6 +605,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
       if (d.pins && typeof d.pins === "object") state.pins = d.pins;
       if (Array.isArray(d.assign)) state.assign = d.assign;
       if (typeof d.drawnAt === "string") state.drawnAt = d.drawnAt;
+      if (d.view === "map" || d.view === "list") state.view = d.view;
     }catch(e){}
   }
 
@@ -522,7 +665,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     if (reduce){
       state.assign = final;
       renderRoom(); renderStats(); save();
-      setNotice("抽選しました。席をクリックすると固定できます。");
+      setNotice("抽選しました。席を" + TAP + "すると固定できます。");
       return;
     }
 
@@ -536,36 +679,38 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     var seatsEls = {};
     state.assign = final.slice();
     renderRoom();
+    // 見取り図と席順リストの両方に同じ席番号のノードがあるので、まとめて動かす
     free.forEach(function(i){
-      var node = el.room.querySelector('[data-seat="'+i+'"]');
-      if (node){ seatsEls[i] = node; node.classList.add("is-rolling"); }
+      var nodes = [].slice.call(el.plan.querySelectorAll('[data-seat="'+i+'"]'));
+      seatsEls[i] = nodes;
+      nodes.forEach(function(n){ n.classList.add("is-rolling"); });
     });
 
     var ticks = 0;
     var spin = setInterval(function(){
       ticks++;
       free.forEach(function(i){
-        var node = seatsEls[i];
-        if (!node) return;
-        node.querySelector(".who").textContent = pool[Math.floor(Math.random()*pool.length)] || "空席";
+        var pick = pool[Math.floor(Math.random()*pool.length)] || "空席";
+        seatsEls[i].forEach(function(n){ n.querySelector(".who").textContent = pick; });
       });
       if (ticks > 14){
         clearInterval(spin);
         free.forEach(function(i, k){
           setTimeout(function(){
-            var node = seatsEls[i];
-            if (!node) return;
-            node.classList.remove("is-rolling");
-            node.classList.add("is-landed");
-            node.querySelector(".who").textContent = final[i] || "空席";
-            if (!final[i]) node.classList.add("is-empty");
+            seatsEls[i].forEach(function(n){
+              n.classList.remove("is-rolling");
+              n.classList.add("is-landed");
+              n.querySelector(".who").textContent = final[i] || "空席";
+              if (!final[i]) n.classList.add("is-empty");
+            });
+            tap(6);
           }, k * 55);
         });
         setTimeout(function(){
           rolling = false;
           el.drawBtn.disabled = false;
           renderRoom(); renderStats(); save();
-          setNotice("抽選しました。席をクリックすると固定できます。");
+          setNotice("抽選しました。席を" + TAP + "すると固定できます。");
         }, free.length * 55 + 260);
       }
     }, 62);
@@ -640,6 +785,73 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     for (var k=c.left+c.top;k<n;k++) el.seatsRight.appendChild(seatNode(k));
 
     el.drawnAt.textContent = state.drawnAt ? ("抽選 " + state.drawnAt) : "未抽選";
+
+    renderRoster();
+    applyView();
+  }
+
+  function renderRoster(){
+    el.roster.innerHTML = "";
+    var lastSide = "";
+    for (var i = 0; i < total(); i++){
+      var meta = seatSide(i);
+      if (meta.side !== lastSide){
+        var h = document.createElement("div");
+        h.className = "roster-group";
+        h.textContent = meta.side;
+        el.roster.appendChild(h);
+        lastSide = meta.side;
+      }
+      el.roster.appendChild(rosterRow(i, meta));
+    }
+  }
+
+  function rosterRow(i, meta){
+    var name = state.assign[i] || null;
+    var pinned = name && state.pins[name] === i;
+
+    var row = document.createElement("button");
+    row.type = "button";
+    row.className = "seat-row" + (name ? "" : " is-empty") + (pinned ? " is-pinned" : "");
+    row.dataset.seat = String(i);
+    row.setAttribute("aria-label", seatLabel(i) + "：" + (name || "空席") + (pinned ? "（固定）" : ""));
+
+    var no = document.createElement("span");
+    no.className = "no";
+    no.textContent = seatNo(i);
+
+    var side = document.createElement("span");
+    side.className = "side";
+    side.textContent = meta.side + meta.pos;
+
+    var who = document.createElement("span");
+    who.className = "who";
+    who.textContent = name || "空席";
+
+    row.appendChild(no);
+    row.appendChild(side);
+    row.appendChild(who);
+    if (pinned){
+      var m = document.createElement("span");
+      m.className = "pin-mark";
+      m.textContent = "固定";
+      row.appendChild(m);
+    }
+    return row;
+  }
+
+  function applyView(){
+    var isList = state.view === "list";
+    el.roomScroll.hidden = isList;
+    el.roster.hidden = !isList;
+    el.viewMap.setAttribute("aria-pressed", String(!isList));
+    el.viewList.setAttribute("aria-pressed", String(isList));
+  }
+
+  function setView(v){
+    state.view = v;
+    applyView();
+    save();
   }
 
   function renderStats(){
@@ -777,8 +989,8 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     });
   });
 
-  el.room.addEventListener("click", function(ev){
-    var node = ev.target.closest ? ev.target.closest(".seat") : null;
+  el.plan.addEventListener("click", function(ev){
+    var node = ev.target.closest ? ev.target.closest("[data-seat]") : null;
     if (!node || rolling) return;
     var i = parseInt(node.dataset.seat,10);
     var name = state.assign[i];
@@ -791,6 +1003,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
       delete state.pins[name];
       state.pins[name] = i;
       setNotice(name + " さんを " + seatLabel(i) + " に固定しました。次の抽選でもこの席のままです。");
+      tap(12);
     }
     pendingPin = null;
     refresh();
@@ -801,6 +1014,9 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     if (!pendingPin) pendingPin = { name: "", seat: null };
     renderPins();
   });
+
+  el.viewMap.addEventListener("click", function(){ setView("map"); });
+  el.viewList.addEventListener("click", function(){ setView("list"); });
 
   el.drawBtn.addEventListener("click", draw);
 
@@ -858,7 +1074,15 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     el.cfgRight.value = state.cfg.right;
   }
 
+  /* ---------- オフライン対応（http/https で配信したときだけ） ---------- */
+  if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("sw.js").catch(function(){ /* 配信していない場合は何もしない */ });
+    });
+  }
+
   /* ---------- 起動 ---------- */
+  [].forEach.call(document.querySelectorAll(".tapword"), function(n){ n.textContent = TAP; });
   load();
   syncInputs();
   refresh();
