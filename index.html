@@ -261,6 +261,7 @@ body{
   font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ink-2);
 }
 .sub{font-size:11.5px;color:var(--muted);line-height:1.6;margin:0}
+.sub-actions{margin-top:2px}
 textarea,input,select{
   font-family:inherit;font-size:16px;color:var(--ink);background:var(--surface-2);
   border:1px solid var(--line-2);border-radius:8px;padding:9px 10px;width:100%;
@@ -499,7 +500,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     <div class="panel">
       <section class="card field">
         <label for="names">参加者（1行に1名）</label>
-        <textarea id="names" spellcheck="false"></textarea>
+        <textarea id="names" spellcheck="false" placeholder="山田 太郎&#10;鈴木 花子&#10;佐藤 次郎"></textarea>
         <p class="sub" id="nameCount"></p>
       </section>
 
@@ -522,7 +523,11 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
       <p class="notice" id="notice" role="status"></p>
 
-      <div class="btn-row"><button id="resetBtn" class="btn" type="button">初期設定に戻す</button></div>
+      <div class="btn-row">
+        <button id="clearSeatsBtn" class="btn" type="button">席をクリア</button>
+        <button id="clearAllBtn" class="btn" type="button">参加者も空にする</button>
+      </div>
+      <p class="sub sub-actions">「席をクリア」は抽選結果と固定席を消して、席を空にします（参加者リストは残ります）。</p>
     </div>
   </div>
 
@@ -536,11 +541,11 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   var STORE = "konoji-seat-v1";
   // ポインタが指なら「タップ」、マウスなら「クリック」と案内する
   var TAP = (navigator.maxTouchPoints > 0) ? "タップ" : "クリック";
-  var DEFAULT_NAMES = ["佐藤","鈴木","高橋","田中","伊藤","渡辺","山本","中村","小林","加藤","吉田","山田","佐々木","松本"];
+  // 参加者の初期値は空。使う人が自分の名簿を貼り付けるところから始める
   var DEFAULT_CFG = {top:4,left:5,right:5};
 
   var state = {
-    names: DEFAULT_NAMES.slice(),
+    names: [],
     cfg: {top:4,left:5,right:5},
     pins: {},          // 名前 -> 席インデックス
     assign: [],        // 席インデックス -> 名前 or null
@@ -572,7 +577,8 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     drawBtn: document.getElementById("drawBtn"),
     copyBtn: document.getElementById("copyBtn"),
     printBtn: document.getElementById("printBtn"),
-    resetBtn: document.getElementById("resetBtn"),
+    clearSeatsBtn: document.getElementById("clearSeatsBtn"),
+    clearAllBtn: document.getElementById("clearAllBtn"),
     notice: document.getElementById("notice"),
     drawnAt: document.getElementById("drawnAt"),
     statSeats: document.getElementById("statSeats"),
@@ -627,7 +633,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
       var raw = localStorage.getItem(STORE);
       if (!raw) return;
       var d = JSON.parse(raw);
-      if (Array.isArray(d.names) && d.names.length) state.names = d.names;
+      if (Array.isArray(d.names)) state.names = d.names;
       if (d.cfg && typeof d.cfg.top === "number") state.cfg = d.cfg;
       if (d.pins && typeof d.pins === "object") state.pins = d.pins;
       if (Array.isArray(d.assign)) state.assign = d.assign;
@@ -757,7 +763,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   }
 
   function validate(){
-    if (state.names.length === 0) return "参加者を1人以上入力してください。";
+    if (state.names.length === 0) return "参加者の名前を入力すると抽選できます。";
     if (total() === 0) return "席が0です。上辺・左辺・右辺の数を設定してください。";
     if (state.names.length > total()) {
       return "参加者" + state.names.length + "名に対して席が" + total() + "しかありません。席数を増やしてください。";
@@ -892,7 +898,9 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     el.statPeople.textContent = state.names.length;
     el.statPins.textContent = Object.keys(state.pins).length;
     el.statEmpty.textContent = Math.max(0, n - filled);
-    el.nameCount.textContent = state.names.length + "名を入力中";
+    el.nameCount.textContent = state.names.length === 0
+      ? "参加者が未入力です"
+      : state.names.length + "名を入力中";
     el.seatCount.textContent = "合計 " + n + " 席（上辺" + state.cfg.top + "・左辺" + state.cfg.left + "・右辺" + state.cfg.right + "）";
   }
 
@@ -996,7 +1004,8 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     renderStats();
     save();
     var problem = validate();
-    if (problem) setNotice(problem, true);
+    // 未入力はまだ何も間違っていないので、赤い警告ではなく案内として出す
+    if (problem) setNotice(problem, state.names.length > 0);
     else if (el.notice.classList.contains("is-error")) setNotice("");
     el.drawBtn.disabled = !!problem;
   }
@@ -1092,16 +1101,28 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
   el.printBtn.addEventListener("click", function(){ window.print(); });
 
-  el.resetBtn.addEventListener("click", function(){
-    state.names = DEFAULT_NAMES.slice();
-    state.cfg = {top:DEFAULT_CFG.top,left:DEFAULT_CFG.left,right:DEFAULT_CFG.right};
+  // 席だけ空にする。参加者リストはそのまま残すので、すぐ抽選し直せる
+  el.clearSeatsBtn.addEventListener("click", function(){
+    if (rolling) return;
+    state.assign = new Array(total()).fill(null);
+    state.pins = {};
+    state.drawnAt = null;
+    pendingPin = null;
+    refresh();
+    setNotice("席をクリアしました。固定席も解除しています。");
+  });
+
+  // 参加者リストごと空にする
+  el.clearAllBtn.addEventListener("click", function(){
+    if (rolling) return;
+    state.names = [];
     state.pins = {};
     state.assign = new Array(total()).fill(null);
     state.drawnAt = null;
     pendingPin = null;
     syncInputs();
     refresh();
-    setNotice("初期設定に戻しました。");
+    setNotice("参加者と席を空にしました。名前を入力してください。");
   });
 
   function syncInputs(){

@@ -68,10 +68,13 @@ struct SettingsSheet: View {
                 }
 
                 Section {
-                    Button("初期設定に戻す", role: .destructive) {
-                        model.reset()
-                        namesText = model.names.joined(separator: "\n")
+                    Button("席をクリア") { model.clearSeats() }
+                    Button("参加者も空にする", role: .destructive) {
+                        model.clearAll()
+                        namesText = ""
                     }
+                } footer: {
+                    Text("「席をクリア」は抽選結果と固定席を消して、席を空にします（参加者リストは残ります）。")
                 }
             }
             .navigationTitle("設定")

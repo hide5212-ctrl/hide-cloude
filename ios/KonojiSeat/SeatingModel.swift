@@ -27,10 +27,8 @@ enum DisplayMode: String, Codable, CaseIterable, Identifiable {
 @Observable
 final class SeatingModel {
 
-    static let defaultNames = ["佐藤", "鈴木", "高橋", "田中", "伊藤", "渡辺", "山本",
-                               "中村", "小林", "加藤", "吉田", "山田", "佐々木", "松本"]
-
-    var names: [String] = SeatingModel.defaultNames
+    // 参加者の初期値は空。使う人が自分の名簿を入れるところから始める
+    var names: [String] = []
     var config = SeatConfig()
     /// 名前 → 席番号（0 始まり）。ここに入っている人は抽選から外れ、その席に座り続ける。
     var pins: [String: Int] = [:]
@@ -110,7 +108,7 @@ final class SeatingModel {
 
     /// 抽選できない理由。nil なら抽選できる。
     var validationMessage: String? {
-        if names.isEmpty { return "参加者を1人以上入力してください。" }
+        if names.isEmpty { return "参加者の名前を入力すると抽選できます。" }
         if config.total == 0 { return "席が0です。上辺・左辺・右辺の数を設定してください。" }
         if names.count > config.total {
             return "参加者\(names.count)名に対して席が\(config.total)しかありません。席数を増やしてください。"
@@ -221,13 +219,18 @@ final class SeatingModel {
         save()
     }
 
-    func reset() {
-        names = SeatingModel.defaultNames
-        config = SeatConfig()
+    /// 席だけ空にする。参加者リストはそのまま残すので、すぐ抽選し直せる。
+    func clearSeats() {
         pins = [:]
         assignment = Array(repeating: nil, count: config.total)
         drawnAt = nil
         save()
+    }
+
+    /// 参加者リストごと空にする。席の配置（上辺・左辺・右辺の数）は残す。
+    func clearAll() {
+        names = []
+        clearSeats()
     }
 
     // MARK: - 書き出し
@@ -281,7 +284,7 @@ final class SeatingModel {
         let model = SeatingModel()
         if let data = UserDefaults.standard.data(forKey: storeKey),
            let snapshot = try? JSONDecoder().decode(Snapshot.self, from: data) {
-            if !snapshot.names.isEmpty { model.names = snapshot.names }
+            model.names = snapshot.names
             model.config = snapshot.config
             model.pins = snapshot.pins
             model.assignment = snapshot.assignment
