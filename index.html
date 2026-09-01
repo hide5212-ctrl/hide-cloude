@@ -131,11 +131,10 @@ body{
 
 /* ---------- layout ---------- */
 .layout{display:grid;gap:22px;grid-template-columns:1fr}
-@media (min-width:1000px){
-  .layout{grid-template-columns:minmax(0,1fr) 348px;align-items:start}
-  .plan{order:1}
-  .panel{order:2;position:sticky;top:20px}
-}
+/* 幅の判定は @media ではなく :root[data-w] で行う。理由は下の起動処理を参照 */
+:root[data-w="wide"] .layout{grid-template-columns:minmax(0,1fr) 348px;align-items:start}
+:root[data-w="wide"] .plan{order:1}
+:root[data-w="wide"] .panel{order:2;position:sticky;top:20px}
 
 .card{
   background:var(--surface);border:1px solid var(--line);
@@ -215,9 +214,7 @@ body{
 }
 .seats-top .seat{width:118px;height:78px}
 .seats-left .seat,.seats-right .seat{width:132px;height:70px}
-@media (hover:hover) and (pointer:fine){
-  .seat:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:var(--accent)}
-}
+:root:not([data-touch="1"]) .seat:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:var(--accent)}
 .seat:active{transform:scale(.97)}
 .seat .no{
   font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted);
@@ -290,9 +287,9 @@ button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid transparen
   min-height:40px;padding:8px 14px;background:var(--surface-2);border-color:var(--line-2);color:var(--ink);
   font-size:13.5px;font-weight:500;transition:background .15s ease,border-color .15s ease;
 }
-@media (hover:hover) and (pointer:fine){
-  .btn:hover{background:var(--accent-soft);border-color:var(--accent)}
-    }
+:root:not([data-touch="1"]) .btn:hover{background:var(--accent-soft);border-color:var(--accent)}
+:root:not([data-touch="1"]) .btn-icon:hover{color:var(--pin);border-color:var(--pin);background:var(--pin-soft)}
+:root:not([data-touch="1"]) .btn-primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
 .btn:active,.btn-primary:active{filter:brightness(.93)}
 .btn-icon{padding:6px 10px;font-size:12px;color:var(--muted)}
 .btn-primary{
@@ -330,13 +327,11 @@ button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid transparen
 }
 .seg[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:var(--shadow-1)}
 
-@media (pointer:coarse){
-  .btn{min-height:44px}
-  .seg{min-height:42px}
-  .btn-icon{min-height:44px;padding:8px 12px}
-  .seat-row{min-height:58px}
-  .stat{padding:6px 14px}
-}
+:root[data-touch="1"] .btn{min-height:44px}
+:root[data-touch="1"] .seg{min-height:42px}
+:root[data-touch="1"] .btn-icon{min-height:44px;padding:8px 12px}
+:root[data-touch="1"] .seat-row{min-height:58px}
+:root[data-touch="1"] .stat{padding:6px 14px}
 
 /* ---------- 席順リスト ---------- */
 .roster{padding:6px 0 4px}
@@ -375,44 +370,39 @@ button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid transparen
 @media (prefers-reduced-motion: reduce){.seat-row.is-landed{animation:none}}
 
 /* ---------- タブレット / スマートフォン ---------- */
-@media (max-width:999px){
-  .actionbar{
-    position:sticky;top:0;z-index:20;
-    background:var(--surface);border-radius:14px 14px 0 0;
-  }
+:root:not([data-w="wide"]) .actionbar{
+  position:sticky;top:0;z-index:20;
+  background:var(--surface);border-radius:14px 14px 0 0;
 }
-@media (max-width:760px){
-  .wrap{padding-top:calc(18px + env(safe-area-inset-top))}
-  .masthead{gap:6px 18px;padding-bottom:13px;margin-bottom:16px}
-  .masthead .lede{font-size:13px}
-  .layout{gap:16px}
-  .room-scroll{padding:18px 12px 12px}
-  .room{min-width:0;grid-template-columns:auto auto minmax(52px,1fr) auto auto}
-  .seats-top{gap:6px;padding-bottom:9px}
-  .seats-left,.seats-right{gap:7px}
-  .seats-left{padding-right:8px}
-  .seats-right{padding-left:8px}
-  .seats-top .seat{width:82px;height:64px}
-  .seats-left .seat,.seats-right .seat{width:100px;height:56px}
-  .seat .who{font-size:14px}
-  .desk-top{height:24px}
-  .desk-left,.desk-right{width:24px}
-  .court{margin:8px 5px;padding:12px 6px}
-  .court .court-label{font-size:12px;letter-spacing:.2em}
-  .front{margin-top:12px}
-  .legend-list{gap:5px 14px;padding:0 16px 14px}
-  .field{padding:14px 16px}
-  .actionbar{padding:11px 14px;gap:8px}
-  .actionbar .btn-primary{flex:1 1 100%;order:-1;padding:13px 20px}
-  .actionbar .spacer{display:none}
-  .segmented{flex:1}
-  .seg{flex:1;min-height:42px}
-  .actionbar .btn{min-height:42px;padding:8px 12px;font-size:13px}
-  .stats{gap:6px;margin-bottom:14px}
-  .stat{padding:4px 12px}
-  .seat-row{padding:11px 16px}
-}
-
+:root[data-w="narrow"] .wrap{padding-top:calc(18px + env(safe-area-inset-top))}
+:root[data-w="narrow"] .masthead{gap:6px 18px;padding-bottom:13px;margin-bottom:16px}
+:root[data-w="narrow"] .masthead .lede{font-size:13px}
+:root[data-w="narrow"] .layout{gap:16px}
+:root[data-w="narrow"] .room-scroll{padding:18px 12px 12px}
+:root[data-w="narrow"] .room{min-width:0;grid-template-columns:auto auto minmax(52px,1fr) auto auto}
+:root[data-w="narrow"] .seats-top{gap:6px;padding-bottom:9px}
+:root[data-w="narrow"] .seats-left,.seats-right{gap:7px}
+:root[data-w="narrow"] .seats-left{padding-right:8px}
+:root[data-w="narrow"] .seats-right{padding-left:8px}
+:root[data-w="narrow"] .seats-top .seat{width:82px;height:64px}
+:root[data-w="narrow"] .seats-left .seat,.seats-right .seat{width:100px;height:56px}
+:root[data-w="narrow"] .seat .who{font-size:14px}
+:root[data-w="narrow"] .desk-top{height:24px}
+:root[data-w="narrow"] .desk-left,.desk-right{width:24px}
+:root[data-w="narrow"] .court{margin:8px 5px;padding:12px 6px}
+:root[data-w="narrow"] .court .court-label{font-size:12px;letter-spacing:.2em}
+:root[data-w="narrow"] .front{margin-top:12px}
+:root[data-w="narrow"] .legend-list{gap:5px 14px;padding:0 16px 14px}
+:root[data-w="narrow"] .field{padding:14px 16px}
+:root[data-w="narrow"] .actionbar{padding:11px 14px;gap:8px}
+:root[data-w="narrow"] .actionbar .btn-primary{flex:1 1 100%;order:-1;padding:13px 20px}
+:root[data-w="narrow"] .actionbar .spacer{display:none}
+:root[data-w="narrow"] .segmented{flex:1}
+:root[data-w="narrow"] .seg{flex:1;min-height:42px}
+:root[data-w="narrow"] .actionbar .btn{min-height:42px;padding:8px 12px;font-size:13px}
+:root[data-w="narrow"] .stats{gap:6px;margin-bottom:14px}
+:root[data-w="narrow"] .stat{padding:4px 12px}
+:root[data-w="narrow"] .seat-row{padding:11px 16px}
 footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:center}
 
 @media print{
@@ -423,6 +413,34 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   .room-scroll{overflow:visible}
 }
 </style>
+
+<script>
+// このページは「ブラウザから渡された幅」でレイアウトを決める。
+// ところが次の場合、iPhone でも幅が PC 並みに報告されてしまう。
+//   ・Safari の「デスクトップ用Webサイトを表示」が有効
+//   ・別サイトの表示枠（iframe）の中に埋め込まれている
+// そこで描画幅だけでなく端末の画面幅も見て、小さいほうを採用する。
+(function () {
+  function effectiveWidth() {
+    var frame = document.documentElement.clientWidth || window.innerWidth || 1024;
+    var device = (window.screen && window.screen.width) ? window.screen.width : frame;
+    return Math.min(frame, device);
+  }
+  function apply() {
+    var w = effectiveWidth();
+    var root = document.documentElement;
+    root.setAttribute("data-w", w < 761 ? "narrow" : (w < 1000 ? "mid" : "wide"));
+    if (navigator.maxTouchPoints > 0) root.setAttribute("data-touch", "1");
+    else root.removeAttribute("data-touch");
+    return w;
+  }
+  window.__effectiveWidth = effectiveWidth;
+  window.__applyWidth = apply;
+  apply();
+  window.addEventListener("resize", apply);
+  window.addEventListener("orientationchange", apply);
+})();
+</script>
 
 <div class="wrap">
   <header class="masthead">
@@ -517,7 +535,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
   var STORE = "konoji-seat-v1";
   // ポインタが指なら「タップ」、マウスなら「クリック」と案内する
-  var TAP = (window.matchMedia && window.matchMedia("(pointer:coarse)").matches) ? "タップ" : "クリック";
+  var TAP = (navigator.maxTouchPoints > 0) ? "タップ" : "クリック";
   var DEFAULT_NAMES = ["佐藤","鈴木","高橋","田中","伊藤","渡辺","山本","中村","小林","加藤","吉田","山田","佐々木","松本"];
   var DEFAULT_CFG = {top:4,left:5,right:5};
 
@@ -528,7 +546,9 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     assign: [],        // 席インデックス -> 名前 or null
     drawnAt: null,
     // 画面が狭いときは既定を「席順リスト」にする（コの字は横に広く、iPhone の縦画面に収まらないため）
-    view: (window.innerWidth < 700 ? "list" : "map")
+    view: defaultView(),
+    // 利用者が自分で切り替えたら、以後は画面幅で上書きしない
+    viewChosen: false
   };
 
   var el = {
@@ -578,6 +598,12 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     if (navigator.vibrate) { try{ navigator.vibrate(ms); }catch(e){} }
   }
 
+  // 端末の画面幅も考慮した実測幅から、既定の表示を決める
+  function defaultView(){
+    var w = window.__effectiveWidth ? window.__effectiveWidth() : window.innerWidth;
+    return w < 761 ? "list" : "map";
+  }
+
   function shuffle(a){
     for (var i=a.length-1;i>0;i--){
       var j = Math.floor(Math.random()*(i+1));
@@ -591,7 +617,8 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     try{
       localStorage.setItem(STORE, JSON.stringify({
         names:state.names, cfg:state.cfg, pins:state.pins,
-        assign:state.assign, drawnAt:state.drawnAt, view:state.view
+        assign:state.assign, drawnAt:state.drawnAt,
+        view:state.view, viewChosen:state.viewChosen
       }));
     }catch(e){}
   }
@@ -605,7 +632,10 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
       if (d.pins && typeof d.pins === "object") state.pins = d.pins;
       if (Array.isArray(d.assign)) state.assign = d.assign;
       if (typeof d.drawnAt === "string") state.drawnAt = d.drawnAt;
-      if (d.view === "map" || d.view === "list") state.view = d.view;
+      if (d.viewChosen === true && (d.view === "map" || d.view === "list")){
+        state.view = d.view;
+        state.viewChosen = true;
+      }
     }catch(e){}
   }
 
@@ -850,6 +880,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
   function setView(v){
     state.view = v;
+    state.viewChosen = true;
     applyView();
     save();
   }
@@ -1013,6 +1044,12 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     if (Object.keys(state.pins).length >= total()) return;
     if (!pendingPin) pendingPin = { name: "", seat: null };
     renderPins();
+  });
+
+  window.addEventListener("resize", function(){
+    if (state.viewChosen) return;
+    var next = defaultView();
+    if (next !== state.view){ state.view = next; applyView(); }
   });
 
   el.viewMap.addEventListener("click", function(){ setView("map"); });
