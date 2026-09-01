@@ -1,7 +1,7 @@
 {
-  "name": "コの字席くじ",
+  "name": "座席くじ",
   "short_name": "席くじ",
-  "description": "コの字型に並べた席を参加者にランダムで割り当てます。特定の人の席は固定できます。",
+  "description": "コの字・ロの字・教室など机の並びを選んで、参加者に座席をランダムで割り当てます。特定の人の席は固定できます。",
   "lang": "ja",
   "dir": "ltr",
   "start_url": "./index.html",
@@ -11,7 +11,15 @@
   "background_color": "#EDEFEA",
   "theme_color": "#EDEFEA",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }

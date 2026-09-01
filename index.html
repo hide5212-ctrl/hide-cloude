@@ -1,12 +1,12 @@
-<title>コの字席くじ</title>
+<title>座席くじ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="コの字席くじ">
+<meta name="apple-mobile-web-app-title" content="座席くじ">
 <meta name="theme-color" content="#EDEFEA" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#11161B" media="(prefers-color-scheme: dark)">
-<meta name="description" content="コの字型に並べた席を参加者にランダムで割り当てます。特定の人の席は固定できます。">
+<meta name="description" content="コの字・ロの字・教室など机の並びを選んで、参加者に座席をランダムで割り当てます。特定の人の席は固定できます。">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-180.png">
@@ -31,6 +31,7 @@
   --pin-soft:#F7E5E2;
   --desk:#CDC3B1;
   --desk-2:#B7AC96;
+  --edge-shadow:rgba(22,31,39,.16);
   --shadow-1:0 1px 2px rgba(22,31,39,.07);
   --shadow-2:0 1px 2px rgba(22,31,39,.06), 0 10px 26px -14px rgba(22,31,39,.30);
   --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
@@ -55,6 +56,7 @@
     --pin-soft:#3A2320;
     --desk:#3B372F;
     --desk-2:#4E4939;
+    --edge-shadow:rgba(0,0,0,.55);
     --shadow-1:0 1px 2px rgba(0,0,0,.35);
     --shadow-2:0 1px 2px rgba(0,0,0,.35), 0 10px 26px -14px rgba(0,0,0,.7);
   }
@@ -76,6 +78,7 @@
   --pin-soft:#3A2320;
   --desk:#3B372F;
   --desk-2:#4E4939;
+  --edge-shadow:rgba(0,0,0,.55);
   --shadow-1:0 1px 2px rgba(0,0,0,.35);
   --shadow-2:0 1px 2px rgba(0,0,0,.35), 0 10px 26px -14px rgba(0,0,0,.7);
 }
@@ -95,7 +98,7 @@ body{
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 
 .wrap{
-  max-width:1180px;margin:0 auto;
+  max-width:1280px;margin:0 auto;
   padding:calc(28px + env(safe-area-inset-top)) max(20px,env(safe-area-inset-right))
           calc(64px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
 }
@@ -130,7 +133,7 @@ body{
 .stat.is-empty b{color:var(--muted)}
 
 /* ---------- layout ---------- */
-.layout{display:grid;gap:22px;grid-template-columns:1fr}
+.layout{display:grid;gap:22px;grid-template-columns:minmax(0,1fr)}
 /* 幅の判定は @media ではなく :root[data-w] で行う。理由は下の起動処理を参照 */
 :root[data-w="wide"] .layout{grid-template-columns:minmax(0,1fr) 348px;align-items:start}
 :root[data-w="wide"] .plan{order:1}
@@ -139,6 +142,7 @@ body{
 .card{
   background:var(--surface);border:1px solid var(--line);
   border-radius:14px;box-shadow:var(--shadow-2);
+  min-width:0;
 }
 .card-head{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -150,55 +154,83 @@ body{
 }
 .card-head .hint{font-size:11.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em}
 
-/* ---------- room ---------- */
-.room-scroll{overflow-x:auto;padding:26px 18px 18px}
+/* ---------- room（見取り図） ---------- */
+/* 中身はレイアウトごとに JS が組み立てる。ここは全レイアウト共通の見た目 */
+.room-scroll{
+  overflow-x:auto;padding:26px 18px 18px;
+  /* 端の影は中身がはみ出しているときだけ出る（background-attachment のふるまいを利用） */
+  background:
+    linear-gradient(to right, var(--surface) 40%, transparent) left center/34px 100% no-repeat local,
+    linear-gradient(to left,  var(--surface) 40%, transparent) right center/34px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, var(--edge-shadow), transparent) left center/12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, var(--edge-shadow), transparent) right center/12px 100% no-repeat scroll;
+}
 .room{
-  display:grid;
-  grid-template-columns:auto auto minmax(150px,1fr) auto auto;
-  grid-template-rows:auto auto auto 1fr auto;
-  min-width:600px;
+  --desk-thickness:36px;
+  --seat-gap:10px;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  /* 中身が広ければその幅を持ち（枠内で横スクロール）、狭ければ枠いっぱいで中央に置く */
+  width:max-content;min-width:100%;margin:0 auto;
 }
-.kamiza{grid-column:2/5;grid-row:1/2;text-align:center}
-.seats-top{grid-column:2/5;grid-row:2/3;display:flex;justify-content:center;gap:10px;padding-bottom:12px}
-.desk{background-color:var(--desk);border:1px solid var(--desk-2);position:relative}
-.desk-top{
-  grid-column:2/5;grid-row:3/4;height:36px;
-  border-radius:10px 10px 0 0;border-bottom:none;
-  background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0 1px,transparent 1px 9px);
-}
-.desk-left{
-  grid-column:2/3;grid-row:4/5;width:36px;
-  border-radius:0 0 0 10px;border-top:none;border-right:none;
-  background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0 1px,transparent 1px 9px);
-}
-.desk-right{
-  grid-column:4/5;grid-row:4/5;width:36px;
-  border-radius:0 0 10px 0;border-top:none;border-left:none;
-  background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0 1px,transparent 1px 9px);
-}
-.seats-left{grid-column:1/2;grid-row:4/5;display:flex;flex-direction:column;gap:10px;padding-right:12px}
-.seats-right{grid-column:5/6;grid-row:4/5;display:flex;flex-direction:column;gap:10px;padding-left:12px}
-.court{
-  grid-column:3/4;grid-row:4/5;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-  margin:14px;padding:16px 10px;
-  border:1px dashed var(--line-2);border-radius:10px;text-align:center;
-}
-.court .court-label{font-family:var(--mincho);font-size:13px;letter-spacing:.3em;color:var(--muted)}
-.court .court-time{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-.front{
-  grid-column:1/6;grid-row:5/6;margin-top:16px;
-  border-top:2px solid var(--line-2);
+.room-top{display:flex;justify-content:center;margin-bottom:10px}
+.room-bottom{
+  width:100%;margin-top:16px;border-top:2px solid var(--line-2);
   padding-top:8px;text-align:center;
   font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted);
 }
+.room-stamp{
+  margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--muted);
+  font-variant-numeric:tabular-nums;letter-spacing:.04em;
+}
+.badge-kamiza{
+  display:inline-block;font-family:var(--mincho);font-size:11px;letter-spacing:.3em;
+  color:var(--accent);background:var(--accent-soft);
+  border-radius:999px;padding:2px 14px 2px 18px;
+}
+.board{
+  width:100%;min-width:280px;
+  background:var(--accent-soft);border:1px solid var(--accent);
+  border-radius:8px;padding:9px 14px;text-align:center;
+  font-family:var(--mincho);font-size:12px;letter-spacing:.28em;color:var(--accent-2);
+}
+
+/* 机 */
+.desk{background-color:var(--desk);border:1px solid var(--desk-2);position:relative}
+.desk.grain-h{background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0 1px,transparent 1px 9px)}
+.desk.grain-v{background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0 1px,transparent 1px 9px)}
 .side-tag{
   position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.16em;
   color:var(--muted);white-space:nowrap;
 }
-.desk-top .side-tag{top:50%;left:10px;transform:translateY(-50%)}
-.desk-left .side-tag{top:10px;left:50%;transform:translateX(-50%) rotate(90deg);transform-origin:center}
-.desk-right .side-tag{top:10px;left:50%;transform:translateX(-50%) rotate(90deg);transform-origin:center}
+.side-tag.tag-h{top:50%;left:10px;transform:translateY(-50%)}
+.side-tag.tag-v{top:10px;left:50%;transform:translateX(-50%) rotate(90deg)}
+
+/* ロの字・コの字 */
+.ring{display:grid;grid-template-columns:auto auto minmax(52px,1fr) auto auto}
+.seats-row{display:flex;justify-content:center;gap:var(--seat-gap)}
+.seats-col{display:flex;flex-direction:column;gap:var(--seat-gap)}
+.court{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:14px;padding:16px 10px;min-width:110px;
+  border:1px dashed var(--line-2);border-radius:10px;text-align:center;
+}
+.court-label{font-family:var(--mincho);font-size:13px;letter-spacing:.3em;color:var(--muted)}
+
+/* 対面（長机の両側） */
+.facing{display:grid;align-items:center}
+
+/* 教室（スクール形式） */
+.school{display:grid;gap:14px 12px;margin-top:14px}
+.desk-unit{display:flex;flex-direction:column;align-items:stretch;gap:3px}
+.desk-bar{width:100%;height:10px;border-radius:0 0 5px 5px;border-top:none}
+
+/* 島型（グループ） */
+.islands{display:flex;flex-wrap:wrap;justify-content:center;gap:26px 30px;margin-top:14px}
+.island{display:flex;flex-direction:column;align-items:center;gap:8px}
+.island-name{
+  font-family:var(--mincho);font-size:12px;letter-spacing:.24em;color:var(--muted);
+}
+.island-desk{width:100%;height:30px;border-radius:8px}
 
 /* ---------- seat ---------- */
 .seat{
@@ -212,8 +244,9 @@ body{
   -webkit-user-select:none;user-select:none;
   transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;
 }
-.seats-top .seat{width:118px;height:78px}
-.seats-left .seat,.seats-right .seat{width:132px;height:70px}
+.seat.s-tall{width:118px;height:78px}
+.seat.s-wide{width:132px;height:70px}
+.seat.s-cell{width:106px;height:66px}
 :root:not([data-touch="1"]) .seat:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:var(--accent)}
 .seat:active{transform:scale(.97)}
 .seat .no{
@@ -380,19 +413,19 @@ button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid transparen
 :root[data-w="narrow"] .masthead .lede{font-size:13px}
 :root[data-w="narrow"] .layout{gap:16px}
 :root[data-w="narrow"] .room-scroll{padding:18px 12px 12px}
-:root[data-w="narrow"] .room{min-width:0;grid-template-columns:auto auto minmax(52px,1fr) auto auto}
-:root[data-w="narrow"] .seats-top{gap:6px;padding-bottom:9px}
-:root[data-w="narrow"] .seats-left,.seats-right{gap:7px}
-:root[data-w="narrow"] .seats-left{padding-right:8px}
-:root[data-w="narrow"] .seats-right{padding-left:8px}
-:root[data-w="narrow"] .seats-top .seat{width:82px;height:64px}
-:root[data-w="narrow"] .seats-left .seat,.seats-right .seat{width:100px;height:56px}
+:root[data-w="narrow"] .ring{grid-template-columns:auto auto minmax(40px,1fr) auto auto}
+:root[data-w="narrow"] .seats-row{gap:6px}
+:root[data-w="narrow"] .seats-col{gap:7px}
 :root[data-w="narrow"] .seat .who{font-size:14px}
-:root[data-w="narrow"] .desk-top{height:24px}
-:root[data-w="narrow"] .desk-left,.desk-right{width:24px}
-:root[data-w="narrow"] .court{margin:8px 5px;padding:12px 6px}
-:root[data-w="narrow"] .court .court-label{font-size:12px;letter-spacing:.2em}
-:root[data-w="narrow"] .front{margin-top:12px}
+:root[data-w="narrow"] .seat.s-tall{width:82px;height:64px}
+:root[data-w="narrow"] .seat.s-wide{width:100px;height:56px}
+:root[data-w="narrow"] .seat.s-cell{width:80px;height:58px}
+:root[data-w="narrow"] .islands{gap:18px 16px}
+:root[data-w="narrow"] .school{gap:10px 8px}
+:root[data-w="narrow"] .room{--desk-thickness:24px;--seat-gap:7px}
+:root[data-w="narrow"] .court{margin:8px 4px;padding:12px 5px;min-width:0}
+:root[data-w="narrow"] .court-label{font-size:12px;letter-spacing:.2em}
+:root[data-w="narrow"] .room-bottom{margin-top:12px}
 :root[data-w="narrow"] .legend-list{gap:5px 14px;padding:0 16px 14px}
 :root[data-w="narrow"] .field{padding:14px 16px}
 :root[data-w="narrow"] .actionbar{padding:11px 14px;gap:8px}
@@ -446,10 +479,10 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 <div class="wrap">
   <header class="masthead">
     <div>
-      <p class="eyebrow">U-SHAPED SEATING / 14 SEATS</p>
-      <h1>コの字席くじ</h1>
+      <p class="eyebrow">SEATING LOTTERY ／ 5 LAYOUTS</p>
+      <h1>座席くじ</h1>
     </div>
-    <p class="lede">コの字型に並べた席を、参加者にランダムで割り当てます。特定の人だけを決まった席に固定したまま、残りだけを抽選できます。</p>
+    <p class="lede">コの字・ロの字・対面・教室・島型から机の並びを選び、参加者に座席をランダムで割り当てます。特定の人だけを決まった席に固定したまま、残りだけを抽選できます。</p>
   </header>
 
   <ul class="stats">
@@ -473,26 +506,13 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
       </div>
 
       <div class="room-scroll" id="roomScroll">
-        <div class="room" id="room">
-          <div class="kamiza"><span class="badge-kamiza">上座</span></div>
-          <div class="seats-top" id="seatsTop"></div>
-          <div class="desk desk-top"><span class="side-tag">上辺</span></div>
-          <div class="seats-left" id="seatsLeft"></div>
-          <div class="desk desk-left"><span class="side-tag">左辺</span></div>
-          <div class="court">
-            <span class="court-label">中央スペース</span>
-            <span class="court-time" id="drawnAt">未抽選</span>
-          </div>
-          <div class="desk desk-right"><span class="side-tag">右辺</span></div>
-          <div class="seats-right" id="seatsRight"></div>
-          <div class="front">スクリーン ／ 入口</div>
-        </div>
+        <div class="room" id="room"></div>
       </div>
 
       <div class="roster" id="roster" hidden></div>
 
       <ul class="legend-list">
-        <li>席番号は<b>入口側の左から時計回り</b>（左辺 → 上辺 → 右辺）</li>
+        <li id="orderNote"></li>
         <li><b>席を<span class="tapword">クリック</span></b>すると、その人をその席に固定／解除できます</li>
       </ul>
     </section>
@@ -512,12 +532,10 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
       </section>
 
       <section class="card field">
-        <span class="legend">席の配置</span>
-        <div class="sides">
-          <label>上辺<input id="cfgTop" type="number" min="0" max="12" value="4"></label>
-          <label>左辺<input id="cfgLeft" type="number" min="0" max="12" value="5"></label>
-          <label>右辺<input id="cfgRight" type="number" min="0" max="12" value="5"></label>
-        </div>
+        <label for="layoutSelect" class="legend">机と席の並び</label>
+        <select id="layoutSelect"></select>
+        <p class="sub" id="layoutNote"></p>
+        <div class="sides" id="cfgFields"></div>
         <p class="sub" id="seatCount"></p>
       </section>
 
@@ -542,11 +560,24 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   // ポインタが指なら「タップ」、マウスなら「クリック」と案内する
   var TAP = (navigator.maxTouchPoints > 0) ? "タップ" : "クリック";
   // 参加者の初期値は空。使う人が自分の名簿を貼り付けるところから始める
-  var DEFAULT_CFG = {top:4,left:5,right:5};
+  // cfg は全レイアウト分の設定をまとめて持つ。並びを変えても前の数値が残る
+  var DEFAULT_CFG = {
+    top:4, left:5, right:5,                 // コの字
+    rTop:4, rRight:3, rBottom:4, rLeft:3,   // ロの字
+    fPerSide:7, fEnds:0,                    // 対面
+    sCols:5, sRows:3,                       // 教室
+    iCount:4, iPerIsland:4                  // 島型
+  };
+  function freshCfg(){
+    var c = {};
+    for (var k in DEFAULT_CFG) if (DEFAULT_CFG.hasOwnProperty(k)) c[k] = DEFAULT_CFG[k];
+    return c;
+  }
 
   var state = {
     names: [],
-    cfg: {top:4,left:5,right:5},
+    layout: "konoji",
+    cfg: freshCfg(),
     pins: {},          // 名前 -> 席インデックス
     assign: [],        // 席インデックス -> 名前 or null
     drawnAt: null,
@@ -562,9 +593,10 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     seatCount: document.getElementById("seatCount"),
     pinList: document.getElementById("pinList"),
     addPin: document.getElementById("addPinBtn"),
-    cfgTop: document.getElementById("cfgTop"),
-    cfgLeft: document.getElementById("cfgLeft"),
-    cfgRight: document.getElementById("cfgRight"),
+    layoutSelect: document.getElementById("layoutSelect"),
+    layoutNote: document.getElementById("layoutNote"),
+    cfgFields: document.getElementById("cfgFields"),
+    orderNote: document.getElementById("orderNote"),
     seatsTop: document.getElementById("seatsTop"),
     seatsLeft: document.getElementById("seatsLeft"),
     seatsRight: document.getElementById("seatsRight"),
@@ -580,24 +612,295 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     clearSeatsBtn: document.getElementById("clearSeatsBtn"),
     clearAllBtn: document.getElementById("clearAllBtn"),
     notice: document.getElementById("notice"),
-    drawnAt: document.getElementById("drawnAt"),
     statSeats: document.getElementById("statSeats"),
     statPeople: document.getElementById("statPeople"),
     statPins: document.getElementById("statPins"),
     statEmpty: document.getElementById("statEmpty")
   };
 
-  /* ---------- 席モデル ---------- */
-  // 入口側の左から時計回り: 左辺(手前→奥) → 上辺(左→右) → 右辺(奥→手前)
-  function total(){ return state.cfg.left + state.cfg.top + state.cfg.right; }
-  function seatSide(i){
-    var c = state.cfg;
-    if (i < c.left) return {side:"左辺", pos:c.left - i};
-    if (i < c.left + c.top) return {side:"上辺", pos:i - c.left + 1};
-    return {side:"右辺", pos:i - c.left - c.top + 1};
+  /* ---------- 席の並び（レイアウト） ---------- */
+  // 各レイアウトは「席数」「席の呼び名」「見取り図の描き方」だけを受け持つ。
+  // 席番号は必ず 0..席数-1 の連番で、抽選も固定もこの番号しか見ていないため、
+  // 並びを増やしても抽選まわりのコードは触らなくてよい。
+
+  function elem(tag, cls, text){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
   }
+  function place(node, r1, c1, r2, c2){
+    node.style.gridArea = r1 + " / " + c1 + " / " + r2 + " / " + c2;
+    return node;
+  }
+  function range(from, count){
+    var a = [];
+    for (var i = 0; i < count; i++) a.push(from + i);
+    return a;
+  }
+
+  var LAYOUTS = {
+    konoji: {
+      name: "コの字",
+      note: "三方を机で囲み、開いた側に screen や入口を置く並び。会議や研修でよく使います。",
+      order: "席番号は入口側の左から時計回り（左辺 → 上辺 → 右辺）",
+      topBar: {kind:"badge", text:"上座"},
+      bottomBar: "スクリーン ／ 入口",
+      fields: [
+        {key:"top",   label:"上辺", min:0, max:12},
+        {key:"left",  label:"左辺", min:0, max:12},
+        {key:"right", label:"右辺", min:0, max:12}
+      ],
+      total: function(c){ return c.left + c.top + c.right; },
+      seatInfo: function(c, i){
+        if (i < c.left) return {group:"左辺", pos:c.left - i};
+        if (i < c.left + c.top) return {group:"上辺", pos:i - c.left + 1};
+        return {group:"右辺", pos:i - c.left - c.top + 1};
+      },
+      render: function(root, c){
+        renderRing(root, {
+          left:  range(0, c.left),
+          top:   range(c.left, c.top),
+          right: range(c.left + c.top, c.right),
+          bottom: null
+        });
+      }
+    },
+
+    roji: {
+      name: "ロの字",
+      note: "四方を机で囲む並び。全員が中心を向くので、討論や少人数の会議に向きます。",
+      order: "席番号は入口側の左から時計回り（左辺 → 上辺 → 右辺 → 下辺）",
+      topBar: {kind:"badge", text:"上座"},
+      bottomBar: "入口",
+      fields: [
+        {key:"rTop",    label:"上辺", min:0, max:12},
+        {key:"rRight",  label:"右辺", min:0, max:12},
+        {key:"rBottom", label:"下辺", min:0, max:12},
+        {key:"rLeft",   label:"左辺", min:0, max:12}
+      ],
+      total: function(c){ return c.rLeft + c.rTop + c.rRight + c.rBottom; },
+      seatInfo: function(c, i){
+        if (i < c.rLeft) return {group:"左辺", pos:c.rLeft - i};
+        if (i < c.rLeft + c.rTop) return {group:"上辺", pos:i - c.rLeft + 1};
+        if (i < c.rLeft + c.rTop + c.rRight) return {group:"右辺", pos:i - c.rLeft - c.rTop + 1};
+        return {group:"下辺", pos:c.rLeft + c.rTop + c.rRight + c.rBottom - i};
+      },
+      render: function(root, c){
+        var a = c.rLeft, b = a + c.rTop, d = b + c.rRight;
+        renderRing(root, {
+          left:   range(0, c.rLeft),
+          top:    range(a, c.rTop),
+          right:  range(b, c.rRight),
+          // 下辺は右から左へ回ってくるので、描画は逆順にして左から並べる
+          bottom: range(d, c.rBottom).reverse()
+        });
+      }
+    },
+
+    facing: {
+      name: "対面（長机の両側）",
+      note: "四角い長机の両側に向かい合って座る並び。端の席を置くかどうかも選べます。",
+      order: "席番号は奥側の左から右へ、続いて手前側の左から右へ、最後に端の席",
+      topBar: {kind:"badge", text:"上座（奥側）"},
+      bottomBar: "入口",
+      fields: [
+        {key:"fPerSide", label:"片側の人数", min:1, max:12},
+        {key:"fEnds",    label:"端の席（0〜2）", min:0, max:2}
+      ],
+      total: function(c){ return c.fPerSide * 2 + c.fEnds; },
+      seatInfo: function(c, i){
+        if (i < c.fPerSide) return {group:"奥側", pos:i + 1};
+        if (i < c.fPerSide * 2) return {group:"手前側", pos:i - c.fPerSide + 1};
+        return {group:"端", pos:i - c.fPerSide * 2 + 1};
+      },
+      render: function(root, c){
+        var g = elem("div", "facing");
+        g.style.gridTemplateColumns = "auto auto auto";
+        g.style.gridTemplateRows = "auto auto auto";
+
+        var top = elem("div", "seats-row");
+        range(0, c.fPerSide).forEach(function(i){ top.appendChild(seatNode(i, "s-cell")); });
+        place(top, 1, 2, 2, 3);
+        top.style.marginBottom = "12px";
+
+        var desk = elem("div", "desk grain-h");
+        desk.style.height = "var(--desk-thickness)";
+        desk.style.borderRadius = "10px";
+        place(desk, 2, 2, 3, 3);
+
+        var bottom = elem("div", "seats-row");
+        range(c.fPerSide, c.fPerSide).forEach(function(i){ bottom.appendChild(seatNode(i, "s-cell")); });
+        place(bottom, 3, 2, 4, 3);
+        bottom.style.marginTop = "12px";
+
+        g.appendChild(top); g.appendChild(desk); g.appendChild(bottom);
+
+        // 端の席は机の左右に置く。1席なら左（上座に近い側）だけ
+        var endBase = c.fPerSide * 2;
+        if (c.fEnds >= 1){
+          var l = seatNode(endBase, "s-cell");
+          l.style.marginRight = "12px";
+          g.appendChild(place(l, 2, 1, 3, 2));
+        }
+        if (c.fEnds >= 2){
+          var r = seatNode(endBase + 1, "s-cell");
+          r.style.marginLeft = "12px";
+          g.appendChild(place(r, 2, 3, 3, 4));
+        }
+        root.appendChild(g);
+      }
+    },
+
+    school: {
+      name: "教室（スクール形式）",
+      note: "全員が前を向いて並ぶ、授業でおなじみの並び。ひとりに机ひとつです。",
+      order: "席番号は前の列の左から右へ、それを後ろの列へ繰り返します",
+      topBar: {kind:"bar", text:"黒 板 ・ 教 壇"},
+      bottomBar: "出入口（後方）",
+      fields: [
+        {key:"sCols", label:"横に並ぶ人数", min:1, max:12},
+        {key:"sRows", label:"前後の列数",   min:1, max:12}
+      ],
+      total: function(c){ return c.sCols * c.sRows; },
+      seatInfo: function(c, i){
+        return {group:"前から" + (Math.floor(i / c.sCols) + 1) + "列目", pos:(i % c.sCols) + 1};
+      },
+      render: function(root, c){
+        var g = elem("div", "school");
+        g.style.gridTemplateColumns = "repeat(" + c.sCols + ", auto)";
+        for (var i = 0; i < c.sCols * c.sRows; i++){
+          var unit = elem("div", "desk-unit");
+          unit.appendChild(seatNode(i, "s-cell"));
+          var bar = elem("div", "desk desk-bar grain-h");
+          unit.appendChild(bar);
+          g.appendChild(unit);
+        }
+        root.appendChild(g);
+      }
+    },
+
+    island: {
+      name: "島型（グループ）",
+      fit: "wrap",   // 島は横に並べきれなければ折り返す
+      note: "四角い机を囲む小さな島をいくつか作る並び。グループワークや懇親会に向きます。",
+      order: "席番号は A 島から順に、島ごとに奥側の左から時計回り",
+      topBar: {kind:"bar", text:"前 方 （ 黒 板 ）"},
+      bottomBar: "出入口（後方）",
+      fields: [
+        {key:"iCount",     label:"島の数",     min:1, max:8},
+        {key:"iPerIsland", label:"1島の人数", min:2, max:10}
+      ],
+      total: function(c){ return c.iCount * c.iPerIsland; },
+      seatInfo: function(c, i){
+        var island = Math.floor(i / c.iPerIsland);
+        return {group:islandName(island) + "島", pos:(i % c.iPerIsland) + 1};
+      },
+      render: function(root, c){
+        var wrap = elem("div", "islands");
+        for (var k = 0; k < c.iCount; k++){
+          var base = k * c.iPerIsland;
+          var half = Math.ceil(c.iPerIsland / 2);
+
+          var island = elem("div", "island");
+          island.appendChild(elem("div", "island-name", islandName(k) + "島"));
+
+          var top = elem("div", "seats-row");
+          range(base, half).forEach(function(i){ top.appendChild(seatNode(i, "s-cell")); });
+          island.appendChild(top);
+
+          var desk = elem("div", "desk island-desk grain-h");
+          island.appendChild(desk);
+
+          var bottom = elem("div", "seats-row");
+          // 手前側は奥側と向かい合うよう、番号の大きいほうから並べる
+          range(base + half, c.iPerIsland - half).reverse()
+            .forEach(function(i){ bottom.appendChild(seatNode(i, "s-cell")); });
+          island.appendChild(bottom);
+
+          wrap.appendChild(island);
+        }
+        root.appendChild(wrap);
+      }
+    }
+  };
+
+  function islandName(index){
+    var letters = "ABCDEFGH";
+    return index < letters.length ? letters.charAt(index) : String(index + 1);
+  }
+
+  function layout(){ return LAYOUTS[state.layout] || LAYOUTS.konoji; }
+  function total(){ return Math.max(0, layout().total(state.cfg)); }
+  function seatSide(i){ return layout().seatInfo(state.cfg, i); }
   function seatNo(i){ return String(i+1).padStart(2,"0"); }
-  function seatLabel(i){ var s = seatSide(i); return "席" + seatNo(i) + "（" + s.side + s.pos + "）"; }
+  function seatLabel(i){ var s = seatSide(i); return "席" + seatNo(i) + "（" + s.group + s.pos + "）"; }
+
+  // コの字（bottom なし）とロの字（bottom あり）を同じ組み立てで描く
+  function renderRing(root, sides){
+    var closed = !!(sides.bottom && sides.bottom.length);
+    var g = elem("div", "ring");
+    g.style.gridTemplateRows = closed ? "auto auto 1fr auto auto" : "auto auto 1fr";
+
+    var thickness = "var(--desk-thickness)";
+
+    var top = elem("div", "seats-row");
+    sides.top.forEach(function(i){ top.appendChild(seatNode(i, "s-tall")); });
+    top.style.paddingBottom = "12px";
+    g.appendChild(place(top, 1, 2, 2, 5));
+
+    var deskTop = elem("div", "desk grain-h");
+    deskTop.style.height = thickness;
+    deskTop.style.borderRadius = "10px 10px 0 0";
+    deskTop.style.borderBottom = "none";
+    deskTop.appendChild(elem("span", "side-tag tag-h", "上辺"));
+    g.appendChild(place(deskTop, 2, 2, 3, 5));
+
+    // 左辺は奥（上座寄り）が上に見えるよう逆順に並べる
+    var left = elem("div", "seats-col");
+    sides.left.slice().reverse().forEach(function(i){ left.appendChild(seatNode(i, "s-wide")); });
+    left.style.paddingRight = "12px";
+    g.appendChild(place(left, 3, 1, 4, 2));
+
+    var deskLeft = elem("div", "desk grain-v");
+    deskLeft.style.width = thickness;
+    deskLeft.style.borderTop = "none";
+    deskLeft.style.borderRight = "none";
+    deskLeft.style.borderRadius = closed ? "0" : "0 0 0 10px";
+    if (closed) deskLeft.style.borderBottom = "none";
+    g.appendChild(place(deskLeft, 3, 2, 4, 3));
+
+    var court = elem("div", "court");
+    court.appendChild(elem("span", "court-label", "中央スペース"));
+    g.appendChild(place(court, 3, 3, 4, 4));
+
+    var deskRight = elem("div", "desk grain-v");
+    deskRight.style.width = thickness;
+    deskRight.style.borderTop = "none";
+    deskRight.style.borderLeft = "none";
+    deskRight.style.borderRadius = closed ? "0" : "0 0 10px 0";
+    if (closed) deskRight.style.borderBottom = "none";
+    g.appendChild(place(deskRight, 3, 4, 4, 5));
+
+    var right = elem("div", "seats-col");
+    sides.right.forEach(function(i){ right.appendChild(seatNode(i, "s-wide")); });
+    right.style.paddingLeft = "12px";
+    g.appendChild(place(right, 3, 5, 4, 6));
+
+    if (closed){
+      var deskBottom = elem("div", "desk grain-h");
+      deskBottom.style.height = thickness;
+      deskBottom.style.borderRadius = "0 0 10px 10px";
+      deskBottom.style.borderTop = "none";
+      g.appendChild(place(deskBottom, 4, 2, 5, 5));
+
+      var bottom = elem("div", "seats-row");
+      sides.bottom.forEach(function(i){ bottom.appendChild(seatNode(i, "s-tall")); });
+      bottom.style.paddingTop = "12px";
+      g.appendChild(place(bottom, 5, 2, 6, 5));
+    }
+    root.appendChild(g);
+  }
 
   // Android などで振動に対応している場合の軽いフィードバック（iOS では無視される）
   function tap(ms){
@@ -622,7 +925,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   function save(){
     try{
       localStorage.setItem(STORE, JSON.stringify({
-        names:state.names, cfg:state.cfg, pins:state.pins,
+        names:state.names, layout:state.layout, cfg:state.cfg, pins:state.pins,
         assign:state.assign, drawnAt:state.drawnAt,
         view:state.view, viewChosen:state.viewChosen
       }));
@@ -634,7 +937,13 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
       if (!raw) return;
       var d = JSON.parse(raw);
       if (Array.isArray(d.names)) state.names = d.names;
-      if (d.cfg && typeof d.cfg.top === "number") state.cfg = d.cfg;
+      if (LAYOUTS[d.layout]) state.layout = d.layout;
+      if (d.cfg && typeof d.cfg === "object"){
+        // 保存が古くて足りない項目があっても既定値で埋める
+        for (var k in DEFAULT_CFG){
+          if (DEFAULT_CFG.hasOwnProperty(k) && typeof d.cfg[k] === "number") state.cfg[k] = d.cfg[k];
+        }
+      }
       if (d.pins && typeof d.pins === "object") state.pins = d.pins;
       if (Array.isArray(d.assign)) state.assign = d.assign;
       if (typeof d.drawnAt === "string") state.drawnAt = d.drawnAt;
@@ -779,12 +1088,12 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   }
 
   /* ---------- 描画 ---------- */
-  function seatNode(i){
+  function seatNode(i, sizeClass){
     var name = state.assign[i] || null;
     var pinned = name && state.pins[name] === i;
     var b = document.createElement("button");
     b.type = "button";
-    b.className = "seat" + (name ? "" : " is-empty") + (pinned ? " is-pinned" : "");
+    b.className = "seat " + (sizeClass || "s-cell") + (name ? "" : " is-empty") + (pinned ? " is-pinned" : "");
     b.dataset.seat = String(i);
     b.setAttribute("aria-label", seatLabel(i) + "：" + (name || "空席") + (pinned ? "（固定）" : ""));
 
@@ -808,19 +1117,25 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   }
 
   function renderRoom(){
-    var c = state.cfg, n = total();
+    var n = total();
     if (state.assign.length !== n) state.assign = new Array(n).fill(null);
 
-    el.seatsLeft.innerHTML = "";
-    el.seatsTop.innerHTML = "";
-    el.seatsRight.innerHTML = "";
+    var lay = layout();
+    el.room.innerHTML = "";
+    // 折り返す並びは枠幅いっぱい、それ以外は中身の幅（入りきらなければ枠内で横スクロール）
+    el.room.style.width = (lay.fit === "wrap") ? "100%" : "max-content";
 
-    // 左辺は「奥（上座寄り）が上」に見えるよう逆順で描画
-    for (var i=c.left-1;i>=0;i--) el.seatsLeft.appendChild(seatNode(i));
-    for (var j=c.left;j<c.left+c.top;j++) el.seatsTop.appendChild(seatNode(j));
-    for (var k=c.left+c.top;k<n;k++) el.seatsRight.appendChild(seatNode(k));
+    // 前方（上座・黒板）の見出し
+    var top = elem("div", "room-top");
+    if (lay.topBar.kind === "bar") top.appendChild(elem("div", "board", lay.topBar.text));
+    else top.appendChild(elem("span", "badge-kamiza", lay.topBar.text));
+    el.room.appendChild(top);
 
-    el.drawnAt.textContent = state.drawnAt ? ("抽選 " + state.drawnAt) : "未抽選";
+    lay.render(el.room, state.cfg);
+
+    el.room.appendChild(elem("div", "room-bottom", lay.bottomBar));
+    el.room.appendChild(elem("div", "room-stamp",
+      state.drawnAt ? ("抽選 " + state.drawnAt) : "未抽選"));
 
     renderRoster();
     applyView();
@@ -831,12 +1146,12 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     var lastSide = "";
     for (var i = 0; i < total(); i++){
       var meta = seatSide(i);
-      if (meta.side !== lastSide){
+      if (meta.group !== lastSide){
         var h = document.createElement("div");
         h.className = "roster-group";
-        h.textContent = meta.side;
+        h.textContent = meta.group;
         el.roster.appendChild(h);
-        lastSide = meta.side;
+        lastSide = meta.group;
       }
       el.roster.appendChild(rosterRow(i, meta));
     }
@@ -858,7 +1173,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
     var side = document.createElement("span");
     side.className = "side";
-    side.textContent = meta.side + meta.pos;
+    side.textContent = meta.group + meta.pos;
 
     var who = document.createElement("span");
     who.className = "who";
@@ -901,10 +1216,48 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     el.nameCount.textContent = state.names.length === 0
       ? "参加者が未入力です"
       : state.names.length + "名を入力中";
-    el.seatCount.textContent = "合計 " + n + " 席（上辺" + state.cfg.top + "・左辺" + state.cfg.left + "・右辺" + state.cfg.right + "）";
+    var detail = layout().fields.map(function(f){ return f.label + state.cfg[f.key]; }).join("・");
+    el.seatCount.textContent = "合計 " + n + " 席（" + detail + "）";
   }
 
   var pendingPin = null;   // 入力中の固定席（人か席のどちらかだけ選んだ状態）
+
+  // 選んだレイアウトに必要な数値入力だけを出し直す
+  function renderLayoutFields(){
+    var lay = layout();
+    el.layoutNote.textContent = lay.note;
+    el.orderNote.textContent = lay.order;
+    el.cfgFields.innerHTML = "";
+    el.cfgFields.style.gridTemplateColumns = "repeat(" + Math.min(lay.fields.length, 4) + ", 1fr)";
+
+    lay.fields.forEach(function(f){
+      var label = elem("label", null, null);
+      label.appendChild(document.createTextNode(f.label));
+      var input = document.createElement("input");
+      input.type = "number";
+      input.min = f.min; input.max = f.max;
+      input.value = state.cfg[f.key];
+      input.addEventListener("change", function(){
+        var v = parseInt(input.value, 10);
+        if (isNaN(v) || v < f.min) v = f.min;
+        if (v > f.max) v = f.max;
+        input.value = v;
+        state.cfg[f.key] = v;
+        resizeSeats();
+      });
+      label.appendChild(input);
+      el.cfgFields.appendChild(label);
+    });
+  }
+
+  // 席数が変わったら、割り当てはやり直しになる
+  function resizeSeats(){
+    state.assign = new Array(total()).fill(null);
+    state.pins = {};
+    state.drawnAt = null;
+    pendingPin = null;
+    refresh();
+  }
 
   function renderPins(){
     el.pinList.innerHTML = "";
@@ -999,6 +1352,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
   function refresh(){
     cleanPins();
+    renderLayoutFields();
     renderRoom();
     renderPins();
     renderStats();
@@ -1016,17 +1370,12 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     refresh();
   });
 
-  ["cfgTop","cfgLeft","cfgRight"].forEach(function(key){
-    el[key].addEventListener("change", function(){
-      var v = parseInt(el[key].value,10);
-      if (isNaN(v) || v < 0) v = 0;
-      if (v > 12) v = 12;
-      el[key].value = v;
-      state.cfg[key.replace("cfg","").toLowerCase()] = v;
-      state.assign = new Array(total()).fill(null);
-      state.drawnAt = null;
-      refresh();
-    });
+  el.layoutSelect.addEventListener("change", function(){
+    if (!LAYOUTS[el.layoutSelect.value]) return;
+    state.layout = el.layoutSelect.value;
+    // 席の位置の意味が変わるので、固定席は引き継がずに解除する
+    resizeSeats();
+    setNotice("並びを「" + layout().name + "」にしました。固定席は解除しています。");
   });
 
   el.plan.addEventListener("click", function(ev){
@@ -1085,13 +1434,13 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
   }
 
   function asText(){
-    var lines = ["座席表（コの字型 / " + total() + "席）"];
+    var lines = ["座席表（" + layout().name + " / " + total() + "席）"];
     lines.push(state.drawnAt ? "抽選 " + state.drawnAt : "未抽選");
     lines.push("");
     var lastSide = "";
     for (var i=0;i<total();i++){
       var s = seatSide(i);
-      if (s.side !== lastSide){ lines.push("[" + s.side + "]"); lastSide = s.side; }
+      if (s.group !== lastSide){ lines.push("[" + s.group + "]"); lastSide = s.group; }
       var nm = state.assign[i] || "空席";
       var pinned = state.assign[i] && state.pins[state.assign[i]] === i;
       lines.push("  " + seatNo(i) + "  " + nm + (pinned ? "（固定）" : ""));
@@ -1127,9 +1476,14 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
   function syncInputs(){
     el.names.value = state.names.join("\n");
-    el.cfgTop.value = state.cfg.top;
-    el.cfgLeft.value = state.cfg.left;
-    el.cfgRight.value = state.cfg.right;
+    el.layoutSelect.value = state.layout;
+  }
+
+  function buildLayoutSelect(){
+    el.layoutSelect.innerHTML = "";
+    for (var key in LAYOUTS){
+      if (LAYOUTS.hasOwnProperty(key)) el.layoutSelect.appendChild(new Option(LAYOUTS[key].name, key));
+    }
   }
 
   /* ---------- オフライン対応（http/https で配信したときだけ） ---------- */
@@ -1141,6 +1495,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
   /* ---------- 起動 ---------- */
   [].forEach.call(document.querySelectorAll(".tapword"), function(n){ n.textContent = TAP; });
+  buildLayoutSelect();
   load();
   syncInputs();
   refresh();
