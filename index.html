@@ -166,8 +166,13 @@ body{
     radial-gradient(farthest-side at 100% 50%, var(--edge-shadow), transparent) right center/12px 100% no-repeat scroll;
 }
 .room{
+  --seat-w:118px;  --seat-h:78px;   /* コの字・ロの字の上下辺 */
+  --side-w:132px;  --side-h:70px;   /* コの字・ロの字の左右辺 */
+  --cell-w:106px;  --cell-h:66px;   /* 対面・教室・島型 */
+  --seat-name:15px; --seat-no:10.5px;
   --desk-thickness:36px;
   --seat-gap:10px;
+  --side-pad:12px;
   display:flex;flex-direction:column;align-items:center;gap:0;
   /* 中身が広ければその幅を持ち（枠内で横スクロール）、狭ければ枠いっぱいで中央に置く */
   width:max-content;min-width:100%;margin:0 auto;
@@ -193,6 +198,10 @@ body{
   border-radius:8px;padding:9px 14px;text-align:center;
   font-family:var(--mincho);font-size:12px;letter-spacing:.28em;color:var(--accent-2);
 }
+
+/* 枠に入りきらないときは、はみ出す代わりに全体を縮めて収める */
+.room-fit{position:relative}
+.room-fit.is-scaled .room{position:absolute;top:0;left:0}
 
 /* 机 */
 .desk{background-color:var(--desk);border:1px solid var(--desk-2);position:relative}
@@ -244,17 +253,17 @@ body{
   -webkit-user-select:none;user-select:none;
   transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;
 }
-.seat.s-tall{width:118px;height:78px}
-.seat.s-wide{width:132px;height:70px}
-.seat.s-cell{width:106px;height:66px}
+.seat.s-tall{width:var(--seat-w);height:var(--seat-h)}
+.seat.s-wide{width:var(--side-w);height:var(--side-h)}
+.seat.s-cell{width:var(--cell-w);height:var(--cell-h)}
 :root:not([data-touch="1"]) .seat:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:var(--accent)}
 .seat:active{transform:scale(.97)}
 .seat .no{
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted);
-  font-variant-numeric:tabular-nums;
+  font-family:var(--mono);font-size:var(--seat-no);letter-spacing:.1em;color:var(--muted);
+  font-variant-numeric:tabular-nums;line-height:1.2;
 }
 .seat .who{
-  font-weight:700;font-size:15px;line-height:1.3;letter-spacing:.02em;
+  font-weight:700;font-size:var(--seat-name);line-height:1.3;letter-spacing:.02em;
   max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .seat.is-empty{background:transparent;border-style:dashed;box-shadow:none}
@@ -409,33 +418,53 @@ button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid transparen
   background:var(--surface);border-radius:14px 14px 0 0;
 }
 :root[data-w="narrow"] .wrap{padding-top:calc(18px + env(safe-area-inset-top))}
-:root[data-w="narrow"] .masthead{gap:6px 18px;padding-bottom:13px;margin-bottom:16px}
+:root[data-w="narrow"] .masthead{gap:2px;padding-bottom:8px;margin-bottom:10px}
+:root[data-w="narrow"] .masthead h1{font-size:21px;letter-spacing:.02em}
+:root[data-w="narrow"] .eyebrow{display:none}
 :root[data-w="narrow"] .masthead .lede{font-size:13px}
 :root[data-w="narrow"] .layout{gap:16px}
-:root[data-w="narrow"] .room-scroll{padding:18px 12px 12px}
 :root[data-w="narrow"] .ring{grid-template-columns:auto auto minmax(40px,1fr) auto auto}
-:root[data-w="narrow"] .seats-row{gap:6px}
-:root[data-w="narrow"] .seats-col{gap:7px}
-:root[data-w="narrow"] .seat .who{font-size:14px}
-:root[data-w="narrow"] .seat.s-tall{width:82px;height:64px}
-:root[data-w="narrow"] .seat.s-wide{width:100px;height:56px}
-:root[data-w="narrow"] .seat.s-cell{width:80px;height:58px}
-:root[data-w="narrow"] .islands{gap:18px 16px}
-:root[data-w="narrow"] .school{gap:10px 8px}
-:root[data-w="narrow"] .room{--desk-thickness:24px;--seat-gap:7px}
-:root[data-w="narrow"] .court{margin:8px 4px;padding:12px 5px;min-width:0}
+:root[data-w="narrow"] .room{
+  --seat-w:52px;  --seat-h:56px;
+  --side-w:58px;  --side-h:56px;
+  --cell-w:54px;  --cell-h:56px;
+  --seat-name:11.5px; --seat-no:8.5px;
+  --desk-thickness:14px; --seat-gap:3px; --side-pad:5px;
+}
+/* 狭い席では名前を2行まで折り返して、削らずに読めるようにする */
+:root[data-w="narrow"] .seat{padding:5px 3px}
+:root[data-w="narrow"] .seat .who{
+  white-space:normal;line-height:1.2;letter-spacing:0;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  text-overflow:clip;
+}
+/* 「固定」の帯は席に対して大きすぎるので、点で示す */
+:root[data-w="narrow"] .seat .pin-mark{
+  font-size:0;width:9px;height:9px;padding:0;top:-3px;right:-3px;
+  border-radius:50%;box-shadow:0 0 0 1.5px var(--surface);
+}
+:root[data-w="narrow"] .room-scroll{padding:10px 8px 8px}
+:root[data-w="narrow"] .masthead .lede{display:none}
+:root[data-w="narrow"] .court{margin:5px 3px;padding:8px 4px;min-width:0}
+:root[data-w="narrow"] .room-top{margin-bottom:6px}
+:root[data-w="narrow"] .board{padding:6px 10px;font-size:11px;letter-spacing:.2em;min-width:0}
+:root[data-w="narrow"] .islands{gap:14px 12px}
+:root[data-w="narrow"] .island-desk{height:20px}
+:root[data-w="narrow"] .desk-bar{height:7px}
 :root[data-w="narrow"] .court-label{font-size:12px;letter-spacing:.2em}
-:root[data-w="narrow"] .room-bottom{margin-top:12px}
+:root[data-w="narrow"] .room-bottom{margin-top:10px;padding-top:6px}
+:root[data-w="narrow"] .room-stamp{margin-top:5px}
 :root[data-w="narrow"] .legend-list{gap:5px 14px;padding:0 16px 14px}
 :root[data-w="narrow"] .field{padding:14px 16px}
-:root[data-w="narrow"] .actionbar{padding:11px 14px;gap:8px}
-:root[data-w="narrow"] .actionbar .btn-primary{flex:1 1 100%;order:-1;padding:13px 20px}
+:root[data-w="narrow"] .actionbar{padding:8px 12px;gap:6px}
+:root[data-w="narrow"] .actionbar .btn-primary{flex:1 1 100%;order:-1;padding:11px 20px;font-size:15px}
 :root[data-w="narrow"] .actionbar .spacer{display:none}
 :root[data-w="narrow"] .segmented{flex:1}
-:root[data-w="narrow"] .seg{flex:1;min-height:42px}
-:root[data-w="narrow"] .actionbar .btn{min-height:42px;padding:8px 12px;font-size:13px}
-:root[data-w="narrow"] .stats{gap:6px;margin-bottom:14px}
-:root[data-w="narrow"] .stat{padding:4px 12px}
+:root[data-w="narrow"] .seg{flex:1;min-height:38px}
+:root[data-w="narrow"] .actionbar .btn{min-height:38px;padding:6px 11px;font-size:13px}
+:root[data-w="narrow"] .stats{gap:6px;margin-bottom:10px}
+:root[data-w="narrow"] .stat{padding:3px 11px}
+:root[data-w="narrow"] .stat b{font-size:14px}
 :root[data-w="narrow"] .seat-row{padding:11px 16px}
 footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:center}
 
@@ -506,7 +535,9 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
       </div>
 
       <div class="room-scroll" id="roomScroll">
-        <div class="room" id="room"></div>
+        <div class="room-fit" id="roomFit">
+          <div class="room" id="room"></div>
+        </div>
       </div>
 
       <div class="roster" id="roster" hidden></div>
@@ -602,6 +633,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     seatsRight: document.getElementById("seatsRight"),
     room: document.getElementById("room"),
     roomScroll: document.getElementById("roomScroll"),
+    roomFit: document.getElementById("roomFit"),
     roster: document.getElementById("roster"),
     plan: document.getElementById("plan"),
     viewMap: document.getElementById("viewMap"),
@@ -722,7 +754,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
         var top = elem("div", "seats-row");
         range(0, c.fPerSide).forEach(function(i){ top.appendChild(seatNode(i, "s-cell")); });
         place(top, 1, 2, 2, 3);
-        top.style.marginBottom = "12px";
+        top.style.marginBottom = "var(--side-pad)";
 
         var desk = elem("div", "desk grain-h");
         desk.style.height = "var(--desk-thickness)";
@@ -732,7 +764,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
         var bottom = elem("div", "seats-row");
         range(c.fPerSide, c.fPerSide).forEach(function(i){ bottom.appendChild(seatNode(i, "s-cell")); });
         place(bottom, 3, 2, 4, 3);
-        bottom.style.marginTop = "12px";
+        bottom.style.marginTop = "var(--side-pad)";
 
         g.appendChild(top); g.appendChild(desk); g.appendChild(bottom);
 
@@ -740,12 +772,12 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
         var endBase = c.fPerSide * 2;
         if (c.fEnds >= 1){
           var l = seatNode(endBase, "s-cell");
-          l.style.marginRight = "12px";
+          l.style.marginRight = "var(--side-pad)";
           g.appendChild(place(l, 2, 1, 3, 2));
         }
         if (c.fEnds >= 2){
           var r = seatNode(endBase + 1, "s-cell");
-          r.style.marginLeft = "12px";
+          r.style.marginLeft = "var(--side-pad)";
           g.appendChild(place(r, 2, 3, 3, 4));
         }
         root.appendChild(g);
@@ -846,7 +878,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
     var top = elem("div", "seats-row");
     sides.top.forEach(function(i){ top.appendChild(seatNode(i, "s-tall")); });
-    top.style.paddingBottom = "12px";
+    top.style.paddingBottom = "var(--side-pad)";
     g.appendChild(place(top, 1, 2, 2, 5));
 
     var deskTop = elem("div", "desk grain-h");
@@ -859,7 +891,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     // 左辺は奥（上座寄り）が上に見えるよう逆順に並べる
     var left = elem("div", "seats-col");
     sides.left.slice().reverse().forEach(function(i){ left.appendChild(seatNode(i, "s-wide")); });
-    left.style.paddingRight = "12px";
+    left.style.paddingRight = "var(--side-pad)";
     g.appendChild(place(left, 3, 1, 4, 2));
 
     var deskLeft = elem("div", "desk grain-v");
@@ -884,7 +916,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
     var right = elem("div", "seats-col");
     sides.right.forEach(function(i){ right.appendChild(seatNode(i, "s-wide")); });
-    right.style.paddingLeft = "12px";
+    right.style.paddingLeft = "var(--side-pad)";
     g.appendChild(place(right, 3, 5, 4, 6));
 
     if (closed){
@@ -896,7 +928,7 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
 
       var bottom = elem("div", "seats-row");
       sides.bottom.forEach(function(i){ bottom.appendChild(seatNode(i, "s-tall")); });
-      bottom.style.paddingTop = "12px";
+      bottom.style.paddingTop = "var(--side-pad)";
       g.appendChild(place(bottom, 5, 2, 6, 5));
     }
     root.appendChild(g);
@@ -907,11 +939,8 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     if (navigator.vibrate) { try{ navigator.vibrate(ms); }catch(e){} }
   }
 
-  // 端末の画面幅も考慮した実測幅から、既定の表示を決める
-  function defaultView(){
-    var w = window.__effectiveWidth ? window.__effectiveWidth() : window.innerWidth;
-    return w < 761 ? "list" : "map";
-  }
+  // 見取り図は枠に合わせて縮むので、画面の広さにかかわらず既定は見取り図
+  function defaultView(){ return "map"; }
 
   function shuffle(a){
     for (var i=a.length-1;i>0;i--){
@@ -1191,12 +1220,42 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     return row;
   }
 
+  // 見取り図が枠に入りきらないときは、はみ出さずに全体を縮めて収める。
+  // スマホでは画面の高さにも合わせるので、スクロールせずに全体が見える。
+  function fitMap(){
+    var room = el.room, fit = el.roomFit;
+    fit.classList.remove("is-scaled");
+    room.style.transform = "";
+    fit.style.height = "";
+    if (state.view !== "map") return;
+
+    var avail = fit.clientWidth;
+    var natW = room.scrollWidth, natH = room.scrollHeight;
+    if (!avail || !natW || !natH) return;
+
+    var k = Math.min(1, avail / natW);
+
+    // 狭い画面では、下にスクロールしなくても全体が見えるように高さも見る
+    if (document.documentElement.getAttribute("data-w") === "narrow"){
+      var topOnPage = fit.getBoundingClientRect().top + (window.scrollY || 0);
+      var availH = window.innerHeight - topOnPage - 44;   // 44 は図の下の注記ぶん
+      if (availH > 140) k = Math.min(k, availH / natH);
+    }
+
+    if (k >= 0.999) return;
+    fit.classList.add("is-scaled");
+    room.style.transformOrigin = "top left";
+    room.style.transform = "translateX(" + ((avail - natW * k) / 2) + "px) scale(" + k + ")";
+    fit.style.height = Math.ceil(natH * k) + "px";
+  }
+
   function applyView(){
     var isList = state.view === "list";
     el.roomScroll.hidden = isList;
     el.roster.hidden = !isList;
     el.viewMap.setAttribute("aria-pressed", String(!isList));
     el.viewList.setAttribute("aria-pressed", String(isList));
+    fitMap();
   }
 
   function setView(v){
@@ -1403,6 +1462,10 @@ footer.note{margin-top:28px;font-size:11.5px;color:var(--muted);text-align:cente
     if (!pendingPin) pendingPin = { name: "", seat: null };
     renderPins();
   });
+
+  window.addEventListener("resize", fitMap);
+  window.addEventListener("orientationchange", function(){ setTimeout(fitMap, 250); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMap);
 
   window.addEventListener("resize", function(){
     if (state.viewChosen) return;
