@@ -1,0 +1,2878 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>まいにち さんすうチャレンジ 〜6年生 夏休み 毎日90分〜</title>
+<style>
+  :root{
+    --bg:#f3f8ff; --card:#fff; --ink:#33384a; --ink-soft:#6b7288; --line:#e3ebf7;
+    --blue:#4a90e2; --green:#3fbf7f; --green-l:#e6f9ef; --red:#f2665f; --red-l:#ffeceb;
+    --yellow:#ffc93c; --purple:#9b7ede; --orange:#ff9f45;
+    --shadow:0 4px 14px rgba(60,90,140,.10); --shadow-lg:0 10px 30px rgba(60,90,140,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4","Yu Gothic",Meiryo,system-ui,sans-serif;
+    font-size:17px;line-height:1.7}
+  body{padding:0 0 60px}
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px}
+  button{font-family:inherit;font-size:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input{font-family:inherit}
+
+  header{background:linear-gradient(135deg,#5aa9f8,#7b8ef5);color:#fff;padding:20px 0 24px;
+    box-shadow:var(--shadow);border-radius:0 0 26px 26px;margin-bottom:18px}
+  header h1{font-size:1.3rem}
+  header .sub{font-size:.82rem;opacity:.92;margin-top:2px}
+  .headrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .sound-btn{background:rgba(255,255,255,.22);border-radius:50%;width:42px;height:42px;
+    font-size:1.15rem;display:flex;align-items:center;justify-content:center;flex:none}
+
+  .card{background:var(--card);border-radius:20px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+  .card h2{font-size:1.05rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+
+  .today{background:linear-gradient(135deg,#fff9ea,#ffeed4);border:3px solid var(--yellow)}
+  .today .date{font-size:.85rem;color:#8a6a1f;font-weight:800}
+  .today .big{font-size:1.35rem;font-weight:800;color:#7a5a00;line-height:1.4;margin:2px 0 10px}
+
+  .progress-head{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ink-soft);margin-bottom:6px}
+  .bar{height:13px;background:#eaf0fa;border-radius:99px;overflow:hidden}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,#5cc8a0,#3fbf7f);border-radius:99px;transition:width .5s}
+  .bar.time > i{background:linear-gradient(90deg,#ffc93c,#ff9f45)}
+
+  .rounds{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .round{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:#fff;
+    border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);border:3px solid transparent;transition:.15s}
+  .round:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .round .ic{width:46px;height:46px;border-radius:14px;flex:none;display:flex;align-items:center;
+    justify-content:center;font-size:1.3rem;color:#fff}
+  .round .info{flex:1;min-width:0}
+  .round .info .t{font-weight:800;font-size:.98rem}
+  .round .info .d{font-size:.76rem;color:var(--ink-soft)}
+  .round .st{flex:none;font-size:1.4rem;min-width:52px;text-align:center}
+  .round .st small{display:block;font-size:.66rem;color:var(--ink-soft);font-weight:700}
+  .round.done{border-color:#bde9d1;background:#f7fffb}
+
+  .btn{display:block;width:100%;text-align:center;border-radius:16px;padding:15px;font-weight:800;
+    font-size:1.02rem;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s,box-shadow .1s}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+  .btn-primary{background:var(--blue);color:#fff}
+  .btn-green{background:var(--green);color:#fff}
+  .btn-yellow{background:var(--yellow);color:#7a5a00}
+  .btn-ghost{background:#eef3fb;color:var(--ink-soft);box-shadow:none}
+  .btn-ghost:active{transform:none}
+  .btn-row{display:flex;gap:10px}
+  .btn-row .btn{flex:1}
+
+  .streak{display:flex;gap:10px;text-align:center}
+  .streak > div{flex:1;background:#f7faff;border-radius:16px;padding:12px 6px}
+  .streak .n{font-size:1.6rem;font-weight:800;color:var(--blue);line-height:1.2}
+  .streak .l{font-size:.72rem;color:var(--ink-soft);font-weight:700}
+
+  .cal{width:100%;border-collapse:collapse;table-layout:fixed}
+  .cal th{font-size:.72rem;color:var(--ink-soft);padding:4px 0;font-weight:700}
+  .cal td{text-align:center;padding:3px 0;height:40px;vertical-align:middle}
+  .cal .cell{width:34px;height:34px;margin:0 auto;border-radius:11px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;font-size:.76rem;color:var(--ink-soft);background:#f5f8fd}
+  .cal .cell.has{background:var(--green-l);color:#1f8f5c;font-weight:800}
+  .cal .cell.part{background:#fff5db;color:#8a6a1f;font-weight:800}
+  .cal .cell.today{outline:3px solid var(--blue);outline-offset:1px}
+  .cal .cell b{font-size:.8rem;line-height:1}
+  .calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .calhead button{background:#eef3fb;border-radius:10px;padding:4px 12px;font-weight:800}
+
+  .levels{display:flex;gap:8px}
+  .levels button{flex:1;border:3px solid var(--line);border-radius:14px;padding:10px 4px;
+    font-weight:800;font-size:.85rem;background:#fff}
+  .levels button.on{border-color:var(--blue);background:#eef6ff;color:var(--blue)}
+
+  /* quiz */
+  .quiz-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:.82rem;
+    color:var(--ink-soft);font-weight:700}
+  .quiz-top .back{background:#eef3fb;border-radius:12px;padding:6px 12px}
+  .qnum{display:inline-block;background:var(--purple);color:#fff;font-weight:800;border-radius:99px;
+    padding:2px 14px;font-size:.8rem;margin-bottom:10px}
+  .qtext{font-size:1.16rem;font-weight:700;line-height:1.85;margin-bottom:4px;white-space:pre-wrap}
+  .qsub{font-size:.8rem;color:var(--ink-soft);margin-bottom:14px}
+
+  .choices{display:flex;flex-direction:column;gap:10px}
+  .choice{border:3px solid var(--line);border-radius:16px;padding:13px 15px;background:#fff;text-align:left;
+    font-weight:700;font-size:1rem;display:flex;align-items:center;gap:12px;transition:.15s}
+  .choice .mark{width:28px;height:28px;border-radius:50%;background:#eef3fb;color:var(--ink-soft);
+    display:flex;align-items:center;justify-content:center;font-size:.85rem;flex:none}
+  .choice.sel{border-color:var(--blue);background:#eef6ff}
+  .choice.sel .mark{background:var(--blue);color:#fff}
+  .choice.ok{border-color:var(--green);background:var(--green-l)}
+  .choice.ng{border-color:var(--red);background:var(--red-l)}
+
+  .ansbox{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:8px 0}
+  .ansbox input{width:120px;text-align:center;font-size:1.5rem;font-weight:800;padding:12px 8px;
+    border:3px solid var(--line);border-radius:14px;background:#fbfdff;color:var(--ink)}
+  .ansbox input:focus{outline:none;border-color:var(--blue);background:#fff}
+  .unit{font-size:1.05rem;font-weight:800;color:var(--ink-soft)}
+  .frac{display:inline-flex;flex-direction:column;align-items:center;gap:4px}
+  .frac .line{width:120px;height:4px;background:var(--ink);border-radius:2px}
+  .ratio{display:flex;align-items:center;gap:8px}
+  .ratio .colon{font-size:1.7rem;font-weight:800}
+
+  .hint{background:#fff8e2;border-left:5px solid var(--yellow);border-radius:12px;padding:12px 14px;
+    margin-top:14px;font-size:.9rem;color:#7a5a00;white-space:pre-wrap}
+  .result-box{border-radius:18px;padding:16px;margin-top:16px;animation:pop .3s ease}
+  .result-box.ok{background:var(--green-l);border:3px solid #a8e2c3}
+  .result-box.ng{background:var(--red-l);border:3px solid #ffc4c0}
+  .result-box .head{font-size:1.2rem;font-weight:800;display:flex;gap:8px;margin-bottom:6px}
+  .result-box.ok .head{color:#1f8f5c}
+  .result-box.ng .head{color:#c9403a}
+  .result-box .exp{font-size:.92rem;line-height:1.85;white-space:pre-wrap}
+  @keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+
+  .pad-toggle{width:100%;background:#eef3fb;border-radius:14px;padding:10px;font-weight:800;
+    font-size:.88rem;color:var(--ink-soft);margin-top:14px}
+  .pad{margin-top:10px;display:none}
+  .pad.open{display:block}
+  .pad canvas{width:100%;height:220px;background:#fffef7;border:3px dashed #dfe7f3;border-radius:16px;
+    touch-action:none;display:block}
+  .pad .tools{display:flex;gap:8px;margin-top:8px}
+  .pad .tools button{background:#eef3fb;border-radius:10px;padding:8px 14px;font-size:.84rem;font-weight:700}
+
+  .score-big{text-align:center;padding:6px 0 2px}
+  .score-big .n{font-size:3.2rem;font-weight:800;color:var(--blue);line-height:1}
+  .score-big .n small{font-size:1rem;color:var(--ink-soft)}
+  .rank{font-size:1.2rem;font-weight:800;margin-top:4px}
+  .review-item{border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:.88rem}
+  .review-item .rq{font-weight:700;margin-bottom:4px}
+  .review-item .ra{color:var(--red);font-weight:700}
+  .review-item .rc{color:var(--green);font-weight:700}
+  .topic-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:.86rem}
+  .topic-row .name{flex:none;width:36%;font-weight:700}
+  .topic-row .bar{flex:1}
+  .topic-row .pct{flex:none;width:44px;text-align:right;font-weight:800;color:var(--ink-soft)}
+
+  .rest{text-align:center;padding:24px 0}
+  .rest .t{font-size:4rem}
+  .rest .cd{font-size:3rem;font-weight:800;color:var(--orange);letter-spacing:.05em}
+
+  /* 苦手ノート */
+  .nb-card{border:3px solid #ffe0a8;background:linear-gradient(135deg,#fffdf6,#fff7e8)}
+  .nb-stat{display:flex;gap:10px;text-align:center;margin:12px 0 4px}
+  .nb-stat > div{flex:1;background:#fff;border-radius:14px;padding:10px 6px}
+  .nb-stat .n{font-size:1.7rem;font-weight:800;color:var(--orange);line-height:1.2}
+  .nb-stat .l{font-size:.68rem;color:var(--ink-soft);font-weight:700;line-height:1.3}
+  .nb-list{margin-top:6px}
+  .nb-item{display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;
+    padding:8px 10px;margin-bottom:6px;font-size:.8rem}
+  .nb-item .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nb-dots{flex:none;letter-spacing:1px;font-size:.9rem}
+  .nb-more{font-size:.75rem;color:var(--ink-soft);text-align:center;padding:4px}
+
+  /* 覚えるまでのしるし */
+  .mastery{display:flex;align-items:center;gap:8px;justify-content:center;
+    background:#fff;border-radius:14px;padding:10px;margin-top:10px;font-weight:800;font-size:.92rem}
+  .mastery .dot{width:16px;height:16px;border-radius:50%;background:#e3ebf7;display:inline-block}
+  .mastery .dot.on{background:var(--green)}
+
+  /* 解説のステップ */
+  .steps{margin-top:6px}
+  .step{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;line-height:1.75}
+  .step .no{flex:none;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.10);
+    font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:3px}
+  .step .tx{flex:1;white-space:pre-wrap}
+
+  /* レポート */
+  .rep-pre{background:#f7faff;border:2px solid var(--line);border-radius:14px;padding:12px;
+    font-size:.78rem;line-height:1.75;white-space:pre-wrap;word-break:break-word;
+    font-family:inherit;max-height:320px;overflow:auto}
+  .rep-input{width:100%;padding:12px;border:3px solid var(--line);border-radius:14px;
+    font-size:.95rem;background:#fbfdff;margin-top:4px}
+  .rep-input:focus{outline:none;border-color:var(--blue);background:#fff}
+
+  /* 自動通知の設定 */
+  .nt-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;font-size:.86rem;line-height:1.6}
+  .nt-row input{width:22px;height:22px;flex:none;margin-top:1px;accent-color:var(--blue)}
+  .nt-block{background:#f7faff;border-radius:14px;padding:12px;margin-top:12px}
+  .nt-help{margin-top:12px;border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+  .nt-help summary{font-weight:800;font-size:.88rem;cursor:pointer}
+  .nt-steps{margin:10px 0 8px 20px;font-size:.82rem;line-height:1.9;color:var(--ink-soft)}
+  .nt-steps b{color:var(--ink)}
+  .nt-code{background:#2c3140;color:#e8ecf5;border-radius:12px;padding:12px;font-size:.72rem;
+    line-height:1.6;overflow-x:auto;white-space:pre;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .nt-log{font-size:.78rem;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .nt-log.ng{color:var(--red)}
+
+  /* ===== ゲーム要素 ===== */
+  .player{background:linear-gradient(135deg,#3a4a7a,#5b4a9b);color:#fff;border:none}
+  .pl-top{display:flex;gap:14px;align-items:center}
+  .pl-lv{width:64px;height:64px;border-radius:20px;flex:none;background:rgba(255,255,255,.18);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+  .pl-lv small{font-size:.6rem;opacity:.85;letter-spacing:.08em}
+  .pl-lv b{font-size:1.7rem}
+  .pl-info{flex:1;min-width:0}
+  .pl-title{font-weight:800;font-size:1.05rem}
+  .pl-xp{font-size:.75rem;opacity:.85;margin:2px 0 5px}
+  .bar.xp{background:rgba(255,255,255,.2)}
+  .bar.xp > i{background:linear-gradient(90deg,#ffd75e,#ff9f45)}
+  .pl-stat{display:flex;gap:8px;margin-top:14px;text-align:center}
+  .pl-stat > div{flex:1;background:rgba(255,255,255,.14);border-radius:14px;padding:8px 4px}
+  .pl-stat b{display:block;font-size:1.3rem;font-weight:800}
+  .pl-stat span{font-size:.66rem;opacity:.85}
+
+  .boss-card{display:flex;gap:14px;align-items:center;
+    background:linear-gradient(135deg,#fff0f0,#ffe3e3);border:3px solid #ffc4c0}
+  .boss-card.beaten{background:linear-gradient(135deg,#eefaf3,#e0f6ea);border-color:#a8e2c3;opacity:.85}
+  .bs-ic{font-size:2.6rem;flex:none}
+  .bs-lb{font-size:.7rem;font-weight:800;color:var(--red)}
+  .boss-card.beaten .bs-lb{color:var(--green)}
+  .bs-nm{font-size:1.1rem;font-weight:800}
+  .bs-ds{font-size:.78rem;color:var(--ink-soft)}
+
+  .cnt{font-size:.75rem;color:var(--ink-soft);font-weight:700}
+  .ms{display:flex;gap:10px;align-items:center;background:#f7faff;border-radius:14px;
+    padding:10px 12px;margin-bottom:8px}
+  .ms.done{background:var(--green-l)}
+  .ms-ic{font-size:1.2rem;flex:none}
+  .ms-body{flex:1;min-width:0}
+  .ms-t{font-size:.86rem;font-weight:700;margin-bottom:4px}
+  .ms .bar{height:9px}
+  .ms-xp{flex:none;font-size:.68rem;color:var(--ink-soft);text-align:right;font-weight:700;line-height:1.4}
+  .ms-xp b{color:var(--orange);font-size:.78rem}
+
+  .pet-box{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+  .pet{background:#f7faff;border-radius:14px;padding:8px 2px;text-align:center;position:relative}
+  .pet .pe{font-size:1.6rem;line-height:1.2}
+  .pet .pn{font-size:.6rem;color:var(--ink-soft);font-weight:700;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pet .px{position:absolute;top:2px;right:4px;font-size:.6rem;font-weight:800;color:var(--orange)}
+  .pet.lock{opacity:.4}
+
+  .dd-pet{display:flex;gap:12px;align-items:center;justify-content:center;text-align:left;
+    background:linear-gradient(135deg,#fff9ea,#ffeed4);border:3px solid var(--yellow);
+    border-radius:18px;padding:12px;margin:12px 0;font-size:.9rem;font-weight:700}
+  .dp-e{font-size:2.6rem;flex:none}
+
+  .badge-box{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+  .bdg{text-align:center;background:#fffaf0;border-radius:14px;padding:8px 2px}
+  .bdg .be{font-size:1.5rem;line-height:1.2}
+  .bdg .bn{font-size:.58rem;color:var(--ink-soft);font-weight:700;line-height:1.25}
+  .bdg.lock{background:#f2f5fa;opacity:.5}
+
+  /* 連続正解 */
+  .combo{text-align:center;font-weight:800;font-size:1.05rem;color:#fff;margin-bottom:12px;
+    background:linear-gradient(90deg,#ff9f45,#f2665f);border-radius:99px;padding:8px;
+    box-shadow:0 4px 14px rgba(242,102,95,.35);animation:cpop .35s}
+  .combo span{font-size:1.35rem}
+  @keyframes cpop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* ボス戦 */
+  .boss-fight{background:linear-gradient(135deg,#2f3550,#4a3a6b);color:#fff;border-radius:18px;
+    padding:12px 14px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .bf-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .bf-ic{font-size:1.5rem}
+  .bf-nm{font-weight:800;flex:1}
+  .bf-hp{font-size:.75rem;opacity:.9}
+  .bar.hp{background:rgba(255,255,255,.2);height:16px}
+  .bar.hp > i{background:linear-gradient(90deg,#ff6b6b,#ffa14a);transition:width .5s}
+  .bf-msg{font-size:.8rem;margin-top:6px;min-height:1.2em;font-weight:700;color:#ffd75e}
+
+  /* おしらせ */
+  #toastBox{position:fixed;left:0;right:0;top:10px;z-index:60;display:flex;
+    flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 12px}
+  .toast{background:#33384a;color:#fff;border-radius:16px;padding:10px 18px;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);text-align:center;max-width:420px;
+    animation:tin .35s;transition:opacity .4s,transform .4s}
+  .toast.out{opacity:0;transform:translateY(-10px)}
+  .toast .tt{font-weight:800;font-size:.95rem}
+  .toast .ts{font-size:.76rem;opacity:.9}
+  .toast.lv{background:linear-gradient(135deg,#5b4a9b,#3a4a7a)}
+  .toast.badge{background:linear-gradient(135deg,#c9962e,#a3761c)}
+  .toast.mission{background:linear-gradient(135deg,#2b7d5a,#1f8f5c)}
+  @keyframes tin{from{transform:translateY(-16px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  /* 紙ふぶき */
+  #fxBox{position:fixed;inset:0;pointer-events:none;z-index:55;overflow:hidden}
+  .conf{position:absolute;top:-12px;width:9px;height:14px;border-radius:2px;
+    animation:fall 1.8s linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(600deg);opacity:.2}}
+
+  .note{font-size:.79rem;color:var(--ink-soft);line-height:1.8}
+  .hidden{display:none!important}
+  .center{text-align:center}
+  .mt{margin-top:14px}
+  @media(max-width:420px){
+    html,body{font-size:16px}
+    .qtext{font-size:1.06rem}
+    header h1{font-size:1.08rem}
+    header .sub{font-size:.75rem}
+    .streak .l{font-size:.66rem}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap headrow">
+    <div>
+      <h1>🌻 まいにち さんすうチャレンジ</h1>
+      <div class="sub">6年生 1学期の総復習・毎日90分・問題は毎日 変わる</div>
+    </div>
+    <button class="sound-btn" id="soundBtn">🔊</button>
+  </div>
+</header>
+
+<div id="toastBox"></div>
+<div id="fxBox"></div>
+
+<main class="wrap">
+
+<!-- ============ ホーム ============ -->
+<section id="home">
+  <div class="card player">
+    <div class="pl-top">
+      <div class="pl-lv"><small>LV</small><b id="gLv">1</b></div>
+      <div class="pl-info">
+        <div class="pl-title" id="gTitle">さんすう見習い</div>
+        <div class="pl-xp"><span id="gXpNow">0</span> / <span id="gXpNeed">100</span> XP</div>
+        <div class="bar xp"><i id="gXpBar" style="width:0%"></i></div>
+      </div>
+    </div>
+    <div class="pl-stat">
+      <div><b id="gCombo">0</b><span>最高連続</span></div>
+      <div><b id="gCorrect">0</b><span>正解した数</span></div>
+      <div><b id="gBoss">0</b><span>たおしたボス</span></div>
+    </div>
+  </div>
+
+  <div class="card boss-card" id="bossCard">
+    <div class="bs-ic" id="bossIcon">👹</div>
+    <div class="bs-body">
+      <div class="bs-lb">今日のボス（6コマ目）</div>
+      <div class="bs-nm" id="bossName">分数オニ</div>
+      <div class="bs-ds" id="bossDesc"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎯 今日のミッション</h2>
+    <div id="missionList"></div>
+  </div>
+  <div class="card today">
+    <div class="date" id="todayDate"></div>
+    <div class="big" id="todayTitle">今日の さんすう 90分</div>
+    <div class="progress-head"><span>📚 今日の 進み</span><span id="todayProg">0 / 6コマ</span></div>
+    <div class="bar"><i id="todayBar" style="width:0%"></i></div>
+    <div class="progress-head" style="margin-top:10px"><span>⏱ 今日の勉強時間</span><span id="todayTime">0分 / 90分</span></div>
+    <div class="bar time"><i id="todayTimeBar" style="width:0%"></i></div>
+    <button class="btn btn-primary mt" id="startBtn">▶ つづきから 始める</button>
+  </div>
+
+  <div class="card">
+    <h2>🗓 今日の メニュー（1コマ15分 × 6コマ）</h2>
+    <div class="rounds" id="roundList"></div>
+    <p class="note mt">とちゅうで やめても 平気。進みぐあいは 自動で 保存されるよ。</p>
+  </div>
+
+  <div class="card nb-card" id="nbCard">
+    <h2>📕 苦手ノート</h2>
+    <p class="note" id="nbLead">間違えた問題は ここに たまります。<br>3回 続けて 正解 したら「マスター」！</p>
+    <div class="nb-stat">
+      <div><div class="n" id="nbLeft">0</div><div class="l">覚えるまで<br>あと</div></div>
+      <div><div class="n" id="nbMaster">0</div><div class="l">マスター<br>した問題</div></div>
+    </div>
+    <div class="nb-list" id="nbList"></div>
+    <button class="btn btn-yellow mt" id="nbStartBtn">📕 苦手問題に チャレンジ</button>
+  </div>
+
+  <div class="card">
+    <h2>🐣 仲間図鑑　<span class="cnt" id="petCount"></span></h2>
+    <p class="note">1日分を やりきると 仲間が 1体 仲間になるよ！</p>
+    <div class="pet-box" id="petBox"></div>
+  </div>
+
+  <div class="card">
+    <h2>🏅 記章コレクション　<span class="cnt" id="badgeCount"></span></h2>
+    <div class="badge-box" id="badgeBox"></div>
+  </div>
+
+  <div class="card">
+    <h2>🔥 記録</h2>
+    <div class="streak">
+      <div><div class="n" id="stStreak">0</div><div class="l">連続日数</div></div>
+      <div><div class="n" id="stDays">0</div><div class="l">全部終えた日</div></div>
+      <div><div class="n" id="stStars">0</div><div class="l">全部の⭐</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="calhead">
+      <button id="calPrev">◀</button>
+      <h2 style="margin:0" id="calTitle"></h2>
+      <button id="calNext">▶</button>
+    </div>
+    <table class="cal" id="cal"></table>
+    <p class="note mt">🟩全部終わった日　🟨とちゅうまでの日</p>
+  </div>
+
+  <div class="card">
+    <h2>⚙️ 難しさ</h2>
+    <div class="levels" id="levelBox">
+      <button data-lv="1">★☆☆<br>やさしい</button>
+      <button data-lv="2">★★☆<br>ふつう</button>
+      <button data-lv="3">★★★<br>難しめ</button>
+    </div>
+    <p class="note mt">変えると、次のコマから 数の大きさが かわります。</p>
+  </div>
+
+  <div class="card">
+    <h2>👨‍👩‍👧 家の人へ</h2>
+    <button class="btn btn-primary" id="openReportBtn">📊 学習レポートを見る・送る</button>
+    <p class="note mt">
+      毎日90分ぶん（15分×6コマ・全60問）を、日付をもとに自動で作ります。同じ日なら何度開いても同じ問題、
+      日がかわると新しい問題になるので、夏休みのあいだ毎日つづけられます。<br>
+      出題範囲は6年生1学期まで（文字と式／分数のかけ算・わり算／対称な図形／円の面積／角柱と円柱の体積／比と割合）＋5年生の復習です。<br><br>
+      90分続けるのは大変なので、1コマごとにひと休み画面が入ります。「今日はここまで」でやめても進みぐあいは残ります。
+    </p>
+    <button class="btn btn-ghost mt" id="resetBtn">記録を 全部消す</button>
+  </div>
+</section>
+
+<!-- ============ 保護者レポート ============ -->
+<section id="report" class="hidden">
+  <div class="quiz-top">
+    <button class="back" id="repBack">← もどる</button>
+    <span>📊 学習レポート</span>
+  </div>
+
+  <div class="card">
+    <h2>📅 期間</h2>
+    <div class="levels" id="repRange">
+      <button data-range="today">今日</button>
+      <button data-range="week">この1週間</button>
+      <button data-range="all">全期間</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📈 サマリー</h2>
+    <div class="streak">
+      <div><div class="n" id="repDays">0</div><div class="l">学習した日</div></div>
+      <div><div class="n" id="repRate">-</div><div class="l">正答率</div></div>
+      <div><div class="n" id="repMin">0</div><div class="l">学習時間(分)</div></div>
+    </div>
+    <div id="repProgress" class="note mt"></div>
+  </div>
+
+  <div class="card">
+    <h2>💪 伸ばしたい分野（間違いの多い順）</h2>
+    <div id="repWeak"></div>
+  </div>
+
+  <div class="card">
+    <h2>📕 苦手ノートの状況</h2>
+    <div id="repNote" class="note"></div>
+  </div>
+
+  <div class="card">
+    <h2>🔔 自動通知（学習が 終わったら 自動で 送る）</h2>
+    <label class="nt-row"><input type="checkbox" id="ntOn"><span><b>自動通知を 使う</b></span></label>
+    <p class="note" id="ntKind"></p>
+
+    <div class="nt-block">
+      <label class="note">送信先のURL（Google Apps Script または Discord Webhook）</label>
+      <input class="rep-input" id="ntUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+      <label class="note mt">保護者のメールアドレス（Apps Script で メール送信する場合）</label>
+      <input class="rep-input" id="ntTo" type="email" inputmode="email" placeholder="parent@example.com">
+      <label class="note mt">お子さんの名前（メッセージに入ります・任意）</label>
+      <input class="rep-input" id="ntChild" type="text" placeholder="例：はると">
+    </div>
+
+    <div class="nt-block">
+      <div class="note" style="font-weight:800;color:var(--ink)">いつ 送る？</div>
+      <label class="nt-row"><input type="checkbox" id="ntDay"><span>1日分（6コマ）を 終えたとき　<b>おすすめ</b></span></label>
+      <label class="nt-row"><input type="checkbox" id="ntRound"><span>1コマ（15分）ごと</span></label>
+      <label class="nt-row"><input type="checkbox" id="ntWeak"><span>苦手ノートが 増えたとき</span></label>
+      <label class="nt-row"><input type="checkbox" id="ntDevice"><span>この機器にも 通知を出す（同じ機器を見るとき用）</span></label>
+    </div>
+
+    <button class="btn btn-green mt" id="ntTest">🔔 テスト送信する</button>
+    <p class="note mt" id="ntMsg"></p>
+    <p class="note" id="ntQueue"></p>
+
+    <details class="nt-help">
+      <summary>📧 Gmailに自動で届くようにする（Google Apps Script・5分）</summary>
+      <ol class="nt-steps">
+        <li><a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com</a> で 新しいプロジェクトを作る</li>
+        <li>下のコードを コピーして、エディタの中身と 差しかえる</li>
+        <li>右上の「デプロイ」→「新しいデプロイ」→種類は<b>ウェブアプリ</b></li>
+        <li>「次のユーザーとして実行」＝<b>自分</b>、「アクセスできるユーザー」＝<b>全員</b> にして デプロイ</li>
+        <li>表示された <b>ウェブアプリのURL</b>（/exec で終わる）を 上の欄に 貼る</li>
+        <li>保護者のメールアドレスを 入れて「テスト送信」</li>
+      </ol>
+      <pre class="nt-code" id="ntCode">function doPost(e) {
+  var d = JSON.parse(e.postData.contents);
+  MailApp.sendEmail({
+    to: d.to,
+    subject: d.subject || 'さんすう学習の記録',
+    body: d.text + '\n\n--\nまいにち さんすうチャレンジ'
+  });
+  return ContentService.createTextOutput('ok');
+}</pre>
+      <button class="btn btn-ghost" id="ntCopyCode">📋 コードをコピー</button>
+      <p class="note mt">※ 初回デプロイ時に Googleの確認画面が出ます。「詳細」→「（プロジェクト名）に移動」で許可してください。</p>
+    </details>
+
+    <details class="nt-help">
+      <summary>💬 Discord（LINEのように スマホへ すぐ届く）</summary>
+      <ol class="nt-steps">
+        <li>保護者のDiscordで サーバーを作る（無料・自分一人でOK）</li>
+        <li>チャンネルの⚙️→「連携サービス」→「ウェブフックを作成」</li>
+        <li>「ウェブフックURLをコピー」して 上の欄に 貼る</li>
+        <li>スマホのDiscordアプリで 通知をONにしておく</li>
+      </ol>
+      <p class="note">Discordの場合、メールアドレスは いりません。</p>
+    </details>
+
+    <div class="nt-block">
+      <div class="note" style="font-weight:800;color:var(--ink)">送信の記録</div>
+      <div id="ntLog"></div>
+    </div>
+    <p class="note">※ 通知は お子さんが 学習を 終えた ときに 自動で 送られます（アプリを 開いている 必要があります）。<br>
+      ※ 送信先には 学習の記録だけを 送ります。</p>
+  </div>
+
+  <div class="card">
+    <h2>📤 保護者へ 送る（手動）</h2>
+    <p class="note">下の内容を LINE・メールなどで 送れます。</p>
+    <pre class="rep-pre" id="repText"></pre>
+    <div class="btn-row mt">
+      <button class="btn btn-green" id="repShare">📤 送る</button>
+      <button class="btn btn-ghost" id="repCopy">📋 コピー</button>
+    </div>
+    <div class="mt">
+      <label class="note">保護者のメールアドレス（保存されます）</label>
+      <input class="rep-input" id="repEmail" type="email" inputmode="email" placeholder="parent@example.com">
+      <button class="btn btn-primary mt" id="repMail">✉️ このアドレスにメールで送る</button>
+    </div>
+    <p class="note mt" id="repMsg"></p>
+  </div>
+</section>
+
+<!-- ============ クイズ ============ -->
+<section id="quiz" class="hidden">
+  <div class="quiz-top">
+    <button class="back" id="quitBtn">← やめる</button>
+    <span id="quizStage"></span>
+    <span style="margin-left:auto" id="quizTimer">⏱ 0:00</span>
+  </div>
+  <div class="bar" style="margin-bottom:14px"><i id="qBar" style="width:0%"></i></div>
+
+  <div class="boss-fight hidden" id="bossFight">
+    <div class="bf-top"><span class="bf-ic" id="bfIcon">👹</span>
+      <span class="bf-nm" id="bfName"></span>
+      <span class="bf-hp" id="bfHpTxt">HP 90/90</span></div>
+    <div class="bar hp"><i id="bfHp" style="width:100%"></i></div>
+    <div class="bf-msg" id="bfMsg"></div>
+  </div>
+
+  <div class="combo hidden" id="comboBox"><span id="comboN">0</span> 連続 正解！</div>
+
+  <div class="card">
+    <span class="qnum" id="qNum"></span>
+    <div class="qtext" id="qText"></div>
+    <div class="qsub" id="qSub"></div>
+    <div id="qInput"></div>
+    <div class="hint hidden" id="hintBox"></div>
+    <div id="resultBox"></div>
+    <div class="btn-row mt" id="actionRow">
+      <button class="btn btn-ghost" id="hintBtn" style="flex:0 0 40%">💡 ヒント</button>
+      <button class="btn btn-primary" id="checkBtn">答え合わせ</button>
+    </div>
+    <button class="btn btn-green mt hidden" id="nextBtn">次の問題へ →</button>
+    <button class="pad-toggle" id="padToggle">✏️ 計算メモを 開く</button>
+    <div class="pad" id="pad">
+      <canvas id="padCanvas"></canvas>
+      <div class="tools"><button id="padClear">🧽 全部消す</button>
+        <span class="note" style="align-self:center">指やマウスで書けるよ</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ コマ結果 ============ -->
+<section id="result" class="hidden">
+  <div class="card center">
+    <div id="resEmoji" style="font-size:3.2rem">🎉</div>
+    <h2 style="justify-content:center" id="resTitle"></h2>
+    <div class="score-big"><div class="n"><span id="resScore">0</span><small id="resTotal"> / 10問</small></div>
+      <div class="rank" id="resRank"></div></div>
+    <div id="resStars" style="font-size:1.8rem"></div>
+    <div id="resTime" class="note"></div>
+  </div>
+  <div class="card"><h2>📊 分野別の できぐあい</h2><div id="topicBox"></div></div>
+  <div class="card" id="wrongCard"><h2>🔁 見直しポイント</h2>
+    <div id="wrongList"></div>
+    <button class="btn btn-yellow mt" id="retryWrongBtn">間違えた問題だけ もう1回</button></div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" id="homeBtn">🏠 ホーム</button>
+    <button class="btn btn-green" id="nextRoundBtn">次のコマへ →</button>
+  </div>
+</section>
+
+<!-- ============ ひと休み ============ -->
+<section id="rest" class="hidden">
+  <div class="card rest">
+    <div class="t">🍹</div>
+    <h2 style="justify-content:center">おつかれさま！ ひと休みタイム</h2>
+    <p class="note">目を閉じたり、水を飲んだり、せのびをしよう。</p>
+    <div class="cd" id="restCd">3:00</div>
+    <button class="btn btn-green mt" id="restSkip">もう 平気！ 続ける →</button>
+    <button class="btn btn-ghost mt" id="restStop">今日は ここまでにする</button>
+  </div>
+</section>
+
+<!-- ============ 1日完了 ============ -->
+<section id="dayDone" class="hidden">
+  <div class="card center">
+    <div style="font-size:4rem">🏆</div>
+    <h2 style="justify-content:center">今日の90分、全部 やりきった！</h2>
+    <div class="score-big"><div class="n"><span id="ddScore">0</span><small> / 60問</small></div>
+      <div class="rank" id="ddRank"></div></div>
+    <div id="ddStars" style="font-size:1.7rem;line-height:1.6"></div>
+    <div id="ddPet"></div>
+    <p class="note mt" id="ddMsg"></p>
+    <p class="note" id="ddSent" style="font-weight:800;color:#1f8f5c"></p>
+    <button class="btn btn-green mt" id="ddReport">📤 今日の 結果を 家の人に 送る</button>
+    <button class="btn btn-primary mt" id="ddHome">🏠 ホームにもどる</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* =====================================================================
+   0. 基本の道具
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const gcd = (a,b) => b ? gcd(b, a%b) : a;
+const r2 = x => Math.round(x*1e4)/1e4;
+const red = (n,d) => { const g = gcd(Math.abs(n), Math.abs(d)); return [n/g, d/g]; };
+
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function seedOf(s){
+  let h = 2166136261;
+  for(let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+const ri = (R,a,b) => a + Math.floor(R()*(b-a+1));
+const pick = (R,arr) => arr[Math.floor(R()*arr.length)];
+function shuffle(R, arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j = Math.floor(R()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; }
+  return a;
+}
+/* 選択肢をシャッフルして正解の位置を追う */
+function mkChoice(R, correct, others){
+  const all = shuffle(R, [correct, ...others]);
+  return { choices: all, ans: all.indexOf(correct), _correct: correct };
+}
+
+const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const WD = ["日","月","火","水","木","金","土"];
+
+/* =====================================================================
+   1. 問題ジェネレーター（6年1学期＋5年復習）
+      すべて  (R, lv) => 問題オブジェクト
+   ===================================================================== */
+
+/* ---- 逆算（□を求める・小数） ---- */
+function gDecMissing(R,lv){
+  let a; do{ a = ri(R,12, lv===1?49:98); }while(a%10===0);
+  const q = ri(R,2, lv===1?9:14), prod = r2(a*q/10);
+  if(R() < .5)
+    return {topic:"逆算", type:"num", q:`□ × ${a/10} = ${prod}\n□ に あてはまる数は いくつですか。`, ans:q,
+      hint:`「□ × ある数 = 答え」の □ は、わり算で 求められるよ。`,
+      exp:`□ = ${prod} ÷ ${a/10} = ${q}\n確かめ：${q} × ${a/10} = ${prod} ✓`};
+  return {topic:"逆算", type:"num", q:`${prod} ÷ □ = ${q}\n□ に あてはまる数は いくつですか。`, ans:a/10,
+    hint:`わられる数 ÷ 商 = わる数。□ は「わる数」の場所だね。`,
+    exp:`□ = ${prod} ÷ ${q} = ${a/10}\n確かめ：${prod} ÷ ${a/10} = ${q} ✓`};
+}
+/* ---- 計算しないで 大小を考える ---- */
+function gSizeSense(R,lv){
+  let a; do{ a = ri(R,12,98); }while(a%10===0);
+  const A = a/10, t = ri(R,0,3);
+  const small = r2(ri(R,1,9)/10);
+  const big = r2(ri(R,11,49)/10);
+  if(t===0){
+    const c = mkChoice(R, `${A} より 小さくなる`, [`${A} より 大きくなる`, `${A} と 同じになる`]);
+    return {topic:"数の感覚", type:"choice",
+      q:`計算しないで 考えましょう。\n${A} × ${small} の答えは、${A} と比べて どうなりますか。`, ...c,
+      hint:`${small} は 1 より 小さいね。1より小さい数を かけると どうなる？`,
+      exp:`1より小さい数を かけると、答えは もとの数より 小さくなります。\n（たとえば 10 × 0.5 = 5）`};
+  }
+  if(t===1){
+    const c = mkChoice(R, `${A} より 大きくなる`, [`${A} より 小さくなる`, `${A} と 同じになる`]);
+    return {topic:"数の感覚", type:"choice",
+      q:`計算しないで 考えましょう。\n${A} × ${big} の答えは、${A} と比べて どうなりますか。`, ...c,
+      hint:`${big} は 1 より 大きいね。`,
+      exp:`1より大きい数を かけると、答えは もとの数より 大きくなります。`};
+  }
+  if(t===2){
+    const c = mkChoice(R, `${A} より 大きくなる`, [`${A} より 小さくなる`, `${A} と 同じになる`]);
+    return {topic:"数の感覚", type:"choice",
+      q:`計算しないで 考えましょう。\n${A} ÷ ${small} の答えは、${A} と比べて どうなりますか。`, ...c,
+      hint:`${small} は 1 より 小さいね。「${A} の中に ${small} は いくつ入る？」と 考えてみよう。`,
+      exp:`1より小さい数で わると、答えは もとの数より 大きくなります。\n（たとえば 10 ÷ 0.5 = 20。0.5 が 20個 で 10 だから）`};
+  }
+  const c = mkChoice(R, `${A} より 小さくなる`, [`${A} より 大きくなる`, `${A} と 同じになる`]);
+  return {topic:"数の感覚", type:"choice",
+    q:`計算しないで 考えましょう。\n${A} ÷ ${big} の答えは、${A} と比べて どうなりますか。`, ...c,
+    hint:`${big} は 1 より 大きいね。`,
+    exp:`1より大きい数で わると、答えは もとの数より 小さくなります。`};
+}
+/* ---- 間違い探し（小数点） ---- */
+function gErrorFindDec(R,lv){
+  let a,b;
+  do{ a = ri(R,12,98); }while(a%10===0);
+  do{ b = ri(R,12,98); }while(b%10===0);
+  const correct = r2(a*b/100), wrong = r2(a*b/10);
+  return {topic:"間違い探し", type:"num",
+    q:`ゆうきさんは ${a/10} × ${b/10} を 次のように計算しました。\n\n「${a} × ${b} = ${a*b}\n　小数点を 1けた もどして 答えは ${wrong}」\n\n間違いを見つけて、正しい答えを 書きましょう。`,
+    ans:correct,
+    hint:`${a/10} も ${b/10} も 小数第一位まで の数だね。小数点は 全部で 何けた もどす？`,
+    exp:`${a/10} で1けた、${b/10} で1けた。あわせて 2けた もどします。\n${a} × ${b} = ${a*b} → ${correct}\nゆうきさんは 1けたしか もどしていませんでした。`};
+}
+/* ---- 最大公約数の文章題 ---- */
+function gGcdWord(R,lv){
+  const g = ri(R,3, lv===1?8:14);
+  let p,q; do{ p = ri(R,2,9); q = ri(R,2,9); }while(p===q || gcd(p,q)!==1);
+  const a = g*p, b = g*q;
+  if(R() < .5)
+    return {topic:"約数の利用", type:"num", unit:"cm",
+      q:`たて ${a}cm、横 ${b}cm の 長方形の紙を、余りが出ないように\n同じ大きさの 正方形に 切り分けます。\nできるだけ 大きい正方形にするとき、1辺は 何cm ですか。`, ans:g,
+      hint:`たてにも横にも きっちり分けられる長さ＝${a} と ${b} の 公約数。\nそのうち いちばん大きいものを えら棒。`,
+      exp:`${a} と ${b} の 最大公約数を 求めます。\n${a} = ${g} × ${p}、${b} = ${g} × ${q} → 最大公約数は ${g}\n答え：1辺 ${g}cm`};
+  return {topic:"約数の利用", type:"num", unit:"人",
+    q:`あめ ${a}個 と クッキー ${b}個 を、余りが出ないように\n何人かで 同じ数ずつ 分けます。\nできるだけ 多くの人に 分けるとき、何人に 分けられますか。`, ans:g,
+    hint:`両方とも きっちり分けられる人数＝${a} と ${b} の 公約数だよ。`,
+    exp:`${a} と ${b} の 最大公約数が 答えです。\n${a} = ${g} × ${p}、${b} = ${g} × ${q} → ${g}人\n（1人あたり あめ${p}個、クッキー${q}個）`};
+}
+/* ---- 最小公倍数の文章題 ---- */
+function gLcmWord(R,lv){
+  let a,b; do{ a = ri(R,3, lv===1?9:12); b = ri(R,3, lv===1?9:12); }while(a===b);
+  const l = a*b/gcd(a,b);
+  if(R() < .5)
+    return {topic:"倍数の利用", type:"num", unit:"cm",
+      q:`たて ${a}cm、横 ${b}cm の 長方形のタイルを、\nすきまなく 並べて 正方形を 作ります。\nできるだけ 小さい正方形にするとき、1辺は 何cm ですか。`, ans:l,
+      hint:`1辺は ${a} でも ${b} でも わり切れる長さ＝${a} と ${b} の 公倍数。\nそのうち いちばん小さいものだよ。`,
+      exp:`${a} と ${b} の 最小公倍数を 求めます。\n${a}の倍数：${[1,2,3,4].map(i=>a*i).join(",")}…\n${b}の倍数：${[1,2,3,4].map(i=>b*i).join(",")}…\n初めて重なるのは ${l} → 1辺 ${l}cm`};
+  return {topic:"倍数の利用", type:"num", unit:"分後",
+    q:`バスターミナルから、A行きのバスは ${a}分おき、\nB行きのバスは ${b}分おきに 出発します。\nいま 同時に 出発しました。次に 同時に 出発するのは 何分後 ですか。`, ans:l,
+    hint:`${a} の倍数 でも ${b} の倍数 でもある 時間だよ。`,
+    exp:`${a} と ${b} の 最小公倍数が 答えです。\n初めて重なるのは ${l} → ${l}分後`};
+}
+/* ---- 平均の逆算 ---- */
+function gAverageReverse(R,lv){
+  const up = ri(R,1,4), avg1 = ri(R,55, 100-up*5);
+  const need = avg1 + up*5;
+  return {topic:"平均の利用", type:"num", unit:"点",
+    q:`4回の テストの 平均点は ${avg1}点 でした。\n5回目に 何点 とれば、5回の平均が ${avg1+up}点 になりますか。`, ans:need,
+    hint:`まず「4回の合計」と「5回の合計」を それぞれ 求めてみよう。`,
+    exp:`4回の合計 = ${avg1} × 4 = ${avg1*4}点\n5回の合計 = ${avg1+up} × 5 = ${(avg1+up)*5}点\n5回目 = ${(avg1+up)*5} － ${avg1*4} = ${need}点`};
+}
+/* ---- 面積から 辺を逆算 ---- */
+function gAreaReverse(R,lv){
+  const t = ri(R,0,2);
+  if(t===0){
+    let b = ri(R,4, lv===1?12:20), h = ri(R,3, lv===1?10:18);
+    if((b*h)%2) h += 1;
+    return {topic:"面積の逆算", type:"num", unit:"cm",
+      q:`面積が ${b*h/2}cm² の 三角形が あります。\n底辺が ${b}cm のとき、高さは 何cm ですか。`, ans:h,
+      hint:`三角形の面積 = 底辺 × 高さ ÷ 2。\n÷2 されているので、まず 面積を 2倍 してみよう。`,
+      exp:`底辺 × 高さ = ${b*h/2} × 2 = ${b*h}\n高さ = ${b*h} ÷ ${b} = ${h}cm`};
+  }
+  if(t===1){
+    const b = ri(R,4, lv===1?12:20), h = ri(R,3, lv===1?10:18);
+    return {topic:"面積の逆算", type:"num", unit:"cm",
+      q:`面積が ${b*h}cm² の 平行四辺形が あります。\n高さが ${h}cm のとき、底辺は 何cm ですか。`, ans:b,
+      hint:`平行四辺形の面積 = 底辺 × 高さ。かけ算の逆は わり算だね。`,
+      exp:`底辺 = ${b*h} ÷ ${h} = ${b}cm`};
+  }
+  let a,b,h;
+  do{ a = ri(R,2, lv===1?8:14); b = a + ri(R,1,8); h = ri(R,3, lv===1?9:16); }while(((a+b)*h)%2);
+  return {topic:"面積の逆算", type:"num", unit:"cm",
+    q:`面積が ${(a+b)*h/2}cm²、上底が ${a}cm、高さが ${h}cm の 台形が あります。\n下底は 何cm ですか。`, ans:b,
+    hint:`台形の面積 =（上底＋下底）× 高さ ÷ 2。\nまず「上底＋下底」が いくつか 求めよう。`,
+    exp:`(上底＋下底) = ${(a+b)*h/2} × 2 ÷ ${h} = ${a+b}\n下底 = ${a+b} － ${a} = ${b}cm`};
+}
+/* ---- 複合図形の面積（L字） ---- */
+function gCompositeArea(R,lv){
+  const W = ri(R,8, lv===1?14:20), H = ri(R,6, lv===1?12:16);
+  const w = ri(R,2, W-3), h = ri(R,2, H-3);
+  return {topic:"複合図形", type:"num", unit:"m²",
+    q:`L字型の 花だんが あります。\nたて ${H}m、横 ${W}m の 長方形から、\nかどの たて ${h}m、横 ${w}m の 長方形を 切り取った形です。\n花だんの面積は 何m² ですか。`,
+    ans:W*H - w*h,
+    hint:`大きい長方形の面積から、切り取った長方形の面積を ひこう。`,
+    exp:`大きい長方形 = ${H} × ${W} = ${W*H} m²\n切り取った分 = ${h} × ${w} = ${w*h} m²\n${W*H} － ${w*h} = ${W*H-w*h} m²`};
+}
+
+/* ---- 場面 → 式 ---- */
+function gExprFromScene(R,lv){
+  const n = ri(R,3,9), m = ri(R,2,9), p = ri(R,1,9)*100;
+  const T = [
+    ()=>{ const c = mkChoice(R, `${p} － x × ${n}`, [`x × ${n} － ${p}`, `${p} × ${n} － x`, `(${p} － x) × ${n}`]);
+      return {q:`1本 x円 の ジュースを ${n}本 買って、${p}円 はらいました。\nおつりを 式で 表すと どれですか。`, ...c,
+        hint:`おつり = はらったお金 － 代金。代金は いくらかな？`,
+        exp:`代金 = x × ${n} 円\nおつり = ${p} － x × ${n}`}; },
+    ()=>{ const c = mkChoice(R, `(x － ${n}) ÷ ${m}`, [`x ÷ ${m} － ${n}`, `x － ${n} ÷ ${m}`, `(x ＋ ${n}) ÷ ${m}`]);
+      return {q:`あめが x個 あります。${n}個 食べてから、\n残りを ${m}人 で 同じ数ずつ 分けました。\n1人分を 式で 表すと どれですか。`, ...c,
+        hint:`さきに「残り」を 求めてから 分けるよ。さきに計算する所は ( ) をつけるんだったね。`,
+        exp:`残り = x － ${n}（個）\nそれを ${m}人で分けるので (x － ${n}) ÷ ${m}\n※ ( ) がないと わり算が さきに なってしまいます。`}; },
+    ()=>{ const c = mkChoice(R, `x × x`, [`x × 4`, `x ＋ x`, `x × 2`]);
+      return {q:`1辺が xcm の 正方形の 面積 を 式で 表すと どれですか。`, ...c,
+        hint:`面積は「たて × 横」。正方形は たてと横が 同じ長さだね。`,
+        exp:`面積 = x × x\n※ x × 4 は「まわりの長さ」です。間違えやすいので 注意！`}; },
+    ()=>{ const c = mkChoice(R, `${m} × x ＋ ${n}`, [`${m} ＋ x × ${n}`, `(${m} ＋ ${n}) × x`, `${m} × (x ＋ ${n})`]);
+      return {q:`針金が ${n}m あります。\nそこへ 1本 ${m}m の 針金を x本 つなぎました。\n全体の長さを 式で 表すと どれですか。`, ...c,
+        hint:`つないだ分の長さは いくつ？ それに もとの ${n}m を たすよ。`,
+        exp:`つないだ分 = ${m} × x（m）\n全体 = ${m} × x ＋ ${n}`}; }
+  ];
+  return {topic:"場面を式にする", type:"choice", ...pick(R,T)()};
+}
+/* ---- 式 → 場面 ---- */
+function gSceneFromExpr(R,lv){
+  const a = ri(R,4,9)*20, b = ri(R,2,9)*50, n = ri(R,3,8);
+  const T = [
+    ()=>{ const c = mkChoice(R,
+        `1個 ${a}円 の おかしを x個 と、${b}円 の ジュースを 1本 買ったときの 代金`,
+        [`1個 ${a}円 の おかしを x個 買って、${b}円 はらったときの おつり`,
+         `${a}円 の おかしと ${b}円 の ジュースを x セット 買ったときの 代金`,
+         `${a}個 の おかしを x人 で 分けたときの 1人分と ${b}個 の 余り`]);
+      return {q:`「${a} × x ＋ ${b}」 という式が 表している場面は どれですか。`, ...c,
+        hint:`${a} × x が 表しているものは 何かな。そこに ${b} を「たして」いるよ。`,
+        exp:`${a} × x は「1個${a}円のものを x個 買った代金」。\nそれに ${b}円 を たしているので、${b}円のものを 1つ 買いくわえた場面です。`}; },
+    ()=>{ const c = mkChoice(R,
+        `${b}円 持っていて、1個 ${a}円 の おかしを x個 買ったときの 残りのお金`,
+        [`1個 ${a}円 の おかしを x個 と、${b}円 の ジュースを 買ったときの 代金`,
+         `${b}円 の おかしを x個 買って、${a}円 まけてもらったときの 代金`,
+         `${b}円 を x人 で 分けて、${a}円 ずつ つかったときの 残り`]);
+      return {q:`「${b} － ${a} × x」 という式が 表している場面は どれですか。`, ...c,
+        hint:`${b} から「${a} × x」を ひいているね。ひかれる方が もとの数だよ。`,
+        exp:`${a} × x は 買った代金。\nそれを ${b} から ひいているので、「${b}円から 代金を ひいた 残り」です。`}; },
+    ()=>{ const c = mkChoice(R,
+        `${n}L の ジュースを x人 で 同じ量ずつ 分けたときの 1人分`,
+        [`x L の ジュースを ${n}人 で 分けたときの 1人分`,
+         `1人 ${n}L ずつ x人 に 配るのに 必要な 量`,
+         `${n}L の ジュースを x L ずつ 飲んだときの 残り`]);
+      return {q:`「${n} ÷ x」 という式が 表している場面は どれですか。`, ...c,
+        hint:`わられる数（${n}）が「もとの全体の量」、わる数（x）が「分ける数」だよ。`,
+        exp:`${n} ÷ x は「${n} を x個 に 分けたときの 1つ分」。\nx ÷ ${n} とは 意味が 違うので 注意！`}; }
+  ];
+  return {topic:"式を読み取る", type:"choice", ...pick(R,T)()};
+}
+/* ---- 2だんかいの x を求める ---- */
+function gSolve2Step(R,lv){
+  const x = ri(R,2, lv===1?9:15), a = ri(R,2,9), b = ri(R,2, lv===1?20:40);
+  const t = ri(R,0,2);
+  if(t===0) return {topic:"xを求める", type:"num",
+    q:`${a} × x ＋ ${b} = ${a*x+b} のとき、x は いくつですか。`, ans:x,
+    hint:`まず 「${a} × x」が いくつか 求めよう。${a*x+b} から ${b} を ひくよ。`,
+    exp:`${a} × x = ${a*x+b} － ${b} = ${a*x}\nx = ${a*x} ÷ ${a} = ${x}`};
+  if(t===1) return {topic:"xを求める", type:"num",
+    q:`${a} × x － ${b} = ${a*x-b} のとき、x は いくつですか。`, ans:x,
+    hint:`まず 「${a} × x」が いくつか 求めよう。ひかれた ${b} を たしもどすよ。`,
+    exp:`${a} × x = ${a*x-b} ＋ ${b} = ${a*x}\nx = ${a*x} ÷ ${a} = ${x}`};
+  return {topic:"xを求める", type:"num",
+    q:`(x ＋ ${b}) × ${a} = ${(x+b)*a} のとき、x は いくつですか。`, ans:x,
+    hint:`( ) の中を ひとかたまり と考えよう。まず ( ) の中が いくつか 求めるよ。`,
+    exp:`x ＋ ${b} = ${(x+b)*a} ÷ ${a} = ${x+b}\nx = ${x+b} － ${b} = ${x}`};
+}
+/* ---- 表から きまりを見つけて 式に ---- */
+function gTableRule(R,lv){
+  const a = ri(R,2,9), b = R() < .5 ? 0 : ri(R,1,9)*10;
+  const ys = [1,2,3,4].map(x=>a*x+b);
+  const correct = b ? `y ＝ x × ${a} ＋ ${b}` : `y ＝ x × ${a}`;
+  const others = b
+    ? [`y ＝ x × ${a+b}`, `y ＝ x ＋ ${a+b}`, `y ＝ x × ${b} ＋ ${a}`]
+    : [`y ＝ x ＋ ${a}`, `y ＝ x × x × ${a}`, `y ＝ x ÷ ${a}`];
+  const c = mkChoice(R, correct, others);
+  return {topic:"きまりを見つける", type:"choice",
+    q:`x と y の 関係を 表に しました。\n\n　x ： 1　2　3　4\n　y ： ${ys.join("　")}\n\ny を x の 式で 表すと どれですか。`, ...c,
+    hint:`x が 1 増えると y は いくつ ふえている？\nそして x = 1 のとき y は いくつかな。`,
+    exp:`x が 1 増えるごとに y は ${a} ずつ ふえています。\n${ b ? `x = 1 のとき y = ${a+b} なので、x × ${a} だけでは ${b} 足りません。\nよって y ＝ x × ${a} ＋ ${b}`
+        : `x = 1 のとき y = ${a} なので、y ＝ x × ${a}` }\n※ 1つの行だけで 決めずに、全部の行で 確かめよう。`};
+}
+/* ---- 2つの式を 比べる ---- */
+function gExprCompare(R,lv){
+  const x = ri(R,2,9), a = ri(R,2,7), b = ri(R,1,15), c2 = ri(R,2,7), d = ri(R,1,15);
+  const L = a*x+b, Rr = c2*x+d;
+  const correct = L > Rr ? `ア の方が 大きい` : L < Rr ? `イ の方が 大きい` : `どちらも 同じ`;
+  const c = mkChoice(R, correct, [`ア の方が 大きい`, `イ の方が 大きい`, `どちらも 同じ`].filter(s=>s!==correct));
+  return {topic:"式の値を比べる", type:"choice",
+    q:`x = ${x} のとき、次の ア と イ では どちらが 大きいですか。\n\n　ア　${a} × x ＋ ${b}\n　イ　${c2} × x ＋ ${d}`, ...c,
+    hint:`x のところに ${x} を 入れて、それぞれ 計算してみよう。`,
+    exp:`ア = ${a} × ${x} ＋ ${b} = ${L}\nイ = ${c2} × ${x} ＋ ${d} = ${Rr}\n→ ${correct}`};
+}
+/* ---- 文章から式を作って x を求める ---- */
+function gExprWord2Step(R,lv){
+  const x = ri(R,2,9)*10, n = ri(R,3,8), pay = ri(R,5,12)*100;
+  const change = pay - x*n;
+  if(change <= 0) return gSolve2Step(R,lv);
+  return {topic:"文章題と式", type:"num", unit:"円",
+    q:`1本 x円 の ジュースを ${n}本 買って、${pay}円 はらったところ、\nおつりは ${change}円 でした。\nジュース 1本の 値段（x）は 何円 ですか。`, ans:x,
+    hint:`まず ジュース ${n}本 の 代金が いくらだったか 求めよう。`,
+    exp:`代金 = ${pay} － ${change} = ${x*n}円\nx = ${x*n} ÷ ${n} = ${x}円`};
+}
+
+/* ---- 分数のかけ算：□を求める ---- */
+function gFracMissingMul(R,lv){
+  const hi = lv===1?7:lv===2?9:12;
+  let p,q,m,n,prod;
+  do{
+    q = ri(R,2,hi); p = ri(R,1,q-1);
+    n = ri(R,2,hi); m = ri(R,1,n-1);
+    prod = red(p*m, q*n);
+  }while(gcd(p,q)!==1 || prod[1]===1);
+  return {topic:"分数の逆算", type:"frac",
+    q:`□ × ${m}/${n} = ${prod[0]}/${prod[1]}\n□ に あてはまる分数は 何ですか。`, ans:[p,q],
+    hint:`かけ算の □ は わり算で 求められるよ。\n${prod[0]}/${prod[1]} ÷ ${m}/${n} を 計算しよう。`,
+    exp:`□ = ${prod[0]}/${prod[1]} ÷ ${m}/${n} = ${prod[0]}/${prod[1]} × ${n}/${m} = ${p}/${q}\n確かめ：${p}/${q} × ${m}/${n} = ${prod[0]}/${prod[1]} ✓`};
+}
+/* ---- 分数をかけると 大きくなる？小さくなる？ ---- */
+function gFracMagnitude(R,lv){
+  let d,n; do{ d = ri(R,3,9); n = ri(R,2,d-1); }while(gcd(n,d)!==1);
+  let d2,n2; do{ d2 = ri(R,2,7); n2 = ri(R,1,d2-1); }while(gcd(n2,d2)!==1);
+  if(R() < .5){
+    const c = mkChoice(R, `${n}/${d} より 小さくなる`, [`${n}/${d} より 大きくなる`, `${n}/${d} と 同じになる`]);
+    return {topic:"分数の感覚", type:"choice",
+      q:`計算しないで 考えましょう。\n${n}/${d} × ${n2}/${d2} の答えは、${n}/${d} と比べて どうなりますか。`, ...c,
+      hint:`${n2}/${d2} は 1 より 大きい？ 小さい？`,
+      exp:`${n2}/${d2} は 分母のほうが 大きいので 1より小さい 数です。\n1より小さい数を かけると、答えは もとの数より 小さくなります。`};
+  }
+  const big = d2 + ri(R,1,5);
+  const c = mkChoice(R, `${n}/${d} より 大きくなる`, [`${n}/${d} より 小さくなる`, `${n}/${d} と 同じになる`]);
+  return {topic:"分数の感覚", type:"choice",
+    q:`計算しないで 考えましょう。\n${n}/${d} × ${big}/${d2} の答えは、${n}/${d} と比べて どうなりますか。`, ...c,
+    hint:`${big}/${d2} は 分子のほうが 大きいね。1 より 大きい？ 小さい？`,
+    exp:`${big}/${d2} は 分子が分母より 大きいので 1より大きい 数です。\n1より大きい数を かけると、答えは もとの数より 大きくなります。`};
+}
+/* ---- 分数のかけ算の文章題 ---- */
+function gFracMulWord(R,lv){
+  let d1,n1,d2,n2,r;
+  do{
+    d1 = ri(R,2,9); n1 = ri(R,1,d1-1);
+    d2 = ri(R,2,9); n2 = ri(R,1,d2-1);
+    r = red(n1*n2, d1*d2);
+  }while(r[1]===1 || gcd(n1,d1)!==1 || gcd(n2,d2)!==1);
+  const ctx = pick(R,[["赤いテープ","青いテープ","m"],["みかんジュース","りんごジュース","L"],["白いリボン","黄色いリボン","m"]]);
+  return {topic:"分数の文章題", type:"frac",
+    q:`${ctx[0]}は ${n1}/${d1}${ctx[2]} です。\n${ctx[1]}の長さは、${ctx[0]}の ${n2}/${d2} です。\n${ctx[1]}は 何${ctx[2]} ですか。`,
+    ans:r,
+    hint:`「${ctx[0]}の ${n2}/${d2}」だから、${ctx[0]}を もとにして かけ算だよ。`,
+    exp:`${n1}/${d1} × ${n2}/${d2} = ${r[0]}/${r[1]} ${ctx[2]}\n※「〜の ◯/◯」は もとにする量に かけます。`};
+}
+/* ---- 分数のかけ算 間違い探し ---- */
+function gFracErrorFind(R,lv){
+  let d1,n1,d2,n2,r;
+  do{
+    d1 = ri(R,3,9); n1 = ri(R,1,d1-1);
+    d2 = ri(R,3,9); n2 = ri(R,1,d2-1);
+    r = red(n1*n2, d1*d2);
+  }while(r[1]===1);
+  const wrong = red(n1+n2, d1+d2);
+  return {topic:"間違い探し", type:"frac",
+    q:`まさとさんは ${n1}/${d1} × ${n2}/${d2} を 次のように 計算しました。\n\n「分子どうし、分母どうしを たして\n　(${n1}＋${n2})/(${d1}＋${d2}) = ${n1+n2}/${d1+d2} = ${wrong[0]}/${wrong[1]}」\n\n間違いを見つけて、正しい答えを 書きましょう。`,
+    ans:r,
+    hint:`分数の かけ算は、たすのかな？ かけるのかな？`,
+    exp:`分数のかけ算は「たす」のではなく「かける」です。\n${n1}/${d1} × ${n2}/${d2} = (${n1}×${n2})/(${d1}×${d2}) = ${n1*n2}/${d1*d2} = ${r[0]}/${r[1]}`};
+}
+/* ---- 同じ答えになる式を 選ぶ ---- */
+function gFracSameAnswer(R,lv){
+  let d1,n1,d2,n2;
+  do{
+    d1 = ri(R,2,9); n1 = ri(R,1,d1-1);
+    d2 = ri(R,2,9); n2 = ri(R,1,d2-1);
+  }while(n1===n2 && d1===d2);
+  const c = mkChoice(R, `${n1}/${d1} ÷ ${d2}/${n2}`,
+    [`${n1}/${d1} ÷ ${n2}/${d2}`, `${d1}/${n1} × ${n2}/${d2}`, `${n2}/${d2} ÷ ${n1}/${d1}`]);
+  return {topic:"式の意味", type:"choice",
+    q:`${n1}/${d1} × ${n2}/${d2} と 同じ答えに なる式は どれですか。\n（計算しないで 考えてみよう）`, ...c,
+    hint:`「÷ ある分数」は「× その逆数」と 同じだったね。\n逆数を かける形に なっているのは どれ？`,
+    exp:`÷ ${d2}/${n2} は × ${n2}/${d2} と 同じ意味です。\nだから ${n1}/${d1} ÷ ${d2}/${n2} = ${n1}/${d1} × ${n2}/${d2} ✓`};
+}
+/* ---- 分数×分数（計算） ---- */
+function gFracMul(R,lv){
+  const hi = lv===1?7:lv===2?10:13;
+  let n1,d1,n2,d2,r;
+  do{
+    d1 = ri(R,2,hi); n1 = ri(R,1,d1-1);
+    d2 = ri(R,2,hi); n2 = ri(R,1,d2-1);
+    r = red(n1*n2, d1*d2);
+  }while(r[1]===1);
+  const raw = `${n1*n2}/${d1*d2}`, fin = `${r[0]}/${r[1]}`;
+  return {topic:"分数×分数", type:"frac", q:`${n1}/${d1} × ${n2}/${d2} を 計算しましょう。`, ans:r,
+    hint:`分子どうし、分母どうしを かける。とちゅうで 約分できるか 見てみよう。`,
+    exp:`(${n1}×${n2})/(${d1}×${d2}) = ${raw}` + (raw!==fin ? ` = ${fin}` : "")};
+}
+
+/* ---- 分数のわり算：□を求める ---- */
+function gFracMissingDiv(R,lv){
+  const hi = lv===1?7:lv===2?9:12;
+  let p,q,m,n,res;
+  do{
+    q = ri(R,2,hi); p = ri(R,1,q-1);
+    n = ri(R,2,hi); m = ri(R,1,n-1);
+    res = red(p*n, q*m);
+  }while(gcd(p,q)!==1 || res[1]===1);
+  return {topic:"分数の逆算", type:"frac",
+    q:`□ ÷ ${m}/${n} = ${res[0]}/${res[1]}\n□ に あてはまる分数は 何ですか。（仮分数のままで OK）`, ans:[p,q],
+    hint:`わり算の □（わられる数）は、かけ算で 求められるよ。\n${res[0]}/${res[1]} × ${m}/${n} を 計算しよう。`,
+    exp:`□ = ${res[0]}/${res[1]} × ${m}/${n} = ${p}/${q}\n確かめ：${p}/${q} ÷ ${m}/${n} = ${res[0]}/${res[1]} ✓`};
+}
+/* ---- 分数のわり算の意味（1あたりを求める） ---- */
+function gFracDivMeaning(R,lv){
+  let d1,n1,d2,n2,r;
+  do{
+    d1 = ri(R,2,9); n1 = ri(R,1,d1-1);
+    d2 = ri(R,2,9); n2 = ri(R,1,d2-1);
+    r = red(n1*d2, d1*n2);
+  }while(r[1]===1 || gcd(n1,d1)!==1 || gcd(n2,d2)!==1);
+  const ctx = pick(R,[["棒","重さ","kg"],["ホース","重さ","kg"],["リボン","代金","円"]]);
+  return {topic:"わり算の意味", type:"frac",
+    q:`${n2}/${d2} m の ${ctx[1]}が ${n1}/${d1} ${ctx[2]} の ${ctx[0]}が あります。\nこの ${ctx[0]} 1m の ${ctx[1]}は 何${ctx[2]} ですか。（仮分数のままで OK）`,
+    ans:r,
+    hint:`「1mあたり」を 求めるので、${ctx[1]} ÷ 長さ だよ。\n${n1}/${d1} ÷ ${n2}/${d2}`,
+    exp:`1mあたり = ${n1}/${d1} ÷ ${n2}/${d2} = ${n1}/${d1} × ${d2}/${n2} = ${r[0]}/${r[1]} ${ctx[2]}\n※ ${n2}/${d2} は 1より小さいので、答えは もとの ${n1}/${d1} より 大きくなります。`};
+}
+/* ---- かけ算？わり算？ 式を選ぶ ---- */
+function gOpChoice(R,lv){
+  let d1,n1,d2,n2;
+  do{
+    d1 = ri(R,2,9); n1 = ri(R,1,d1-1);
+    d2 = ri(R,2,9); n2 = ri(R,1,d2-1);
+  }while(gcd(n1,d1)!==1 || gcd(n2,d2)!==1 || (n1===n2 && d1===d2));
+  if(R() < .5){
+    const c = mkChoice(R, `${n1}/${d1} ÷ ${n2}/${d2}`,
+      [`${n1}/${d1} × ${n2}/${d2}`, `${n2}/${d2} ÷ ${n1}/${d1}`, `${n2}/${d2} × ${n1}/${d1}`]);
+    return {topic:"式を選ぶ", type:"choice",
+      q:`「${n2}/${d2} m の 重さが ${n1}/${d1} kg の 針金が あります。\n　この 針金 1m の 重さは 何kg ですか。」\n\nこの問題の 式は どれですか。（計算しなくて よい）`, ...c,
+      hint:`1mあたりを 求めるときは「重さ ÷ 長さ」だよ。どちらが 重さかな。`,
+      exp:`1mあたりの重さ = 重さ ÷ 長さ = ${n1}/${d1} ÷ ${n2}/${d2}\n※ わられる数は、求めたいものと 同じ単位（重さ）の方です。`};
+  }
+  const c = mkChoice(R, `${n1}/${d1} × ${n2}/${d2}`,
+    [`${n1}/${d1} ÷ ${n2}/${d2}`, `${n2}/${d2} ÷ ${n1}/${d1}`, `${n1}/${d1} ＋ ${n2}/${d2}`]);
+  return {topic:"式を選ぶ", type:"choice",
+    q:`「1m の 重さが ${n1}/${d1} kg の 針金が あります。\n　この 針金 ${n2}/${d2} m の 重さは 何kg ですか。」\n\nこの問題の 式は どれですか。（計算しなくて よい）`, ...c,
+    hint:`1mあたりが わかっているときは、かけ算で 求められるよ。`,
+    exp:`1mあたりの重さ × 長さ = ${n1}/${d1} × ${n2}/${d2}\n※ もう1つの「1mの重さを 求める問題」と 何が 違うか 比べてみよう。`};
+}
+/* ---- わると 大きくなる？小さくなる？ ---- */
+function gFracDivMagnitude(R,lv){
+  let d,n; do{ d = ri(R,3,9); n = ri(R,2,d-1); }while(gcd(n,d)!==1);
+  let d2,n2; do{ d2 = ri(R,2,7); n2 = ri(R,1,d2-1); }while(gcd(n2,d2)!==1);
+  if(R() < .5){
+    const c = mkChoice(R, `${n}/${d} より 大きくなる`, [`${n}/${d} より 小さくなる`, `${n}/${d} と 同じになる`]);
+    return {topic:"分数の感覚", type:"choice",
+      q:`計算しないで 考えましょう。\n${n}/${d} ÷ ${n2}/${d2} の答えは、${n}/${d} と比べて どうなりますか。`, ...c,
+      hint:`${n2}/${d2} は 1 より 小さいね。\n「${n}/${d} の中に ${n2}/${d2} は いくつ入る？」と 考えてみよう。`,
+      exp:`${n2}/${d2} は 1より小さい 数です。\n1より小さい数で わると、答えは もとの数より 大きくなります。\n（1 ÷ 1/2 = 2 のように、小さいもので わると 個数は 多くなる）`};
+  }
+  const big = d2 + ri(R,1,5);
+  const c = mkChoice(R, `${n}/${d} より 小さくなる`, [`${n}/${d} より 大きくなる`, `${n}/${d} と 同じになる`]);
+  return {topic:"分数の感覚", type:"choice",
+    q:`計算しないで 考えましょう。\n${n}/${d} ÷ ${big}/${d2} の答えは、${n}/${d} と比べて どうなりますか。`, ...c,
+    hint:`${big}/${d2} は 1 より 大きいね。`,
+    exp:`${big}/${d2} は 1より大きい 数です。\n1より大きい数で わると、答えは もとの数より 小さくなります。`};
+}
+/* ---- 分数のわり算 間違い探し ---- */
+function gFracDivError(R,lv){
+  let d1,n1,d2,n2,r;
+  do{
+    d1 = ri(R,3,9); n1 = ri(R,1,d1-1);
+    d2 = ri(R,3,9); n2 = ri(R,1,d2-1);
+    r = red(n1*d2, d1*n2);
+  }while(r[1]===1);
+  const wrong = red(d1*n2, n1*d2);
+  return {topic:"間違い探し", type:"frac",
+    q:`あかりさんは ${n1}/${d1} ÷ ${n2}/${d2} を 次のように 計算しました。\n\n「わり算は 逆数を かければ いいので\n　${d1}/${n1} × ${n2}/${d2} = ${wrong[0]}/${wrong[1]}」\n\n間違いを見つけて、正しい答えを 書きましょう。`,
+    ans:r,
+    hint:`逆数にするのは「わられる数」かな、それとも「わる数」かな？`,
+    exp:`逆数にするのは 「わる数（うしろの分数）」だけです。\n${n1}/${d1} ÷ ${n2}/${d2} = ${n1}/${d1} × ${d2}/${n2} = ${r[0]}/${r[1]}\nあかりさんは 前の分数を ひっくり返して しまいました。`};
+}
+/* ---- 分数÷分数（計算） ---- */
+function gFracDiv(R,lv){
+  const hi = lv===1?7:lv===2?10:13;
+  let n1,d1,n2,d2,r;
+  do{
+    d1 = ri(R,2,hi); n1 = ri(R,1,d1-1);
+    d2 = ri(R,2,hi); n2 = ri(R,1,d2-1);
+    r = red(n1*d2, d1*n2);
+  }while(r[1]===1);
+  const raw = `${n1*d2}/${d1*n2}`, fin = `${r[0]}/${r[1]}`;
+  return {topic:"分数÷分数", type:"frac", q:`${n1}/${d1} ÷ ${n2}/${d2} を 計算しましょう。\n（仮分数のままで OK）`, ans:r,
+    hint:`わる数を 逆数にして かけ算に！`,
+    exp:`${n1}/${d1} × ${d2}/${n2} = ${raw}` + (raw!==fin ? ` = ${fin}` : "")};
+}
+
+/* ---- 複合図形（円） ---- */
+function gCompositeCircle(R,lv){
+  const t = ri(R,0,2);
+  if(t===0){
+    const s = ri(R,2, lv===1?6:10)*2, r = s/2;
+    return {topic:"複合図形", type:"num", unit:"cm²",
+      q:`1辺 ${s}cm の 正方形の中に、ぴったり入る 円が かいてあります。\n正方形から 円を 除いた 部分の面積は 何cm² ですか。（円周率3.14）`,
+      ans:r2(s*s - r*r*314/100),
+      hint:`正方形の面積から 円の面積を ひこう。\n円の半径は 正方形の1辺の 半分だよ。`,
+      exp:`正方形 = ${s} × ${s} = ${s*s} cm²\n円の半径 = ${s} ÷ 2 = ${r}cm\n円 = ${r} × ${r} × 3.14 = ${r2(r*r*314/100)} cm²\n${s*s} － ${r2(r*r*314/100)} = ${r2(s*s-r*r*314/100)} cm²`};
+  }
+  if(t===1){
+    const r = ri(R,2, lv===1?8:14);
+    return {topic:"複合図形", type:"num", unit:"cm²",
+      q:`半径 ${r}cm の 半円の 面積は 何cm² ですか。（円周率3.14）`,
+      ans:r2(r*r*314/200),
+      hint:`まず 円全部の面積を 求めて、それを 半分に しよう。`,
+      exp:`円全部 = ${r} × ${r} × 3.14 = ${r2(r*r*314/100)} cm²\n半円 = ${r2(r*r*314/100)} ÷ 2 = ${r2(r*r*314/200)} cm²`};
+  }
+  const h = ri(R,2, lv===1?5:8)*2, w = ri(R,8, lv===1?16:26), r = h/2;
+  return {topic:"複合図形", type:"num", unit:"m²",
+    q:`陸上競技場の トラックのような 形が あります。\nたて ${h}m、横 ${w}m の 長方形の 左右の はしに、\n半径 ${r}m の 半円を 1つずつ くっつけた形です。\n全部の面積は 何m² ですか。（円周率3.14）`,
+    ans:r2(w*h + r*r*314/100),
+    hint:`半円が 2つ で ちょうど 円 1つ分に なるね。`,
+    exp:`長方形 = ${h} × ${w} = ${w*h} m²\n半円2つ = 円1つ分 = ${r} × ${r} × 3.14 = ${r2(r*r*314/100)} m²\n${w*h} ＋ ${r2(r*r*314/100)} = ${r2(w*h+r*r*314/100)} m²`};
+}
+/* ---- 円：面積・円周から 逆算 ---- */
+function gCircleReverse(R,lv){
+  const r = ri(R,2, lv===1?8:14);
+  if(R() < .5)
+    return {topic:"円の逆算", type:"num", unit:"cm",
+      q:`ある円の 面積は ${r2(r*r*314/100)}cm² です。\nこの円の 半径は 何cm ですか。（円周率3.14）`, ans:r,
+      hint:`半径 × 半径 × 3.14 = 面積 だったね。\nまず 面積を 3.14 で わると、何が 求められる？`,
+      exp:`半径 × 半径 = ${r2(r*r*314/100)} ÷ 3.14 = ${r*r}\n同じ数を 2回かけて ${r*r} になるのは ${r}\n答え：半径 ${r}cm`};
+  return {topic:"円の逆算", type:"num", unit:"cm",
+    q:`ある円の まわりの長さは ${r2(2*r*314/100)}cm です。\nこの円の 半径は 何cm ですか。（円周率3.14）`, ans:r,
+    hint:`円周 = 直径 × 3.14。まず 直径を 求めよう。`,
+    exp:`直径 = ${r2(2*r*314/100)} ÷ 3.14 = ${2*r}cm\n半径 = ${2*r} ÷ 2 = ${r}cm`};
+}
+/* ---- 体積から 高さを逆算 ---- */
+function gVolumeReverse(R,lv){
+  if(R() < .5){
+    const s = ri(R,6, lv===1?25:60), h = ri(R,3, lv===1?10:16);
+    return {topic:"体積の逆算", type:"num", unit:"cm",
+      q:`体積が ${s*h}cm³、底面積が ${s}cm² の 角柱が あります。\n高さは 何cm ですか。`, ans:h,
+      hint:`角柱の体積 = 底面積 × 高さ。かけ算の逆は わり算だね。`,
+      exp:`高さ = ${s*h} ÷ ${s} = ${h}cm`};
+  }
+  const r = ri(R,2, lv===1?5:8), h = ri(R,2, lv===1?8:14);
+  return {topic:"体積の逆算", type:"num", unit:"cm",
+    q:`体積が ${r2(r*r*314*h/100)}cm³、底面の半径が ${r}cm の 円柱が あります。\n高さは 何cm ですか。（円周率3.14）`, ans:h,
+    hint:`まず 底面（円）の面積を 求めよう。それで 体積を わると 高さが 出るよ。`,
+    exp:`底面積 = ${r} × ${r} × 3.14 = ${r2(r*r*314/100)} cm²\n高さ = ${r2(r*r*314*h/100)} ÷ ${r2(r*r*314/100)} = ${h}cm`};
+}
+/* ---- 大きさを変えると 何倍？ ---- */
+function gShapeScale(R,lv){
+  const k = ri(R,2,3), t = ri(R,0,2);
+  if(t===0) return {topic:"図形の見方", type:"num", unit:"倍",
+    q:`円柱の 高さは そのままで、底面の 半径だけを ${k}倍 に すると、\n体積は 何倍 に なりますか。`, ans:k*k,
+    hint:`底面積は「半径 × 半径 × 3.14」。半径が ${k}倍 になると、かけている 半径が 2か所 とも ${k}倍 だね。`,
+    exp:`底面積 = 半径 × 半径 × 3.14 なので、半径が ${k}倍 なら\n底面積は ${k} × ${k} = ${k*k}倍。\n高さは そのままなので、体積も ${k*k}倍 です。`};
+  if(t===1) return {topic:"図形の見方", type:"num", unit:"倍",
+    q:`円の 半径を ${k}倍 に すると、\nまわりの長さ（円周）は 何倍 に なりますか。`, ans:k,
+    hint:`円周 = 直径 × 3.14。半径が ${k}倍 になると 直径は 何倍？`,
+    exp:`半径が ${k}倍 なら 直径も ${k}倍。\n円周 = 直径 × 3.14 なので、円周も ${k}倍 です。\n（面積は ${k*k}倍 になるので、区別しよう）`};
+  return {topic:"図形の見方", type:"num", unit:"倍",
+    q:`三角形の 底辺は そのままで、高さだけを ${k}倍 に すると、\n面積は 何倍 に なりますか。`, ans:k,
+    hint:`面積 = 底辺 × 高さ ÷ 2。かけられている 高さだけが ${k}倍 だね。`,
+    exp:`底辺は そのままで 高さだけ ${k}倍 なので、面積も ${k}倍 です。`};
+}
+/* ---- 単位のわな ---- */
+function gUnitTrap(R,lv){
+  const m = ri(R,1,3), cm = ri(R,1,9)*10, w = ri(R,2,9)*10;
+  const tate = m*100 + cm;
+  return {topic:"単位に注意", type:"num", unit:"cm²",
+    q:`たて ${m}m${cm}cm、横 ${w}cm の 長方形が あります。\n面積は 何cm² ですか。`, ans:tate*w,
+    hint:`たてと横で 単位が 違うね。まず 単位を そろえよう。1m = 100cm だよ。`,
+    exp:`たて = ${m}m${cm}cm = ${tate}cm\n${tate} × ${w} = ${tate*w} cm²`};
+}
+
+/* ---- 割合の逆算 ---- */
+function gPercentReverse(R,lv){
+  if(R() < .5){
+    const base = ri(R,3, lv===1?15:40)*100;
+    const off = pick(R,[10,20,25,30,40,50]);
+    return {topic:"割合の逆算", type:"num", unit:"円",
+      q:`ある品物を ${off}%引き で 買ったら ${base*(100-off)/100}円 でした。\nこの品物の 定価は 何円 ですか。`, ans:base,
+      hint:`${off}%引き ということは、定価の ${100-off}%（${(100-off)/100}）を はらったんだね。\nもとにする量を 求めるには わり算だよ。`,
+      exp:`はらった代金は 定価の ${(100-off)/100} にあたります。\n定価 = ${base*(100-off)/100} ÷ ${(100-off)/100} = ${base}円\n確かめ：${base} × ${(100-off)/100} = ${base*(100-off)/100}円 ✓`};
+  }
+  const pct = pick(R,[10,20,25,40,50,75]);
+  const people = ri(R,2, lv===1?6:12)*100;
+  return {topic:"割合の逆算", type:"num", unit:"人",
+    q:`ある小学校で、全体の ${pct}% に あたる ${people*pct/100}人 が\n歩いて 通学しています。\nこの小学校の 人数は 全部で 何人 ですか。`,
+    ans:people,
+    hint:`もとにする量（全体）を 求めるので、比べる量 ÷ 割合 だよ。`,
+    exp:`${people*pct/100} ÷ ${pct/100} = ${people}人\n確かめ：${people} × ${pct/100} = ${people*pct/100}人 ✓`};
+}
+/* ---- 比：差から 求める ---- */
+function gRatioDiff(R,lv){
+  let p,q; do{ p = ri(R,3,9); q = ri(R,2,p-1); }while(gcd(p,q)!==1);
+  const unit = ri(R,2, lv===1?8:20)*50;
+  const diff = (p-q)*unit;
+  if(R() < .5)
+    return {topic:"比の利用", type:"num", unit:"円",
+      q:`兄と弟の 持っているお金の比は ${p} : ${q} です。\n兄は 弟より ${diff}円 多く 持っています。\n2人あわせて 何円 持っていますか。`, ans:(p+q)*unit,
+      hint:`比の ${p} と ${q} の 差は ${p-q} つ分。\nそれが ${diff}円 にあたるよ。まず 1つ分を 求めよう。`,
+      exp:`差は ${p} － ${q} = ${p-q} つ分\n1つ分 = ${diff} ÷ ${p-q} = ${unit}円\n合計は ${p} ＋ ${q} = ${p+q} つ分\n${unit} × ${p+q} = ${(p+q)*unit}円`};
+  return {topic:"比の利用", type:"num", unit:"円",
+    q:`姉と妹の 持っているお金の比は ${p} : ${q} です。\n姉は 妹より ${diff}円 多く 持っています。\n姉は 何円 持っていますか。`, ans:p*unit,
+    hint:`差の ${p-q} つ分が ${diff}円。1つ分は いくらかな。`,
+    exp:`1つ分 = ${diff} ÷ (${p}－${q}) = ${unit}円\n姉 = ${unit} × ${p} = ${p*unit}円`};
+}
+/* ---- 多段階の文章題 ---- */
+function gMultiStep(R,lv){
+  const t = ri(R,0,2);
+  if(t===0){
+    const a = ri(R,8,15)*10, na = ri(R,3,6), b = ri(R,4,9)*10, nb = ri(R,2,6);
+    return {topic:"多段階の文章題", type:"num", unit:"個",
+      q:`1個 ${a}円 の りんごを ${na}個 と、1個 ${b}円 の みかんを 何個か 買ったところ、\n代金は 全部で ${a*na+b*nb}円 でした。\nみかんは 何個 買いましたか。`, ans:nb,
+      hint:`まず りんごの 代金を 求めて、全部の代金から ひこう。`,
+      exp:`りんご = ${a} × ${na} = ${a*na}円\nみかんの代金 = ${a*na+b*nb} － ${a*na} = ${b*nb}円\nみかんの数 = ${b*nb} ÷ ${b} = ${nb}個`};
+  }
+  if(t===1){
+    const per = ri(R,3,8), n = ri(R,4,9), extra = ri(R,2,9);
+    return {topic:"多段階の文章題", type:"num", unit:"個",
+      q:`あめを ${n}人 に ${per}個 ずつ 配ったところ、${extra}個 余りました。\nあめは 最初に 何個 ありましたか。`, ans:per*n+extra,
+      hint:`配った分と あまった分を たすと、はじめの数に なるね。`,
+      exp:`配った分 = ${per} × ${n} = ${per*n}個\nはじめの数 = ${per*n} ＋ ${extra} = ${per*n+extra}個`};
+  }
+  const price = ri(R,3,9)*100, n = ri(R,2,5), off = pick(R,[10,20,25,50]);
+  const total = price*n*(100-off)/100;
+  return {topic:"多段階の文章題", type:"num", unit:"円",
+    q:`1個 ${price}円 の ケーキを ${n}個 買います。\n「全部で ${off}%引き」の 日に 買うと、代金は 何円 ですか。`, ans:total,
+    hint:`さきに ${n}個分の 代金を 求めてから、${off}%引き に しよう。`,
+    exp:`${n}個分 = ${price} × ${n} = ${price*n}円\n${off}%引き = ${100-off}% なので\n${price*n} × ${(100-off)/100} = ${total}円`};
+}
+/* ---- 余計な条件が まざった問題 ---- */
+function gExtraInfo(R,lv){
+  if(R() < .5){
+    const per = ri(R,6,15), n = ri(R,3,8), price = ri(R,2,6)*100;
+    return {topic:"条件の整理", type:"num", unit:"個",
+      q:`1ふくろに ${per}個 入った あめを ${n}ふくろ 買いました。\n1ふくろは ${price}円 でした。\nあめは 全部で 何個 ありますか。`, ans:per*n,
+      hint:`「何個？」と きかれているよ。値段は 使うかな？`,
+      exp:`${per} × ${n} = ${per*n}個\n※ ${price}円 という 条件は この問題では 使いません。\n　問題文には、答えに いらない 数が まざっていることが あります。`};
+  }
+  const boys = ri(R,2,9)*2, girls = ri(R,2,9)*2, dogs = ri(R,5,15);
+  return {topic:"条件の整理", type:"num", unit:"人",
+    q:`6年1組は 男子 ${boys}人、女子 ${girls}人 です。\nそのうち ${dogs}人 が 犬を 飼っています。\nクラス全体の 人数は 何人 ですか。`, ans:boys+girls,
+    hint:`きかれているのは クラス全体の 人数だよ。`,
+    exp:`${boys} ＋ ${girls} = ${boys+girls}人\n※ 犬を飼っている ${dogs}人 は、この問題では 使いません。`};
+}
+/* ---- 速さの逆算 ---- */
+function gSpeedReverse(R,lv){
+  const v = ri(R,3,12)*10, h = ri(R,2,5);
+  if(R() < .5)
+    return {topic:"速さの逆算", type:"num", unit:"時間",
+      q:`時速 ${v}km で 走る車が あります。\n${v*h}km の 道のりを 走るのに 何時間 かかりますか。`, ans:h,
+      hint:`時間 = 道のり ÷ 速さ`,
+      exp:`${v*h} ÷ ${v} = ${h}時間`};
+  return {topic:"速さの逆算", type:"num", unit:"km",
+    q:`${v*h}km の 道のりを ${h}時間 で 走りました。\n速さは 時速 何km ですか。`, ans:v,
+    hint:`速さ = 道のり ÷ 時間`,
+    exp:`${v*h} ÷ ${h} = 時速 ${v}km`};
+}
+/* ---- 比の利用（まぜる） ---- */
+function gRatioApply(R,lv){
+  let p,q; do{ p = ri(R,1,7); q = ri(R,1,7); }while(p===q || gcd(p,q)!==1);
+  const unit = ri(R,2, lv===1?10:30)*10, total = (p+q)*unit;
+  if(R() < .5)
+    return {topic:"比の利用", type:"num", unit:"mL",
+      q:`ジュースと 水を ${p} : ${q} の 割合で 混ぜて、\n${total}mL の 飲みものを 作ります。\nジュースは 何mL 必要ですか。`, ans:p*unit,
+      hint:`全部で ${p} ＋ ${q} = ${p+q} つ分。まず 1つ分を 求めよう。`,
+      exp:`1つ分 = ${total} ÷ ${p+q} = ${unit}mL\nジュース = ${unit} × ${p} = ${p*unit}mL`};
+  return {topic:"比の利用", type:"num", unit:"mL",
+    q:`ジュースと 水を ${p} : ${q} の 割合で 混ぜます。\nジュースを ${p*unit}mL 使うとき、水は 何mL 必要ですか。`, ans:q*unit,
+    hint:`ジュース ${p}つ分が ${p*unit}mL。1つ分は いくつかな。`,
+    exp:`1つ分 = ${p*unit} ÷ ${p} = ${unit}mL\n水 = ${unit} × ${q} = ${q*unit}mL`};
+}
+
+/* ---- 対称な図形（知識問題プール） ---- */
+const SYM_POOL = [
+  {q:`線対称な図形で、対応する2つの点を結んだ直線は、\n対称の軸と どのように交わりますか。`,
+   c:"垂直に交わる", o:["平行になる","ななめ45°で交わる","交わらない"],
+   hint:`半分に折って ぴったり重なる形を 思いうかべよう。`,
+   exp:`対応する点を結ぶ直線は、対称の軸と 垂直に交わり、\nさらに 軸によって 2等分されます。`},
+  {q:`正方形の 対称の軸 は 何本 ありますか。`, c:"4本", o:["1本","2本","6本"],
+   hint:`たて・よこ・ななめ を 全部数えてみよう。`, exp:`たて1本、よこ1本、対角線2本 → 4本`},
+  {q:`長方形（正方形ではない）の 対称の軸 は 何本 ですか。`, c:"2本", o:["1本","4本","0本"],
+   hint:`対角線で折ると ぴったり重なるかな？`, exp:`たて・よこの 2本だけ。対角線では重なりません。`},
+  {q:`正三角形は 点対称な図形 ですか。`, c:"点対称ではない", o:["点対称である"],
+   hint:`180°まわしてみると、もとの形に重なるかな？`,
+   exp:`正三角形は 線対称（軸3本）ですが、\n180°まわすと重ならないので 点対称ではありません。`},
+  {q:`円の 対称の軸 は 何本 ありますか。`, c:"数えきれないほどたくさん", o:["1本","2本","4本"],
+   hint:`中心を通る直線は、どれも軸になるよ。`, exp:`中心を通る直線は すべて対称の軸。だから 無数にあります。`},
+  {q:`平行四辺形（長方形ではない）について、正しいのはどれ？`,
+   c:"点対称だが 線対称ではない", o:["線対称だが 点対称ではない","線対称でも 点対称でもある","どちらでもない"],
+   hint:`180°まわすと？　折るとどう？`,
+   exp:`平行四辺形は 180°まわすと重なるので 点対称。\nでも 折って重なる線はないので 線対称ではありません。`},
+  {q:`正六角形の 対称の軸 は 何本 ありますか。`, c:"6本", o:["3本","4本","12本"],
+   hint:`頂点どうしを結ぶ線と、辺の真ん中どうしを結ぶ線があるよ。`,
+   exp:`頂点どうし3本＋辺の中点どうし3本 → 6本`},
+  {q:`点対称な図形で、対応する2つの点を結ぶ直線は 必ず どこを通りますか。`,
+   c:"対称の中心", o:["いちばん長い辺の真ん中","図形の外","頂点"],
+   hint:`180°まわす ときの 中心はどこ？`,
+   exp:`対応する2点を結ぶ直線は 必ず 対称の中心 を通り、\n中心から 同じ長さのところにあります。`},
+  {q:`ひし形について、正しいのはどれ？`, c:"線対称でも 点対称でもある", o:["線対称だけ","点対称だけ","どちらでもない"],
+   hint:`対角線で折ってみよう。180°もまわしてみよう。`,
+   exp:`ひし形は 対角線2本が対称の軸（線対称）で、\n180°まわしても重なる（点対称）。`},
+  {q:`二等辺三角形の 対称の軸 は 何本 ですか。`, c:"1本", o:["2本","3本","0本"],
+   hint:`頂点から 底辺の真ん中に むかう線だよ。`, exp:`頂角から底辺の中点にひいた 1本だけ。`},
+  {q:`正五角形は 点対称な図形 ですか。`, c:"点対称ではない", o:["点対称である"],
+   hint:`辺の数が 奇数のときは どうなるかな？`,
+   exp:`正五角形は 線対称（軸5本）ですが、点対称ではありません。\n正多角形は 辺の数が偶数のときだけ 点対称になります。`},
+  {q:`線対称な図形で、対応する2つの辺の長さは どうなっていますか。`,
+   c:"必ず等しい", o:["必ず2倍になる","ばらばら","必ず半分になる"],
+   hint:`折り曲げたら ぴったり重なるんだったね。`,
+   exp:`対応する辺の長さ、対応する角の大きさは どちらも等しくなります。`},
+  {q:`正八角形の 対称の軸 は 何本 ありますか。`, c:"8本", o:["4本","6本","16本"],
+   hint:`頂点どうしを結ぶ線と、辺の真ん中どうしを結ぶ線があるよ。`,
+   exp:`頂点どうし4本＋辺の中点どうし4本 → 8本\n正多角形の対称の軸は、辺の数と同じだけあります。`},
+  {q:`線対称な図形を 対称の軸で 2つに分けると、\n2つの図形の面積は どうなりますか。`,
+   c:"等しい", o:["2倍になる","半分になる","ばらばら"],
+   hint:`折ったら ぴったり重なるんだったね。`,
+   exp:`ぴったり重なる＝合同 なので、面積は 等しくなります。`},
+  {q:`正方形は 点対称な図形 ですか。`, c:"点対称である", o:["点対称ではない"],
+   hint:`中心のまわりに 180°まわしてみよう。`,
+   exp:`正方形は 線対称（軸4本）でも 点対称でもあります。`},
+  {q:`長方形（正方形ではない）は 点対称な図形 ですか。`, c:"点対称である", o:["点対称ではない"],
+   hint:`真ん中を中心に 180°まわすと どうなる？`,
+   exp:`長方形は 180°まわすと もとの形に重なるので 点対称です。\n（線対称の軸は 2本）`},
+  {q:`点対称な図形で、対応する2つの角の大きさは どうなっていますか。`,
+   c:"必ず等しい", o:["必ず2倍になる","必ず90°になる","ばらばら"],
+   hint:`180°まわして ぴったり重なるんだったね。`,
+   exp:`対応する角の大きさも、対応する辺の長さも 等しくなります。`},
+  {q:`アルファベットの「S」について、正しいのはどれ？`,
+   c:"点対称だが 線対称ではない", o:["線対称だが 点対称ではない","線対称でも 点対称でもある","どちらでもない"],
+   hint:`まず 折ってみる → 次に 180°まわしてみる。`,
+   exp:`「S」は 180°まわすと重なる（点対称）けれど、\n折って重なる線はない（線対称ではない）。`},
+  {q:`アルファベットの「H」について、正しいのはどれ？`,
+   c:"線対称でも 点対称でもある", o:["線対称だけ","点対称だけ","どちらでもない"],
+   hint:`たて・よこ に折ってみよう。180°もまわしてみよう。`,
+   exp:`「H」は たて・よこ の2本の軸で線対称、\nさらに 180°まわしても重なるので 点対称でもあります。`}
+];
+function gSymmetry(R,lv){
+  const s = pick(R, SYM_POOL);
+  const c = mkChoice(R, s.c, s.o);
+  return {topic:"対称な図形", type:"choice", q:s.q, ...c, hint:s.hint, exp:s.exp};
+}
+
+/* =====================================================================
+   2. 今日の1日分（6コマ × 10問）を 作る
+      ※ 手じゅんを 覚えるだけでは とけない問題を 中心に しています
+   ===================================================================== */
+const ROUNDS = [
+  {title:"数の感覚・計算の仕組み", emoji:"🌱", color:"#3fbf7f", desc:"逆算・大小の判断・間違い探し",
+   gens:[gDecMissing,gDecMissing,gSizeSense,gSizeSense,gErrorFindDec,gGcdWord,gLcmWord,gAverageReverse,gAreaReverse,gCompositeArea]},
+  {title:"文字と式", emoji:"✏️", color:"#4a90e2", desc:"式を読む・きまりを見つける",
+   gens:[gExprFromScene,gSceneFromExpr,gSceneFromExpr,gSolve2Step,gSolve2Step,gTableRule,gTableRule,gExprCompare,gExprWord2Step,gExprWord2Step]},
+  {title:"分数のかけ算", emoji:"✖️", color:"#ff9f45", desc:"逆算・意味・間違い探し",
+   gens:[gFracMissingMul,gFracMissingMul,gFracMagnitude,gFracMulWord,gFracMulWord,gFracErrorFind,gFracSameAnswer,gFracSameAnswer,gFracMul,gFracMul]},
+  {title:"分数のわり算", emoji:"➗", color:"#9b7ede", desc:"かけ算？わり算？を 考える",
+   gens:[gFracMissingDiv,gFracMissingDiv,gFracDivMeaning,gFracDivMeaning,gOpChoice,gOpChoice,gFracDivMagnitude,gFracDivError,gFracDiv,gFracDiv]},
+  {title:"図形・円・体積", emoji:"⭕", color:"#f2665f", desc:"複合図形・逆算・何倍になる？",
+   gens:[gCompositeCircle,gCompositeCircle,gCircleReverse,gCircleReverse,gVolumeReverse,gVolumeReverse,gShapeScale,gUnitTrap,gSymmetry,gSymmetry]},
+  {title:"比・割合・文章題", emoji:"🏆", color:"#2f6fbf", desc:"逆算・多段階・条件の整理",
+   gens:[gPercentReverse,gPercentReverse,gRatioDiff,gRatioDiff,gMultiStep,gMultiStep,gExtraInfo,gSpeedReverse,gRatioApply,gRatioApply]}
+];
+
+/* =====================================================================
+   2-B. 苦手ノート（覚えるまで くり返す）
+   ===================================================================== */
+/* 間違えた問題を ノートに 入れる（すでに あれば 連続正解を 0 にもどす） */
+function addToReview(q){
+  const found = state.review.find(x => x.q === q.q);
+  if(found){
+    found.streak = 0;
+    found.miss = (found.miss||0) + 1;
+    found.lastAt = TODAY();
+    return;
+  }
+  if(state.review.length >= 200) return;   // ノートが あふれないように
+  state.review.push({
+    q:q.q, type:q.type, ans:q.ans, choices:q.choices, unit:q.unit,
+    hint:q.hint, exp:q.exp, topic:q.topic,
+    streak:0, miss:1, addedAt:TODAY(), lastAt:TODAY()
+  });
+}
+/* 正解したとき：連続数を ふやし、MASTER_HIT 回で 卒業 */
+function reviewCorrect(entry){
+  entry.streak = (entry.streak||0) + 1;
+  entry.lastAt = TODAY();
+  if(entry.streak >= MASTER_HIT){
+    state.review = state.review.filter(x => x !== entry);
+    state.mastered = (state.mastered||0) + 1;
+    return true;      // マスター！
+  }
+  return false;
+}
+/* 出題順：連続正解が 少ない順 → 間違えた回数が 多い順 */
+function reviewQueue(){
+  return state.review.slice().sort((a,b)=>
+    (a.streak||0) - (b.streak||0) || (b.miss||0) - (a.miss||0));
+}
+
+function buildRound(dayKey, ri_, lv, attempt){
+  const R = mulberry32(seedOf(`${dayKey}|r${ri_}|lv${lv}|a${attempt||0}`));
+  const out = [], seen = new Set();
+  ROUNDS[ri_].gens.forEach(gen=>{
+    let qq, guard = 0;
+    do{ qq = gen(R, lv); guard++; }while(seen.has(qq.q) && guard < 30);
+    seen.add(qq.q);
+    out.push(qq);
+  });
+  return out;
+}
+
+/* =====================================================================
+   3. 保存データ
+   ===================================================================== */
+const KEY = "sansu6-daily-v1";
+const MASTER_HIT = 3;          // 3回 続けて 正解 で マスター
+const REVIEW_MAX = 10;         // 1回の 苦手練習で 出す問題数
+let state = loadState();
+function loadState(){
+  try{
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if(s && s.days){
+      s.review = s.review || [];        // 苦手ノート
+      s.mastered = s.mastered || 0;     // マスターした問題の のべ数
+      s.parentEmail = s.parentEmail || "";
+      s.notify = Object.assign(defaultNotify(), s.notify || {});
+      s.game = Object.assign(defaultGame(), s.game || {});
+      return s;
+    }
+  }catch(e){}
+  return {days:{}, level:2, sound:true, review:[], mastered:0, parentEmail:"",
+          notify:defaultNotify(), game:defaultGame()};
+}
+function defaultGame(){
+  return {
+    lv:1, xp:0,            // レベルと、そのレベル内でためた経験値
+    totalXp:0,
+    bestCombo:0,
+    totalCorrect:0,
+    bossWins:0,
+    perfect:0,             // 全問正解したコマの数
+    badges:[],             // 手に入れた記章のid
+    pets:[],               // 仲間図鑑（手に入れた順）
+    missionDate:"",        // ミッションを作った日
+    missions:[]            // 今日のミッション
+  };
+}
+function defaultNotify(){
+  return {
+    on:false,          // 自動通知を 使うか
+    url:"",            // 送信先（Google Apps Script / Discord など）
+    to:"",             // 保護者のメールアドレス（Apps Script 用）
+    child:"",          // お子さんの名前（メッセージに入れる）
+    onRound:false,     // 1コマ終わるごとに 送る
+    onDay:true,        // 1日分 終わったら 送る
+    onWeak:false,      // 苦手ノートが 増えたら 送る
+    device:false,      // この機器に ブラウザ通知を 出す
+    queue:[],          // 送れなかったぶん（次に 自動で 送りなおす）
+    log:[]             // 送信の記録（新しい順・最大20件）
+  };
+}
+function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+function dayRec(k){
+  if(!state.days[k]) state.days[k] = {rounds:{}, sec:0, attempt:0};
+  return state.days[k];
+}
+const TODAY = () => dateKey(new Date());
+
+/* =====================================================================
+   4. 音
+   ===================================================================== */
+let actx = null;
+function beep(kind){
+  if(!state.sound) return;
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const seq = kind==="ok" ? [[880,0],[1174,.09],[1568,.18]]
+              : kind==="ng" ? [[330,0],[247,.12]]
+              : [[660,0],[880,.08],[1320,.16],[1760,.26]];
+    seq.forEach(([f,t])=>{
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = "triangle"; o.frequency.value = f;
+      o.connect(g); g.connect(actx.destination);
+      const st = actx.currentTime + t;
+      g.gain.setValueAtTime(.0001, st);
+      g.gain.exponentialRampToValueAtTime(.25, st+.02);
+      g.gain.exponentialRampToValueAtTime(.0001, st+.28);
+      o.start(st); o.stop(st+.3);
+    });
+  }catch(e){}
+}
+
+/* =====================================================================
+   5. 入力の読みとり
+   ===================================================================== */
+function toHalf(s){
+  return String(s)
+    .replace(/[０-９]/g, c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0))
+    .replace(/[．。]/g,".").replace(/[／]/g,"/").replace(/[，、\s]/g,"");
+}
+function parseNum(s){
+  const t = toHalf(s).replace(/[^0-9.\-\/]/g,"");
+  if(t === "") return null;
+  if(t.includes("/")){
+    const [a,b] = t.split("/").map(Number);
+    if(!isFinite(a)||!isFinite(b)||b===0) return null;
+    return a/b;
+  }
+  const n = Number(t);
+  return isFinite(n) ? n : null;
+}
+const fmtTime = sec => Math.floor(sec/60) + ":" + String(sec%60).padStart(2,"0");
+
+/* =====================================================================
+   6. ホーム画面
+   ===================================================================== */
+let calMonth = new Date();
+
+function showHome(){
+  ["quiz","result","rest","dayDone","report"].forEach(id=>$(id).classList.add("hidden"));
+  $("home").classList.remove("hidden");
+  window.scrollTo(0,0);
+  renderHome();
+}
+
+function renderHome(){
+  const k = TODAY(), rec = dayRec(k), d = new Date();
+  $("todayDate").textContent = `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）`;
+
+  const doneCount = Object.keys(rec.rounds).length;
+  $("todayProg").textContent = `${doneCount} / 6コマ`;
+  $("todayBar").style.width = (doneCount/6*100) + "%";
+  $("todayTime").textContent = `${Math.round(rec.sec/60)}分 / 90分`;
+  $("todayTimeBar").style.width = Math.min(100, rec.sec/5400*100) + "%";
+
+  const nextIdx = firstUndone(rec);
+  $("todayTitle").textContent = doneCount === 6
+    ? "今日の ぶんは かんぺき！🎉"
+    : doneCount === 0 ? "今日の さんすう 90分" : `残り ${6-doneCount}コマ！`;
+  $("startBtn").textContent = doneCount === 6
+    ? "🔄 もう1回 チャレンジする"
+    : doneCount === 0 ? "▶ 今日の1コマ目を 始める" : `▶ ${nextIdx+1}コマ目を 始める`;
+
+  // コマ一覧
+  const list = $("roundList"); list.innerHTML = "";
+  ROUNDS.forEach((r,i)=>{
+    const got = rec.rounds[i];
+    const b = document.createElement("button");
+    b.className = "round" + (got ? " done" : "");
+    b.innerHTML = `
+      <div class="ic" style="background:${r.color}">${r.emoji}</div>
+      <div class="info"><div class="t">${i+1}コマ目　${r.title}</div>
+        <div class="d">${r.desc}・10問 / 15分</div></div>
+      <div class="st">${ got ? "⭐" : "⚪️" }<small>${ got ? got.score+"/10" : "まだ" }</small></div>`;
+    b.onclick = ()=>startRound(i);
+    list.appendChild(b);
+  });
+
+  // 記録
+  const keys = Object.keys(state.days);
+  let stars = 0, fullDays = 0;
+  keys.forEach(kk=>{
+    const rr = state.days[kk], n = Object.keys(rr.rounds).length;
+    if(n === 6) fullDays++;
+    Object.values(rr.rounds).forEach(x=>{ stars += x.score >= 9 ? 3 : x.score >= 7 ? 2 : x.score >= 5 ? 1 : 0; });
+  });
+  $("stStreak").textContent = streak();
+  $("stDays").textContent = fullDays;
+  $("stStars").textContent = stars;
+
+  renderNote();
+  renderGame();
+  renderCal();
+  document.querySelectorAll("#levelBox button").forEach(b=>
+    b.classList.toggle("on", Number(b.dataset.lv) === state.level));
+}
+
+function firstUndone(rec){
+  for(let i=0;i<6;i++) if(!rec.rounds[i]) return i;
+  return 0;
+}
+
+/* ---- 苦手ノートの 表示 ---- */
+function renderNote(){
+  const list = reviewQueue();
+  $("nbLeft").textContent = list.length;
+  $("nbMaster").textContent = state.mastered || 0;
+  $("nbStartBtn").disabled = list.length === 0;
+  $("nbStartBtn").textContent = list.length === 0
+    ? "苦手問題は ありません 🎉"
+    : `📕 苦手問題に チャレンジ（${Math.min(list.length, REVIEW_MAX)}問）`;
+  $("nbLead").innerHTML = list.length === 0
+    ? "いまは 苦手問題が ありません。<br>間違えた問題は ここに たまって、<b>3回続けて正解</b>するまで 出つづけます。"
+    : "間違えた問題は ここに たまります。<br><b>3回 続けて 正解</b> したら「マスター」！";
+  $("nbList").innerHTML = list.slice(0,5).map(e=>{
+    const dots = "●".repeat(e.streak||0) + "○".repeat(MASTER_HIT-(e.streak||0));
+    return `<div class="nb-item">
+      <span class="t">${e.topic}：${e.q.replace(/\n/g," ").slice(0,22)}…</span>
+      <span class="nb-dots" style="color:${(e.streak||0)>0?"#3fbf7f":"#c9cfda"}">${dots}</span>
+    </div>`;
+  }).join("") + (list.length > 5 ? `<div class="nb-more">ほか ${list.length-5}問</div>` : "");
+}
+function streak(){
+  let n = 0, d = new Date();
+  const today = state.days[dateKey(d)];
+  if(!today || Object.keys(today.rounds).length === 0) d.setDate(d.getDate()-1);  // 今日まだなら昨日から数える
+  for(;;){
+    const r = state.days[dateKey(d)];
+    if(r && Object.keys(r.rounds).length > 0){ n++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return n;
+}
+
+function renderCal(){
+  const y = calMonth.getFullYear(), m = calMonth.getMonth();
+  $("calTitle").textContent = `${y}年 ${m+1}月`;
+  const first = new Date(y,m,1), last = new Date(y,m+1,0);
+  let html = "<tr>" + WD.map(w=>`<th>${w}</th>`).join("") + "</tr><tr>";
+  for(let i=0;i<first.getDay();i++) html += "<td></td>";
+  for(let day=1; day<=last.getDate(); day++){
+    const kk = dateKey(new Date(y,m,day));
+    const rec = state.days[kk];
+    const n = rec ? Object.keys(rec.rounds).length : 0;
+    const cls = n === 6 ? "has" : n > 0 ? "part" : "";
+    const isToday = kk === TODAY() ? " today" : "";
+    const face = n === 6 ? "🌟" : n > 0 ? "・" : "";
+    html += `<td><div class="cell ${cls}${isToday}"><b>${day}</b><span style="font-size:.6rem">${face}</span></div></td>`;
+    if((first.getDay()+day) % 7 === 0) html += "</tr><tr>";
+  }
+  html += "</tr>";
+  $("cal").innerHTML = html;
+}
+
+/* =====================================================================
+   7. クイズ
+   ===================================================================== */
+let cur = null;
+
+function startRound(idx, onlyWrong){
+  if(cur) clearInterval(cur.timer);
+  const k = TODAY(), rec = dayRec(k);
+  const qs = onlyWrong ? onlyWrong : buildRound(k, idx, state.level, rec.attempt);
+  cur = {dayKey:k, ridx:idx, qs, i:0, answers:[], startAt:Date.now(), checked:false,
+         isRetry:!!onlyWrong, combo:0, usedHint:false};
+  ["home","result","rest","dayDone","report"].forEach(id=>$(id).classList.add("hidden"));
+  $("quiz").classList.remove("hidden");
+  $("quizStage").textContent = `${idx+1}コマ目 ${ROUNDS[idx].emoji} ${ROUNDS[idx].title}`;
+
+  /* 6コマ目は ボスバトル */
+  cur.boss = (idx === 5 && !onlyWrong);
+  if(cur.boss){
+    const [ic,nm] = bossOfToday();
+    cur.hp = BOSS_HP;
+    $("bfIcon").textContent = ic;
+    $("bfName").textContent = nm;
+    $("bfMsg").textContent = "正解して こうげきしよう！ 連続正解で 大ダメージ！";
+    updateBossBar();
+    $("bossFight").classList.remove("hidden");
+    $("quizStage").textContent = `6コマ目 ⚔️ ボスバトル`;
+  }else{
+    $("bossFight").classList.add("hidden");
+  }
+  showCombo();
+  cur.timer = setInterval(()=>{
+    $("quizTimer").textContent = "⏱ " + fmtTime(Math.floor((Date.now()-cur.startAt)/1000));
+  },1000);
+  $("quizTimer").textContent = "⏱ 0:00";
+  window.scrollTo(0,0);
+  renderQ();
+}
+
+/* ---- 苦手問題の れんしゅう ---- */
+function startReview(){
+  if(cur) clearInterval(cur.timer);
+  const qs = reviewQueue().slice(0, REVIEW_MAX);
+  if(!qs.length) return;
+  cur = {mode:"review", qs, i:0, answers:[], startAt:Date.now(), checked:false,
+         mastered:[], dayKey:TODAY(), combo:0};
+  ["home","result","rest","dayDone","report"].forEach(id=>$(id).classList.add("hidden"));
+  $("quiz").classList.remove("hidden");
+  $("bossFight").classList.add("hidden");
+  showCombo();
+  $("quizStage").textContent = "📕 苦手ノート れんしゅう";
+  cur.timer = setInterval(()=>{
+    $("quizTimer").textContent = "⏱ " + fmtTime(Math.floor((Date.now()-cur.startAt)/1000));
+  },1000);
+  $("quizTimer").textContent = "⏱ 0:00";
+  window.scrollTo(0,0);
+  renderQ();
+}
+
+const nowQ = () => cur.qs[cur.i];
+
+function renderQ(){
+  const q = nowQ();
+  cur.checked = false; cur.sel = null; cur.usedHint = false;
+  $("qNum").textContent = `第${cur.i+1}問 / ${cur.qs.length}問`;
+  $("qText").textContent = q.q;
+  $("qSub").innerHTML = `【${q.topic}】` + (cur.mode === "review"
+    ? `　<span style="color:#ff9f45;font-weight:800">間違えた回数 ${q.miss||1}回</span>` : "");
+  $("qBar").style.width = (cur.i/cur.qs.length*100) + "%";
+  $("hintBox").classList.add("hidden"); $("hintBox").textContent = "";
+  $("resultBox").innerHTML = "";
+  $("actionRow").classList.remove("hidden");
+  $("nextBtn").classList.add("hidden");
+  $("nextBtn").textContent = (cur.i === cur.qs.length-1) ? "結果を見る 🎉" : "次の問題へ →";
+
+  const box = $("qInput"); box.innerHTML = "";
+  if(q.type === "choice"){
+    const w = document.createElement("div"); w.className = "choices";
+    q.choices.forEach((c,i)=>{
+      const b = document.createElement("button");
+      b.className = "choice";
+      b.innerHTML = `<span class="mark">${"アイウエ"[i]}</span><span>${c}</span>`;
+      b.onclick = ()=>{
+        if(cur.checked) return;
+        w.querySelectorAll(".choice").forEach(e=>e.classList.remove("sel"));
+        b.classList.add("sel"); cur.sel = i;
+      };
+      w.appendChild(b);
+    });
+    box.appendChild(w);
+  } else if(q.type === "frac"){
+    box.innerHTML = `<div class="ansbox"><div class="frac">
+        <input id="inNum" inputmode="numeric" placeholder="分子">
+        <div class="line"></div>
+        <input id="inDen" inputmode="numeric" placeholder="分母"></div></div>
+      <div class="qsub center">※ できるだけ約分した形で（仮分数のままでOK）</div>`;
+  } else if(q.type === "ratio"){
+    box.innerHTML = `<div class="ansbox"><div class="ratio">
+        <input id="inA" inputmode="numeric" placeholder="?">
+        <span class="colon">:</span>
+        <input id="inB" inputmode="numeric" placeholder="?"></div></div>`;
+  } else {
+    box.innerHTML = `<div class="ansbox">
+        <input id="inN" inputmode="decimal" placeholder="答え">
+        ${ q.unit ? `<span class="unit">${q.unit}</span>` : "" }</div>`;
+  }
+  box.querySelectorAll("input").forEach(el=>
+    el.addEventListener("keydown", e=>{ if(e.key === "Enter") doCheck(); }));
+}
+
+function correctText(q){
+  return q.type === "frac"  ? `${q.ans[0]}/${q.ans[1]}`
+       : q.type === "ratio" ? `${q.ans[0]} : ${q.ans[1]}`
+       : q.type === "choice"? q.choices[q.ans]
+       : q.ans + (q.unit || "");
+}
+
+function doCheck(){
+  if(cur.checked) return;
+  const q = nowQ();
+  let ok = false, mine = "", note = "";
+
+  if(q.type === "choice"){
+    if(cur.sel === null){ warn("答えを 選んでね"); return; }
+    ok = cur.sel === q.ans; mine = q.choices[cur.sel];
+    const ns = $("qInput").querySelectorAll(".choice");
+    ns.forEach(n=>n.classList.remove("sel"));
+    ns[q.ans].classList.add("ok");
+    if(!ok) ns[cur.sel].classList.add("ng");
+  } else if(q.type === "frac"){
+    const n = parseNum($("inNum").value), d = parseNum($("inDen").value);
+    if(n === null || d === null || d === 0){ warn("分子と分母を 入れてね"); return; }
+    mine = `${n}/${d}`;
+    if(Math.abs(n/d - q.ans[0]/q.ans[1]) < 1e-9){
+      ok = true;
+      if(gcd(Math.abs(n), Math.abs(d)) !== 1) note = `\n（${n}/${d} は約分すると ${q.ans[0]}/${q.ans[1]} だよ。約分もわすれずに！）`;
+    }
+  } else if(q.type === "ratio"){
+    const a = parseNum($("inA").value), b = parseNum($("inB").value);
+    if(a === null || b === null || b === 0){ warn("2つとも 入れてね"); return; }
+    mine = `${a} : ${b}`;
+    if(Math.abs(a/b - q.ans[0]/q.ans[1]) < 1e-9){
+      ok = true;
+      if(gcd(Math.abs(a), Math.abs(b)) !== 1) note = `\n（もっと簡単にできるよ → ${q.ans[0]} : ${q.ans[1]}）`;
+    }
+  } else {
+    const v = parseNum($("inN").value);
+    if(v === null){ warn("答えを 入れてね"); return; }
+    mine = String(v); ok = Math.abs(v - q.ans) < 1e-6;
+  }
+
+  cur.checked = true;
+  cur.answers[cur.i] = {ok, mine};
+  beep(ok ? "ok" : "ng");
+
+  /* ---- ゲーム：連続正解・経験値・ボスへのこうげき ---- */
+  let gainMsg = "";
+  if(ok){
+    cur.combo++;
+    const g = G();
+    g.totalCorrect++;
+    if(cur.combo > g.bestCombo) g.bestCombo = cur.combo;
+    let xp = 10 + Math.min(cur.combo, 8) * 2;
+    if(!cur.usedHint) xp += 5;
+    addXp(xp);
+    gainMsg = `＋${xp}XP` + (cur.combo >= 2 ? `　🔥${cur.combo}連続` : "");
+    bumpCounter("correct");
+    bumpCounter("combo", cur.combo);
+    if(!cur.usedHint) bumpCounter("nohint");
+    if(cur.boss){
+      const dmg = 10 + Math.min(cur.combo, 5) * 2;
+      cur.hp = Math.max(0, cur.hp - dmg);
+      updateBossBar();
+      $("bfMsg").textContent = cur.hp > 0
+        ? `⚔️ ${dmg} のダメージ！　残りHP ${cur.hp}`
+        : `💥 ボスを たおした！`;
+      if(cur.hp === 0 && !cur.bossDown){
+        cur.bossDown = true;
+        G().bossWins++; bumpCounter("boss");
+        addXp(100);
+        toast("⚔️ ボスに 勝った！", "ボーナス +100XP", "lv");
+        confetti(); beep("fanfare");
+      }
+    }
+  }else{
+    if(cur.combo >= 3) $("bfMsg") && (cur.boss ? $("bfMsg").textContent = "😵 連続こうげきが 止まった！" : 0);
+    cur.combo = 0;
+  }
+  showCombo();
+  checkBadges();
+
+  /* ---- 苦手ノートの こうしん ---- */
+  let masteredNow = false, dots = "";
+  if(cur.mode === "review"){
+    if(ok){
+      masteredNow = reviewCorrect(q);
+      if(masteredNow){ cur.mastered.push(q.topic); bumpCounter("master"); addXp(30); }
+    }else{
+      q.streak = 0; q.miss = (q.miss||0) + 1; q.lastAt = TODAY();
+    }
+    const s = masteredNow ? MASTER_HIT : (q.streak || 0);
+    dots = `<div class="mastery">
+        ${[0,1,2].map(i=>`<span class="dot ${i<s?"on":""}"></span>`).join("")}
+        <span>${ masteredNow ? "🎉 マスター！ ノートから 卒業"
+                             : `あと ${MASTER_HIT - s}回 続けて 正解で マスター` }</span>
+      </div>`;
+  }else if(!ok){
+    addToReview(q);          // ふだんの学習で 間違えたら ノートに 追加
+  }
+  saveState();
+
+  $("resultBox").innerHTML = `<div class="result-box ${ok?"ok":"ng"}">
+      <div class="head">${ ok ? (masteredNow ? "🎉 マスター！" : "⭕️ 正解！") : "❌ おしい！" }
+        ${ gainMsg ? `<span style="margin-left:auto;font-size:.8rem;color:var(--orange)">${gainMsg}</span>` : "" }</div>
+      ${ ok ? "" : `<div style="font-weight:700;margin-bottom:6px">答え： ${correctText(q)}</div>` }
+      <div class="steps">${stepsHtml(q.exp + note)}</div>
+      ${ ok ? "" : `<div class="note" style="margin-top:8px">💡 この問題は <b>苦手ノート</b> に入りました。3回続けて 正解すると 卒業です。</div>` }
+      ${dots}</div>`;
+  $("actionRow").classList.add("hidden");
+  $("nextBtn").classList.remove("hidden");
+  $("nextBtn").scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+/* 解説を ①②③ の ステップに 分けて 見せる */
+function stepsHtml(exp){
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const lines = String(exp).split("\n").filter(l=>l.trim() !== "");
+  let no = 0;
+  return lines.map(l=>{
+    const plain = /^[※（(]/.test(l.trim());      // 注意書きは 番号を つけない
+    if(plain) return `<div class="step"><span class="no" style="background:transparent">💡</span><span class="tx">${esc(l)}</span></div>`;
+    no++;
+    return `<div class="step"><span class="no">${no}</span><span class="tx">${esc(l)}</span></div>`;
+  }).join("");
+}
+
+function warn(msg){
+  $("hintBox").classList.remove("hidden");
+  $("hintBox").textContent = "👉 " + msg;
+}
+
+/* ---- 連続正解の 表示 ---- */
+function showCombo(){
+  const box = $("comboBox");
+  if(cur && cur.combo >= 2){
+    $("comboN").textContent = cur.combo;
+    box.classList.remove("hidden");
+  }else box.classList.add("hidden");
+}
+/* ---- ボスのHPバー ---- */
+function updateBossBar(){
+  $("bfHp").style.width = (cur.hp / BOSS_HP * 100) + "%";
+  $("bfHpTxt").textContent = `HP ${cur.hp}/${BOSS_HP}`;
+}
+
+function doNext(){
+  if(cur.i < cur.qs.length-1){ cur.i++; renderQ(); window.scrollTo({top:0,behavior:"smooth"}); }
+  else finishRound();
+}
+
+/* =====================================================================
+   8. コマ結果
+   ===================================================================== */
+function finishRound(){
+  if(cur.mode === "review") return finishReview();
+  clearInterval(cur.timer);
+  const sec = Math.floor((Date.now()-cur.startAt)/1000);
+  const rec = dayRec(cur.dayKey);
+  rec.sec += sec;
+  const score = cur.answers.filter(a=>a && a.ok).length, total = cur.qs.length;
+  if(!cur.isRetry) rec.rounds[cur.ridx] = {score, total};
+
+  /* ---- ゲーム：コマ終了時の ごほうび ---- */
+  if(!cur.isRetry){
+    bumpCounter("rounds");
+    if(score >= 9) bumpCounter("good");
+    if(score === total){ G().perfect++; addXp(50); toast("💯 全問正解！", "ボーナス +50XP", "lv"); confetti(); }
+    checkBadges();
+  }
+  saveState();
+
+  /* --- 自動通知（1コマ終わるごと／苦手ノートが増えたとき） --- */
+  if(!cur.isRetry){
+    if(NT().onRound) notifyParent(`さんすう ${cur.ridx+1}コマ目 終わりました`, roundMessage(cur.ridx, score, total), `${cur.ridx+1}コマ目`);
+    const added = total - score;
+    if(NT().onWeak && added > 0) notifyParent("苦手ノートが 増えました", weakMessage(added), "苦手ノート");
+  }
+
+  ["home","quiz","rest","dayDone"].forEach(id=>$(id).classList.add("hidden"));
+  $("result").classList.remove("hidden");
+  window.scrollTo(0,0);
+
+  const p = score/total;
+  const [em,ti,rk] = p===1 ? ["🏆","パーフェクト！！","さんすうマスター 🥇"]
+    : p>=.8 ? ["🎉","すごい！よくできました","さんすう名人 ✨"]
+    : p>=.6 ? ["😊","よく がんばったね","あと少しで 名人！"]
+    : p>=.4 ? ["💪","ここからが のびどき","見直しで レベルアップ！"]
+    :         ["🌱","やりきったのが えらい","ヒントを見ながら もう1回！"];
+  $("resEmoji").textContent = em;
+  $("resTitle").textContent = ti;
+  $("resScore").textContent = score;
+  $("resTotal").textContent = ` / ${total}問`;
+  $("resRank").textContent = rk;
+  const stars = score>=9 ? 3 : score>=7 ? 2 : score>=5 ? 1 : 0;
+  $("resStars").textContent = stars ? "⭐".repeat(stars) + `  ＋${stars}`  : "";
+  $("resTime").textContent = `かかった時間：${fmtTime(sec)}（目安 15:00）`;
+  if(p >= .8) beep("fanfare");
+
+  const tp = {};
+  cur.qs.forEach((q,i)=>{
+    if(!tp[q.topic]) tp[q.topic] = {o:0,n:0};
+    tp[q.topic].n++;
+    if(cur.answers[i] && cur.answers[i].ok) tp[q.topic].o++;
+  });
+  $("topicBox").innerHTML = Object.entries(tp).map(([nm,v])=>{
+    const pc = Math.round(v.o/v.n*100);
+    const col = pc>=80 ? "linear-gradient(90deg,#5cc8a0,#3fbf7f)"
+              : pc>=50 ? "linear-gradient(90deg,#ffc93c,#ff9f45)"
+              :          "linear-gradient(90deg,#ff9a95,#f2665f)";
+    return `<div class="topic-row"><span class="name">${nm}</span>
+      <span class="bar"><i style="width:${pc}%;background:${col}"></i></span>
+      <span class="pct">${pc}%</span></div>`;
+  }).join("");
+
+  const wrong = cur.qs.filter((q,i)=>!(cur.answers[i] && cur.answers[i].ok));
+  if(!wrong.length){ $("wrongCard").classList.add("hidden"); }
+  else{
+    $("wrongCard").classList.remove("hidden");
+    $("wrongList").innerHTML = cur.qs.map((q,i)=>{
+      if(cur.answers[i] && cur.answers[i].ok) return "";
+      return `<div class="review-item">
+        <div class="rq">${q.q.replace(/\n/g,"<br>")}</div>
+        <div class="ra">キミの答え： ${cur.answers[i] ? cur.answers[i].mine : "－"}</div>
+        <div class="rc">正しい答え： ${correctText(q)}</div>
+        <div style="color:#6b7288;margin-top:4px;white-space:pre-wrap">${q.exp}</div></div>`;
+    }).join("");
+    $("retryWrongBtn").textContent = "間違えた問題だけ もう1回";
+    $("retryWrongBtn").onclick = ()=>startRound(cur.ridx, wrong);
+  }
+
+  const allDone = Object.keys(rec.rounds).length === 6;
+  $("nextRoundBtn").textContent = allDone ? "🏆 今日の 結果を見る" : "次のコマへ →";
+  $("nextRoundBtn").onclick = allDone ? showDayDone : ()=>startRest();
+}
+
+/* ---- 苦手練習の 結果 ---- */
+function finishReview(){
+  clearInterval(cur.timer);
+  const sec = Math.floor((Date.now()-cur.startAt)/1000);
+  const rec = dayRec(cur.dayKey);
+  rec.sec += sec;
+  saveState();
+
+  const score = cur.answers.filter(a=>a && a.ok).length, total = cur.qs.length;
+  const nMaster = cur.mastered.length, left = state.review.length;
+
+  ["home","quiz","rest","dayDone","report"].forEach(id=>$(id).classList.add("hidden"));
+  $("result").classList.remove("hidden");
+  window.scrollTo(0,0);
+
+  $("resEmoji").textContent = nMaster > 0 ? "🎓" : score === total ? "🎉" : "💪";
+  $("resTitle").textContent = nMaster > 0
+    ? `${nMaster}問 マスターしました！`
+    : left === 0 ? "苦手問題を 全部 やっつけた！" : "くり返すほど 覚えられるよ";
+  $("resScore").textContent = score;
+  $("resTotal").textContent = ` / ${total}問`;
+  $("resRank").textContent = left === 0
+    ? "苦手ノートは カラッポ 🎊"
+    : `ノートに 残り ${left}問`;
+  $("resStars").textContent = nMaster > 0 ? "🎓".repeat(Math.min(nMaster,10)) : "";
+  $("resTime").textContent = `かかった時間：${fmtTime(sec)}`;
+  if(nMaster > 0 || score === total) beep("fanfare");
+
+  const tp = {};
+  cur.qs.forEach((q,i)=>{
+    if(!tp[q.topic]) tp[q.topic] = {o:0,n:0};
+    tp[q.topic].n++;
+    if(cur.answers[i] && cur.answers[i].ok) tp[q.topic].o++;
+  });
+  $("topicBox").innerHTML = Object.entries(tp).map(([nm,v])=>{
+    const pc = Math.round(v.o/v.n*100);
+    const col = pc>=80 ? "linear-gradient(90deg,#5cc8a0,#3fbf7f)"
+              : pc>=50 ? "linear-gradient(90deg,#ffc93c,#ff9f45)"
+              :          "linear-gradient(90deg,#ff9a95,#f2665f)";
+    return `<div class="topic-row"><span class="name">${nm}</span>
+      <span class="bar"><i style="width:${pc}%;background:${col}"></i></span>
+      <span class="pct">${pc}%</span></div>`;
+  }).join("");
+
+  const wrong = cur.qs.filter((q,i)=>!(cur.answers[i] && cur.answers[i].ok));
+  if(!wrong.length){ $("wrongCard").classList.add("hidden"); }
+  else{
+    $("wrongCard").classList.remove("hidden");
+    $("wrongList").innerHTML = cur.qs.map((q,i)=>{
+      if(cur.answers[i] && cur.answers[i].ok) return "";
+      return `<div class="review-item">
+        <div class="rq">${q.q.replace(/\n/g,"<br>")}</div>
+        <div class="ra">キミの答え： ${cur.answers[i] ? cur.answers[i].mine : "－"}</div>
+        <div class="rc">正しい答え： ${correctText(q)}</div>
+        <div style="color:#6b7288;margin-top:4px;white-space:pre-wrap">${q.exp}</div></div>`;
+    }).join("");
+    $("retryWrongBtn").textContent = "間違えた問題だけ もう1回";
+    $("retryWrongBtn").onclick = ()=>{
+      if(cur) clearInterval(cur.timer);
+      cur = {mode:"review", qs:wrong, i:0, answers:[], startAt:Date.now(),
+             checked:false, mastered:[], dayKey:TODAY()};
+      ["home","result","rest","dayDone","report"].forEach(id=>$(id).classList.add("hidden"));
+      $("quiz").classList.remove("hidden");
+      $("quizStage").textContent = "📕 苦手ノート れんしゅう";
+      cur.timer = setInterval(()=>{
+        $("quizTimer").textContent = "⏱ " + fmtTime(Math.floor((Date.now()-cur.startAt)/1000));
+      },1000);
+      window.scrollTo(0,0); renderQ();
+    };
+  }
+
+  $("nextRoundBtn").textContent = left > 0 ? "📕 続けて 苦手練習" : "🏠 ホーム";
+  $("nextRoundBtn").onclick = left > 0 ? startReview : showHome;
+}
+
+/* =====================================================================
+   9. ひと休み
+   ===================================================================== */
+let restTimer = null;
+function startRest(){
+  ["home","quiz","result","dayDone"].forEach(id=>$(id).classList.add("hidden"));
+  $("rest").classList.remove("hidden");
+  window.scrollTo(0,0);
+  let left = 180;
+  $("restCd").textContent = fmtTime(left);
+  clearInterval(restTimer);
+  restTimer = setInterval(()=>{
+    left--;
+    $("restCd").textContent = fmtTime(Math.max(0,left));
+    if(left <= 0){ clearInterval(restTimer); beep("fanfare"); goNextRound(); }
+  },1000);
+}
+function goNextRound(){
+  clearInterval(restTimer);
+  const rec = dayRec(TODAY());
+  if(Object.keys(rec.rounds).length === 6) showDayDone();
+  else startRound(firstUndone(rec));
+}
+
+/* =====================================================================
+   10. 1日全部完了
+   ===================================================================== */
+function showDayDone(){
+  clearInterval(restTimer);
+  ["home","quiz","result","rest","report"].forEach(id=>$(id).classList.add("hidden"));
+  $("dayDone").classList.remove("hidden");
+  window.scrollTo(0,0);
+  const rec = dayRec(TODAY());
+  let sc = 0, stars = 0;
+  Object.values(rec.rounds).forEach(r=>{
+    sc += r.score;
+    stars += r.score>=9 ? 3 : r.score>=7 ? 2 : r.score>=5 ? 1 : 0;
+  });
+  $("ddScore").textContent = sc;
+  const p = sc/60;
+  $("ddRank").textContent = p>=.9 ? "さんすうマスター 🥇" : p>=.75 ? "さんすう名人 ✨"
+    : p>=.5 ? "ぐんぐん のびてる 🌱" : "最後まで やりきった 💪";
+  $("ddStars").textContent = "⭐".repeat(Math.min(stars,18));
+
+  /* ---- 1日やりきった ごほうび：仲間が 1体 なかまになる ---- */
+  if(!rec.petGiven){
+    rec.petGiven = true;
+    const [ic,nm] = gainPet();
+    addXp(150);
+    $("ddPet").innerHTML = `<div class="dd-pet"><div class="dp-e">${ic}</div>
+      <div><b>${nm}</b> が 仲間に なった！<br><span class="note">＋150XP　図鑑に 登録 されたよ</span></div></div>`;
+    toast(`${ic} ${nm} が 仲間に！`, "1日 やりきった ごほうび", "badge");
+    confetti(); setTimeout(confetti, 500);
+    giveBadge("day1");
+  }else{
+    const last = G().pets[G().pets.length-1];
+    $("ddPet").innerHTML = last !== undefined
+      ? `<div class="dd-pet"><div class="dp-e">${PETS[last][0]}</div><div>${PETS[last][1]} と 一緒に がんばったね！</div></div>` : "";
+  }
+  checkBadges();
+  $("ddMsg").textContent = `今日の勉強時間：${Math.round(rec.sec/60)}分／連続 ${streak()}日目。\n明日は 新しい問題が 待っているよ！`;
+  beep("fanfare");
+  saveState();
+
+  /* --- 1日分 終わったら 自動で 保護者へ --- */
+  if(NT().onDay && !rec.notified){
+    rec.notified = true; saveState();
+    notifyParent("さんすう 今日の学習が 終わりました", dayMessage(), "1日の記録")
+      .then(okFlag=>{
+        $("ddSent").textContent = (NT().on && NT().url)
+          ? (okFlag ? "📤 家の人に 記録を 送りました" : "⚠️ 送信できませんでした（次に つながったとき 自動で 送りなおします）")
+          : "";
+      });
+  }
+}
+
+/* =====================================================================
+   11. 計算メモ
+   ===================================================================== */
+(function initPad(){
+  const cv = $("padCanvas"), ctx = cv.getContext("2d");
+  let drawing = false, ready = false;
+  function fit(){
+    const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    const img = ready ? ctx.getImageData(0,0,cv.width,cv.height) : null;
+    cv.width = r.width*dpr; cv.height = r.height*dpr;
+    ctx.scale(dpr,dpr);
+    ctx.lineWidth = 2.6; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#33384a";
+    if(img) ctx.putImageData(img,0,0);
+    ready = true;
+  }
+  const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; };
+  cv.addEventListener("pointerdown", e=>{ drawing = true; cv.setPointerCapture(e.pointerId);
+    const [x,y] = pos(e); ctx.beginPath(); ctx.moveTo(x,y); });
+  cv.addEventListener("pointermove", e=>{ if(!drawing) return; const [x,y] = pos(e); ctx.lineTo(x,y); ctx.stroke(); });
+  cv.addEventListener("pointerup", ()=>drawing = false);
+  cv.addEventListener("pointerleave", ()=>drawing = false);
+  $("padClear").onclick = ()=>ctx.clearRect(0,0,cv.width,cv.height);
+  $("padToggle").onclick = ()=>{
+    const p = $("pad"); p.classList.toggle("open");
+    const open = p.classList.contains("open");
+    $("padToggle").textContent = open ? "✏️ 計算メモを 閉じる" : "✏️ 計算メモを 開く";
+    if(open){ fit(); p.scrollIntoView({behavior:"smooth", block:"nearest"}); }
+  };
+  window.addEventListener("resize", ()=>{ if($("pad").classList.contains("open")) fit(); });
+})();
+
+/* =====================================================================
+   11-B. 保護者レポート
+   ===================================================================== */
+let repRange = "today";
+
+/* 期間内の 日付キーを 集める */
+function rangeKeys(range){
+  const all = Object.keys(state.days).filter(k=>{
+    const r = state.days[k];
+    return r && Object.keys(r.rounds).length > 0;
+  }).sort();
+  if(range === "all") return all;
+  if(range === "today") return all.filter(k => k === TODAY());
+  const from = new Date(); from.setDate(from.getDate() - 6);
+  const f = dateKey(from);
+  return all.filter(k => k >= f);
+}
+
+function repStats(range){
+  const keys = rangeKeys(range);
+  let score = 0, total = 0, sec = 0, rounds = 0;
+  keys.forEach(k=>{
+    const r = state.days[k];
+    sec += r.sec || 0;
+    Object.values(r.rounds).forEach(x=>{ score += x.score; total += x.total; rounds++; });
+  });
+  return {keys, days:keys.length, score, total, sec, rounds,
+          rate: total ? Math.round(score/total*100) : null};
+}
+
+/* 苦手ノートから 分野別の つまずきを 集計 */
+function weakTopics(){
+  const t = {};
+  state.review.forEach(e=>{ t[e.topic] = (t[e.topic]||0) + (e.miss||1); });
+  return Object.entries(t).sort((a,b)=>b[1]-a[1]);
+}
+
+function showReport(){
+  ["home","quiz","result","rest","dayDone"].forEach(id=>$(id).classList.add("hidden"));
+  $("report").classList.remove("hidden");
+  window.scrollTo(0,0);
+  $("repEmail").value = state.parentEmail || "";
+  renderNotify();
+  renderReport();
+}
+
+function renderReport(){
+  document.querySelectorAll("#repRange button").forEach(b=>
+    b.classList.toggle("on", b.dataset.range === repRange));
+  const s = repStats(repRange);
+  $("repDays").textContent = s.days;
+  $("repRate").textContent = s.rate === null ? "-" : s.rate + "%";
+  $("repMin").textContent = Math.round(s.sec/60);
+  $("repProgress").innerHTML = s.total
+    ? `とりくんだ問題：<b>${s.total}問</b>（正解 ${s.score}問）／ 終わったコマ：<b>${s.rounds}コマ</b>（1日6コマ）<br>
+       連続学習：<b>${streak()}日</b>`
+    : "この 期間の 記録は まだ ありません。";
+
+  const w = weakTopics();
+  $("repWeak").innerHTML = w.length
+    ? w.slice(0,6).map(([nm,c])=>{
+        const pc = Math.min(100, c*20);
+        return `<div class="topic-row"><span class="name">${nm}</span>
+          <span class="bar"><i style="width:${pc}%;background:linear-gradient(90deg,#ff9a95,#f2665f)"></i></span>
+          <span class="pct">${c}回</span></div>`;
+      }).join("") + `<p class="note mt">「回」＝ 間違えた のべ回数。多いほど 苦戦している分野です。</p>`
+    : `<p class="note">いまは つまずいている分野は ありません。</p>`;
+
+  const left = state.review.length, mastered = state.mastered || 0;
+  $("repNote").innerHTML = `
+    覚えるまで あと <b>${left}問</b>／これまでに <b>${mastered}問</b> マスター<br>
+    間違えた問題は 自動で ノートに 入り、<b>3回続けて正解</b>するまで くり返し 出題されます。`;
+
+  $("repText").textContent = buildReportText();
+  $("repMsg").textContent = "";
+}
+
+function buildReportText(){
+  const s = repStats(repRange);
+  const label = repRange === "today" ? "今日" : repRange === "week" ? "この1週間" : "これまで";
+  const d = new Date();
+  const w = weakTopics().slice(0,3);
+  const lines = [];
+  lines.push(`【さんすう学習レポート】${d.getMonth()+1}/${d.getDate()} 時点`);
+  lines.push(`■ 期間：${label}`);
+  if(!s.total){
+    lines.push("この 期間の 学習記録は ありません。");
+  }else{
+    lines.push(`■ 学習した日：${s.days}日／連続 ${streak()}日`);
+    lines.push(`■ 学習時間：${Math.round(s.sec/60)}分`);
+    lines.push(`■ とりくんだ問題：${s.total}問（正解 ${s.score}問・正答率 ${s.rate}%）`);
+    lines.push(`■ 終わったコマ：${s.rounds}コマ（1日6コマ＝90分）`);
+  }
+  lines.push("");
+  lines.push(`■ 苦手ノート：あと ${state.review.length}問／マスター ${state.mastered||0}問`);
+  if(w.length){
+    lines.push("■ 伸ばしたい分野：");
+    w.forEach(([nm,c])=>lines.push(`　・${nm}（間違い ${c}回）`));
+  }else{
+    lines.push("■ 伸ばしたい分野：特に ありません");
+  }
+  lines.push("");
+  lines.push("※ 間違えた問題は3回続けて正解するまで自動でくり返し出題されます。");
+  return lines.join("\n");
+}
+
+async function shareReport(){
+  const text = buildReportText();
+  if(navigator.share){
+    try{
+      await navigator.share({title:"さんすう学習レポート", text});
+      $("repMsg").textContent = "送信画面を ひらきました。";
+      return;
+    }catch(e){
+      if(e && e.name === "AbortError"){ $("repMsg").textContent = "送信を キャンセルしました。"; return; }
+    }
+  }
+  copyReport("この機器では共有メニューが使えないため、コピーしました。LINEやメールに貼り付けてください。");
+}
+
+function copyReport(msg){
+  const text = buildReportText();
+  const done = ()=>{ $("repMsg").textContent = msg || "コピーしました。LINEやメールに 貼り付けてください。"; };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, fallback);
+  }else fallback();
+  function fallback(){
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); done(); }
+    catch(e){ $("repMsg").textContent = "コピーできませんでした。上の文をなぞって コピーしてください。"; }
+    document.body.removeChild(ta);
+  }
+}
+
+function mailReport(){
+  const to = ($("repEmail").value || "").trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){
+    $("repMsg").textContent = "メールアドレスの形式を 確かめてください。";
+    return;
+  }
+  state.parentEmail = to; saveState();
+  const d = new Date();
+  const subject = `さんすう学習レポート（${d.getMonth()+1}/${d.getDate()}）`;
+  location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(buildReportText())}`;
+  $("repMsg").textContent = "メールアプリを ひらきました。内容を 確かめて 送信してください。";
+}
+
+/* =====================================================================
+   11-A. ゲーム要素（レベル・連続正解・記章・仲間・ボス・ミッション）
+   ===================================================================== */
+const G = () => state.game;
+
+/* ---- レベル ---- */
+const lvNeed = lv => 100 + (lv-1)*70;          // 次のレベルまでに必要な経験値
+const TITLES = [
+  [1,"さんすう見習い"],[3,"計算チャレンジャー"],[6,"分数ハンター"],
+  [10,"図形マスター"],[15,"割合の達人"],[20,"さんすう博士"],[30,"伝説の6年生"]
+];
+function titleOf(lv){
+  let t = TITLES[0][1];
+  TITLES.forEach(([n,s])=>{ if(lv >= n) t = s; });
+  return t;
+}
+function addXp(n, why){
+  const g = G();
+  g.xp += n; g.totalXp += n;
+  let up = 0;
+  while(g.xp >= lvNeed(g.lv)){ g.xp -= lvNeed(g.lv); g.lv++; up++; }
+  if(up){
+    toast(`🎉 レベルアップ！　LV.${g.lv}`, `称号「${titleOf(g.lv)}」`, "lv");
+    beep("fanfare"); confetti();
+  }
+  saveState();
+  return up;
+}
+
+/* ---- 記章（バッジ） ---- */
+const BADGES = [
+  {id:"first",     ic:"🌱", nm:"はじめの一歩",   ds:"1コマ 終わらせた"},
+  {id:"day1",      ic:"📅", nm:"今日も完走",     ds:"1日6コマを 全部終えた"},
+  {id:"streak3",   ic:"🔥", nm:"3日 連続",       ds:"3日 続けて学習した"},
+  {id:"streak7",   ic:"⚡", nm:"1週間 連続",     ds:"7日 続けて学習した"},
+  {id:"streak14",  ic:"🌈", nm:"2週間 連続",     ds:"14日 続けて学習した"},
+  {id:"combo5",    ic:"✨", nm:"5連続 正解",     ds:"5問 続けて正解した"},
+  {id:"combo10",   ic:"💫", nm:"10連続 正解",    ds:"10問 続けて正解した"},
+  {id:"perfect",   ic:"💯", nm:"全問正解",       ds:"1コマで 10問 全部正解した"},
+  {id:"boss1",     ic:"⚔️", nm:"ボスに勝った",       ds:"ボスを たおした"},
+  {id:"boss10",    ic:"🐉", nm:"ボスハンター",   ds:"ボスを 10回 たおした"},
+  {id:"master10",  ic:"🎓", nm:"苦手 克服",      ds:"苦手問題を 10問 マスターした"},
+  {id:"correct100",ic:"💪", nm:"100問 正解",     ds:"これまでに 100問 正解した"},
+  {id:"correct500",ic:"🏅", nm:"500問 正解",     ds:"これまでに 500問 正解した"},
+  {id:"lv10",      ic:"🌟", nm:"レベル10",       ds:"レベル10 に とうたつした"},
+  {id:"pets5",     ic:"🐣", nm:"仲間 5体",       ds:"仲間を 5体 集めた"}
+];
+function giveBadge(id){
+  if(G().badges.includes(id)) return;
+  const b = BADGES.find(x=>x.id===id); if(!b) return;
+  G().badges.push(id);
+  addXp(40);
+  toast(`${b.ic} 記章ゲット！`, b.nm, "badge");
+  beep("fanfare"); confetti();
+  saveState();
+}
+function checkBadges(){
+  const g = G(), st = streak();
+  if(g.totalCorrect >= 1) giveBadge("first");
+  if(st >= 3)  giveBadge("streak3");
+  if(st >= 7)  giveBadge("streak7");
+  if(st >= 14) giveBadge("streak14");
+  if(g.bestCombo >= 5)  giveBadge("combo5");
+  if(g.bestCombo >= 10) giveBadge("combo10");
+  if(g.perfect >= 1)  giveBadge("perfect");
+  if(g.bossWins >= 1)  giveBadge("boss1");
+  if(g.bossWins >= 10) giveBadge("boss10");
+  if((state.mastered||0) >= 10) giveBadge("master10");
+  if(g.totalCorrect >= 100) giveBadge("correct100");
+  if(g.totalCorrect >= 500) giveBadge("correct500");
+  if(g.lv >= 10) giveBadge("lv10");
+  if(g.pets.length >= 5) giveBadge("pets5");
+}
+
+/* ---- 仲間図鑑 ---- */
+const PETS = [
+  ["🐣","ヒヨッコ"],["🐧","ペンペン"],["🐬","ドルカ"],["🦊","コンビ"],["🐢","カメゴロウ"],
+  ["🦉","フクロウ博士"],["🐙","タコすけ"],["🦄","ユニコン"],["🐲","ドラゴ"],["🦖","キョウリュウ"],
+  ["🐝","ハチマル"],["🦋","チョウチョ"],["🐳","クジラーナ"],["🦁","レオン"],["🐼","パンダー"],
+  ["🦔","ハリー"],["🐨","コアラン"],["🦩","フラミン"],["🐡","フグゾウ"],["🌟","スターン"]
+];
+function gainPet(){
+  const R = mulberry32(seedOf(TODAY() + "|pet|" + G().pets.length));
+  const idx = Math.floor(R()*PETS.length);
+  G().pets.push(idx);
+  saveState();
+  return PETS[idx];
+}
+
+/* ---- ボス ---- */
+const BOSSES = [
+  ["👹","分数オニ","約分を 忘れさせてくる"],
+  ["🐉","ケイサンドラゴン","計算ミスを ねらってくる"],
+  ["🤖","ズケイロボ","公式を まぜてくる"],
+  ["👾","ワリアイ星人","%と 割合で まどわせる"],
+  ["🦑","ギャクサンイカ","逆算で 混乱させる"],
+  ["🧟","タンイゾンビ","単位を すりかえてくる"],
+  ["🐺","スピードウルフ","速さの問題で せめてくる"]
+];
+const BOSS_HP = 90;
+function bossOfToday(){
+  const R = mulberry32(seedOf(TODAY() + "|boss"));
+  return BOSSES[Math.floor(R()*BOSSES.length)];
+}
+
+/* ---- 今日のミッション ---- */
+const MISSION_POOL = [
+  {id:"rounds3",  txt:"コマを 3つ 終わらせる",        goal:3,  key:"rounds",  xp:60},
+  {id:"combo5",   txt:"5問 連続で 正解する",          goal:5,  key:"combo",   xp:50},
+  {id:"combo8",   txt:"8問 連続で 正解する",          goal:8,  key:"combo",   xp:80},
+  {id:"correct30",txt:"30問 正解する",                goal:30, key:"correct", xp:60},
+  {id:"good1",    txt:"1コマで 9問以上 正解する",      goal:1,  key:"good",    xp:70},
+  {id:"master2",  txt:"苦手ノートを 2問 マスターする", goal:2,  key:"master",  xp:80},
+  {id:"nohint10", txt:"ヒントなしで 10問 正解する",    goal:10, key:"nohint",  xp:60},
+  {id:"boss",     txt:"ボスを たおす",                goal:1,  key:"boss",    xp:100}
+];
+function todayMissions(){
+  const g = G();
+  if(g.missionDate !== TODAY()){
+    const R = mulberry32(seedOf(TODAY() + "|mission"));
+    g.missions = shuffle(R, MISSION_POOL).slice(0,3).map(m=>({id:m.id, done:false}));
+    g.missionDate = TODAY();
+    saveState();
+  }
+  return g.missions;
+}
+function dayCounters(){
+  const rec = dayRec(TODAY());
+  rec.g = rec.g || {rounds:0, correct:0, combo:0, master:0, good:0, nohint:0, boss:0};
+  return rec.g;
+}
+function bumpCounter(key, v){
+  const c = dayCounters();
+  if(key === "combo") c.combo = Math.max(c.combo, v);
+  else c[key] = (c[key]||0) + (v===undefined ? 1 : v);
+  checkMissions();
+}
+function checkMissions(){
+  const c = dayCounters();
+  todayMissions().forEach(m=>{
+    if(m.done) return;
+    const def = MISSION_POOL.find(x=>x.id===m.id);
+    if((c[def.key]||0) >= def.goal){
+      m.done = true;
+      addXp(def.xp);
+      toast("🎯 ミッション達成！", def.txt + `　+${def.xp}XP`, "mission");
+      beep("ok");
+      if(G().missions.every(x=>x.done)){
+        addXp(100);
+        toast("🏅 ミッション 全達成！", "ボーナス +100XP", "mission");
+        confetti();
+      }
+    }
+  });
+  saveState();
+}
+
+/* ---- 画面に出す おしらせ（トースト） ---- */
+let toastQ = [], toastBusy = false;
+function toast(title, sub, kind){
+  toastQ.push({title, sub, kind});
+  if(toastQ.length > 8) toastQ = toastQ.slice(-8);   // たまりすぎたら 古いものは 出さない
+  pumpToast();
+}
+function pumpToast(){
+  if(toastBusy || !toastQ.length) return;
+  toastBusy = true;
+  const {title, sub, kind} = toastQ.shift();
+  const el = document.createElement("div");
+  el.className = "toast " + (kind||"");
+  el.innerHTML = `<div class="tt">${title}</div><div class="ts">${sub||""}</div>`;
+  $("toastBox").appendChild(el);
+  const wait = toastQ.length >= 3 ? 800 : toastQ.length ? 1300 : 2400;  // 続きがあるときは 早めに
+  setTimeout(()=>{
+    el.classList.add("out");
+    setTimeout(()=>{ el.remove(); toastBusy = false; pumpToast(); }, 350);
+  }, wait);
+}
+
+/* ---- 紙ふぶき ---- */
+function confetti(){
+  const box = $("fxBox");
+  const colors = ["#ffc93c","#3fbf7f","#4a90e2","#f2665f","#9b7ede","#ff9f45"];
+  for(let i=0;i<28;i++){
+    const p = document.createElement("i");
+    p.className = "conf";
+    p.style.left = Math.random()*100 + "%";
+    p.style.background = colors[i % colors.length];
+    p.style.animationDelay = (Math.random()*0.3) + "s";
+    p.style.transform = `rotate(${Math.random()*360}deg)`;
+    box.appendChild(p);
+    setTimeout(()=>p.remove(), 2200);
+  }
+}
+
+/* ---- ホームの ゲーム表示 ---- */
+function renderGame(){
+  const g = G();
+  $("gLv").textContent = g.lv;
+  $("gTitle").textContent = titleOf(g.lv);
+  $("gXpNow").textContent = g.xp;
+  $("gXpNeed").textContent = lvNeed(g.lv);
+  $("gXpBar").style.width = Math.min(100, g.xp/lvNeed(g.lv)*100) + "%";
+  $("gCombo").textContent = g.bestCombo;
+  $("gCorrect").textContent = g.totalCorrect;
+  $("gBoss").textContent = g.bossWins;
+
+  // ミッション
+  const c = dayCounters();
+  $("missionList").innerHTML = todayMissions().map(m=>{
+    const def = MISSION_POOL.find(x=>x.id===m.id);
+    const now = Math.min(c[def.key]||0, def.goal);
+    const pc = Math.round(now/def.goal*100);
+    return `<div class="ms ${m.done?"done":""}">
+      <div class="ms-ic">${m.done?"✅":"🎯"}</div>
+      <div class="ms-body">
+        <div class="ms-t">${def.txt}</div>
+        <div class="bar"><i style="width:${pc}%"></i></div>
+      </div>
+      <div class="ms-xp">${now}/${def.goal}<br><b>+${def.xp}</b></div>
+    </div>`;
+  }).join("");
+
+  // 仲間図鑑
+  const owned = {};
+  g.pets.forEach(i=>owned[i] = (owned[i]||0)+1);
+  const kinds = Object.keys(owned).length;
+  $("petCount").textContent = `${kinds} / ${PETS.length} 種類`;
+  $("petBox").innerHTML = PETS.map((p,i)=>
+    owned[i] ? `<div class="pet"><div class="pe">${p[0]}</div><div class="pn">${p[1]}</div>
+                 ${owned[i]>1?`<div class="px">×${owned[i]}</div>`:""}</div>`
+             : `<div class="pet lock"><div class="pe">❔</div><div class="pn">？？？</div></div>`
+  ).join("");
+
+  // 記章
+  $("badgeCount").textContent = `${g.badges.length} / ${BADGES.length}`;
+  $("badgeBox").innerHTML = BADGES.map(b=>{
+    const has = g.badges.includes(b.id);
+    return `<div class="bdg ${has?"":"lock"}" title="${b.ds}">
+      <div class="be">${has?b.ic:"🔒"}</div><div class="bn">${b.nm}</div></div>`;
+  }).join("");
+
+  // 今日のボス
+  const [ic,nm,ds] = bossOfToday();
+  const rec = dayRec(TODAY());
+  const beaten = !!(rec.rounds && rec.rounds[5]);
+  $("bossIcon").textContent = ic;
+  $("bossName").textContent = nm;
+  $("bossDesc").textContent = beaten ? "今日は もう たおした！" : ds;
+  $("bossCard").classList.toggle("beaten", beaten);
+}
+
+/* =====================================================================
+   11-C. 学習したら 自動で 保護者に 通知する
+   ===================================================================== */
+const NT = () => state.notify;
+
+/* 送信先の 種類を URL から 見分ける */
+function transportOf(url){
+  if(/discord(app)?\.com\/api\/webhooks\//i.test(url)) return "discord";
+  if(/script\.google\.com\/macros\//i.test(url)) return "gas";
+  return "generic";
+}
+
+/* じっさいに 送る（送れたら true） */
+async function postNotify(url, subject, text){
+  const kind = transportOf(url);
+
+  if(kind === "discord"){
+    // Discord は multipart なら ブラウザから そのまま 送れる
+    const fd = new FormData();
+    fd.append("payload_json", JSON.stringify({content: text.slice(0, 1900)}));
+    const res = await fetch(url, {method:"POST", body:fd});
+    if(!res.ok) throw new Error("Discord HTTP " + res.status);
+    return true;
+  }
+
+  const body = JSON.stringify({
+    to: NT().to, subject, text,
+    child: NT().child || "", at: new Date().toISOString()
+  });
+  // まず ふつうに送って 返事を 確かめる
+  try{
+    const res = await fetch(url, {
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},   // 事前確認を出さない形式
+      body
+    });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    return true;
+  }catch(e){
+    // 返事が読めない設定のときは 送りっぱなしで もう一度
+    await fetch(url, {method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"}, body});
+    return true;   // ※ この方法では 届いたかを アプリ側で 確認できません
+  }
+}
+
+function pushLog(entry){
+  NT().log.unshift(entry);
+  NT().log = NT().log.slice(0, 20);
+}
+
+/* 送る（失敗したら キューに ためて 次に 送りなおす） */
+async function notifyParent(subject, text, tag){
+  // この機器への 通知
+  if(NT().device && typeof Notification !== "undefined" && Notification.permission === "granted"){
+    try{ new Notification("さんすうチャレンジ", {body:text.split("\n").slice(0,3).join("\n")}); }catch(e){}
+  }
+  if(!NT().on || !NT().url) return false;
+
+  try{
+    await postNotify(NT().url, subject, text);
+    pushLog({at:Date.now(), tag, ok:true});
+    saveState();
+    return true;
+  }catch(e){
+    NT().queue.push({subject, text, tag, at:Date.now()});
+    NT().queue = NT().queue.slice(-20);
+    pushLog({at:Date.now(), tag, ok:false, msg:String(e.message||e)});
+    saveState();
+    return false;
+  }
+}
+
+/* たまっている 未送信を 送りなおす */
+async function flushQueue(){
+  if(!NT().on || !NT().url || !NT().queue.length) return;
+  const items = NT().queue.slice();
+  NT().queue = [];
+  saveState();
+  for(const it of items){
+    try{
+      await postNotify(NT().url, it.subject, it.text);
+      pushLog({at:Date.now(), tag:it.tag + "(再送)", ok:true});
+    }catch(e){
+      NT().queue.push(it);
+      pushLog({at:Date.now(), tag:it.tag + "(再送)", ok:false, msg:String(e.message||e)});
+      break;                       // つながらないので ここで やめる
+    }
+  }
+  saveState();
+}
+
+/* ---- 通知の 文面 ---- */
+function msgHead(){
+  const d = new Date();
+  const name = NT().child ? NT().child + "さん" : "お子さん";
+  return {name, stamp:`${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`};
+}
+function roundMessage(ridx, score, total){
+  const {name, stamp} = msgHead();
+  const r = ROUNDS[ridx];
+  const rec = dayRec(TODAY());
+  return [
+    `📘 ${name}が ${ridx+1}コマ目を 終えました（${stamp}）`,
+    `・単元：${r.title}`,
+    `・結果：${score} / ${total}問`,
+    `・今日の進み：${Object.keys(rec.rounds).length} / 6コマ（${Math.round(rec.sec/60)}分）`,
+    `・苦手ノート：あと ${state.review.length}問`
+  ].join("\n");
+}
+function dayMessage(){
+  const {name, stamp} = msgHead();
+  const rec = dayRec(TODAY());
+  let sc = 0, tt = 0;
+  Object.values(rec.rounds).forEach(r=>{ sc += r.score; tt += r.total; });
+  const w = weakTopics().slice(0,3);
+  const lines = [
+    `🏆 ${name}が 今日の学習を やりきりました（${stamp}）`,
+    `・正解：${sc} / ${tt}問（正答率 ${tt?Math.round(sc/tt*100):0}%）`,
+    `・学習時間：${Math.round(rec.sec/60)}分（6コマ＝90分）`,
+    `・連続学習：${streak()}日`,
+    `・苦手ノート：あと ${state.review.length}問／マスター ${state.mastered||0}問`
+  ];
+  if(w.length){
+    lines.push(`・伸ばしたい分野：${w.map(([nm,c])=>`${nm}(${c}回)`).join("、")}`);
+  }
+  return lines.join("\n");
+}
+function weakMessage(added){
+  const {name, stamp} = msgHead();
+  return [
+    `📕 ${name}の 苦手ノートが 増えました（${stamp}）`,
+    `・今日 追加：${added}問`,
+    `・残り：${state.review.length}問`,
+    `※ 3回続けて正解するまで くり返し 出題されます。`
+  ].join("\n");
+}
+
+/* ---- 設定がめんの 表示 ---- */
+function renderNotify(){
+  const n = NT();
+  $("ntOn").checked = n.on;
+  $("ntUrl").value = n.url;
+  $("ntTo").value = n.to;
+  $("ntChild").value = n.child;
+  $("ntRound").checked = n.onRound;
+  $("ntDay").checked = n.onDay;
+  $("ntWeak").checked = n.onWeak;
+  $("ntDevice").checked = n.device;
+
+  const kindName = !n.url ? "未設定"
+    : transportOf(n.url) === "discord" ? "Discord に 送ります"
+    : transportOf(n.url) === "gas" ? "Google Apps Script（メール）に 送ります"
+    : "そのURLに 送ります";
+  $("ntKind").textContent = "送信先：" + kindName;
+  $("ntQueue").textContent = n.queue.length
+    ? `⚠️ 未送信が ${n.queue.length}件 あります（次に つながったとき 自動で 送りなおします）`
+    : "";
+  $("ntLog").innerHTML = n.log.length
+    ? n.log.map(l=>{
+        const d = new Date(l.at);
+        return `<div class="nt-log ${l.ok?"ok":"ng"}">${l.ok?"✅":"⚠️"} ${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}　${l.tag}${l.ok?"":"　"+(l.msg||"")}</div>`;
+      }).join("")
+    : `<p class="note">まだ送信の記録は ありません。</p>`;
+}
+
+function saveNotifyForm(){
+  const n = NT();
+  n.on = $("ntOn").checked;
+  n.url = $("ntUrl").value.trim();
+  n.to = $("ntTo").value.trim();
+  n.child = $("ntChild").value.trim();
+  n.onRound = $("ntRound").checked;
+  n.onDay = $("ntDay").checked;
+  n.onWeak = $("ntWeak").checked;
+  saveState();
+  renderNotify();
+}
+
+async function askDeviceNotify(){
+  if(typeof Notification === "undefined"){
+    $("ntMsg").textContent = "この ブラウザは 機器通知に 対応していません。";
+    $("ntDevice").checked = false; return;
+  }
+  if($("ntDevice").checked){
+    let p = Notification.permission;
+    if(p === "default"){ try{ p = await Notification.requestPermission(); }catch(e){} }
+    if(p !== "granted"){
+      $("ntDevice").checked = false;
+      $("ntMsg").textContent = "通知が きょかされませんでした。ブラウザの設定から きょかできます。";
+      NT().device = false; saveState(); return;
+    }
+  }
+  NT().device = $("ntDevice").checked;
+  saveState();
+  $("ntMsg").textContent = NT().device ? "この機器に 通知を 出します。" : "";
+}
+
+async function testNotify(){
+  saveNotifyForm();
+  const n = NT();
+  if(!n.url){ $("ntMsg").textContent = "送信先のURLを 入れてください。"; return; }
+  if(transportOf(n.url) !== "discord" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(n.to)){
+    $("ntMsg").textContent = "メールで受け取る場合は、保護者のメールアドレスも 入れてください。"; return;
+  }
+  $("ntMsg").textContent = "送信中…";
+  const {name} = msgHead();
+  const okFlag = await notifyParent("【テスト】さんすう学習の自動通知",
+    `🔔 テスト送信です。\nこのメッセージが 届いていれば、${name}が 学習を 終えたときに 自動で とどきます。`,
+    "テスト送信");
+  renderNotify();
+  $("ntMsg").textContent = okFlag
+    ? "送信しました。受け取れているか 確かめてください。（届かない場合は 設定を 見直してください）"
+    : "送信できませんでした。URLと インターネット接続を 確かめてください。";
+}
+
+/* =====================================================================
+   12. イベント
+   ===================================================================== */
+$("checkBtn").onclick = doCheck;
+$("nextBtn").onclick = doNext;
+$("hintBtn").onclick = ()=>{
+  cur.usedHint = true;
+  $("hintBox").classList.remove("hidden");
+  $("hintBox").textContent = "💡 " + nowQ().hint;
+};
+$("quitBtn").onclick = ()=>{
+  if(!confirm("ホームにもどる？ このコマの とちゅうの答えは 消えるよ。")) return;
+  clearInterval(cur.timer);
+  const rec = dayRec(cur.dayKey);
+  rec.sec += Math.floor((Date.now()-cur.startAt)/1000);
+  saveState(); showHome();
+};
+$("nbStartBtn").onclick = startReview;
+$("openReportBtn").onclick = showReport;
+["ntOn","ntRound","ntDay","ntWeak"].forEach(id=>{ $(id).onchange = saveNotifyForm; });
+["ntUrl","ntTo","ntChild"].forEach(id=>{ $(id).onchange = saveNotifyForm; });
+$("ntDevice").onchange = askDeviceNotify;
+$("ntTest").onclick = testNotify;
+$("ntCopyCode").onclick = ()=>{
+  const t = $("ntCode").textContent;
+  const done = ()=>{ $("ntMsg").textContent = "コードを コピーしました。Apps Script に 貼り付けてください。"; };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
+  else done();
+};
+$("repBack").onclick = showHome;
+$("repShare").onclick = shareReport;
+$("repCopy").onclick = ()=>copyReport();
+$("repMail").onclick = mailReport;
+$("repEmail").onchange = ()=>{ state.parentEmail = $("repEmail").value.trim(); saveState(); };
+document.querySelectorAll("#repRange button").forEach(b=>{
+  b.onclick = ()=>{ repRange = b.dataset.range; renderReport(); };
+});
+$("homeBtn").onclick = showHome;
+$("ddHome").onclick = showHome;
+$("restSkip").onclick = goNextRound;
+$("restStop").onclick = ()=>{ clearInterval(restTimer); showHome(); };
+$("startBtn").onclick = ()=>{
+  const rec = dayRec(TODAY());
+  if(Object.keys(rec.rounds).length === 6){
+    rec.attempt = (rec.attempt||0) + 1;   // 2周目は 別の問題になる
+    rec.rounds = {};
+    saveState();
+  }
+  startRound(firstUndone(dayRec(TODAY())));
+};
+$("calPrev").onclick = ()=>{ calMonth.setMonth(calMonth.getMonth()-1); renderCal(); };
+$("calNext").onclick = ()=>{ calMonth.setMonth(calMonth.getMonth()+1); renderCal(); };
+document.querySelectorAll("#levelBox button").forEach(b=>{
+  b.onclick = ()=>{ state.level = Number(b.dataset.lv); saveState(); renderHome(); };
+});
+$("ddReport").onclick = ()=>{ repRange = "today"; showReport(); };
+$("resetBtn").onclick = ()=>{
+  if(confirm("カレンダー・苦手ノート・記録が 全部消えます。よろしいですか？")){
+    state = {days:{}, level:state.level, sound:state.sound,
+             review:[], mastered:0, parentEmail:state.parentEmail,
+             notify:Object.assign(state.notify, {queue:[], log:[]}),   // 通知設定は 残す
+             game:defaultGame()};
+    saveState(); renderHome();
+  }
+};
+$("soundBtn").onclick = ()=>{ state.sound = !state.sound; saveState();
+  $("soundBtn").textContent = state.sound ? "🔊" : "🔇"; };
+$("soundBtn").textContent = state.sound ? "🔊" : "🔇";
+
+showHome();
+flushQueue();                                   // 前回 送れなかったぶんを 送りなおす
+window.addEventListener("online", flushQueue);  // つながったら もう一度
+</script>
+</body>
+</html>
